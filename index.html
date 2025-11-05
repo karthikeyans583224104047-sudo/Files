@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DirectShare - Lightning Fast P2P</title>
+    <title>DirectShare - Internet Optimized</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Your existing CSS remains the same */
@@ -100,6 +100,25 @@
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
+        }
+
+        /* Connection Type Indicator */
+        .connection-type {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            margin-left: 10px;
+        }
+
+        .connection-type.direct {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .connection-type.relay {
+            background: var(--warning);
+            color: black;
         }
 
         /* Main Content */
@@ -426,6 +445,10 @@
             border-left-color: var(--secondary);
         }
 
+        .connection-status.relay {
+            border-left-color: var(--warning);
+        }
+
         /* Log */
         .log {
             background: var(--surface);
@@ -531,6 +554,7 @@
             <div class="status-bar">
                 <div class="status-dot" id="statusDot"></div>
                 <span id="connectionStatus">Ready</span>
+                <span id="connectionType" class="connection-type hidden"></span>
             </div>
         </div>
 
@@ -546,8 +570,8 @@
                 <div class="step-icon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <h2>Lightning Fast File Transfer</h2>
-                <p>Optimized for maximum speed - No limits, no compromises</p>
+                <h2>Internet File Transfer</h2>
+                <p>Optimized for global connections with fallback relays</p>
                 <div class="btn-group">
                     <button id="sendBtn" class="btn primary large">
                         <i class="fas fa-file-upload"></i> Send a File
@@ -565,7 +589,7 @@
                     <i class="fas fa-paper-plane"></i>
                 </div>
                 <h2>Send File</h2>
-                <p>Share this link with the recipient</p>
+                <p>Share this link anywhere in the world</p>
                 
                 <div class="file-info" id="sendFileInfo">
                     <i class="fas fa-file file-icon"></i>
@@ -586,6 +610,7 @@
 
                 <div class="speed-indicator">
                     <i class="fas fa-tachometer-alt"></i> Speed: <span class="speed-value" id="sendSpeed">0 MB/s</span>
+                    <span id="connectionInfo"></span>
                 </div>
                 
                 <div class="stats">
@@ -624,6 +649,7 @@
 
                 <div class="speed-indicator">
                     <i class="fas fa-tachometer-alt"></i> Speed: <span class="speed-value" id="receiveSpeed">0 MB/s</span>
+                    <span id="receiveConnectionInfo"></span>
                 </div>
                 
                 <div class="progress-container">
@@ -690,16 +716,19 @@
                 this.chunks = [];
                 this.receivedSize = 0;
                 this.totalSize = 0;
-                this.chunkSize = 256 * 1024; // 256KB chunks - OPTIMIZED
+                this.chunkSize = 128 * 1024; // 128KB chunks - optimized for internet
                 this.currentChunk = 0;
                 this.totalChunks = 0;
                 this.fileTransferStarted = false;
                 this.transferStartTime = 0;
                 this.lastSpeedUpdate = 0;
                 this.bytesTransferred = 0;
-                this.parallelChunks = 4; // Send multiple chunks simultaneously
+                this.parallelChunks = 3; // Reduced for internet stability
+                this.maxChunksInFlight = 5; // Reduced for internet
                 this.chunksInFlight = 0;
-                this.maxChunksInFlight = 8; // Maximum parallel chunks
+                this.connectionType = 'unknown';
+                this.retryCount = 0;
+                this.maxRetries = 3;
                 
                 this.setupEventListeners();
                 this.initialize();
@@ -707,9 +736,9 @@
 
             initialize() {
                 this.showStep('step1');
-                this.updateStatus('Ready to share files');
+                this.updateStatus('Ready for internet transfer');
                 this.updateConnectionDot(false);
-                this.log('App initialized - Optimized for speed', 'system');
+                this.log('Internet-optimized app initialized', 'system');
             }
 
             setupEventListeners() {
@@ -762,21 +791,30 @@
                     document.getElementById('fileName').textContent = this.file.name;
                     document.getElementById('fileSize').textContent = this.formatFileSize(this.file.size);
                     
-                    this.updateStatus('Connecting to PeerJS...');
-                    this.log('Initializing optimized PeerJS connection', 'system');
+                    this.updateStatus('Connecting to signaling server...');
+                    this.log('Initializing internet-optimized connection', 'system');
                     
-                    // Initialize PeerJS with optimized settings
+                    // Enhanced ICE servers for better NAT traversal
+                    const iceServers = [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                        { urls: 'stun:stun2.l.google.com:19302' },
+                        { urls: 'stun:stun3.l.google.com:19302' },
+                        { urls: 'stun:stun4.l.google.com:19302' },
+                        // Free TURN servers (limited but helpful)
+                        { urls: 'turn:numb.viagenie.ca', username: 'webrtc@live.com', credential: 'muazkh' },
+                        { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+                        { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' }
+                    ];
+                    
+                    // Initialize PeerJS with enhanced configuration
                     this.peer = new Peer({
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 0, // Reduced debug for performance
-                        config: {
-                            'iceServers': [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
+                        debug: 0,
+                        config: { iceServers },
+                        iceTransportPolicy: 'all' // Try both relay and direct
                     });
                     
                     this.peer.on('open', (id) => {
@@ -786,28 +824,43 @@
                         
                         this.updateStatus('Waiting for recipient...');
                         this.updateConnectionDot(true);
-                        this.log(`Ready! Share this ID: ${id}`, 'success');
-                        this.log('Share the link above with the recipient', 'info');
+                        this.log(`Ready! Global share ID: ${id}`, 'success');
+                        this.log('Share this link with anyone on the internet', 'info');
                     });
                     
                     this.peer.on('connection', (connection) => {
                         this.conn = connection;
-                        // Increase buffer size for better performance
-                        this.conn._bufferedAmountLowThreshold = 64 * 1024; // 64KB
                         this.setupDataConnection();
-                        this.updateStatus('Recipient connected!');
-                        this.log('Recipient connected, starting file transfer', 'success');
+                        this.updateStatus('Recipient connected globally!');
+                        this.log('Global recipient connected', 'success');
                         
-                        // Send confirmation to receiver
+                        // Send confirmation
                         this.conn.send({
                             type: 'connection-confirmed',
                             message: 'Sender is ready to send file'
                         });
                     });
                     
+                    this.peer.on('iceStateChanged', (state) => {
+                        this.log(`ICE connection state: ${state}`, 'info');
+                        if (state === 'connected') {
+                            this.connectionType = 'direct';
+                            this.updateConnectionType();
+                        } else if (state === 'completed') {
+                            this.connectionType = 'relay';
+                            this.updateConnectionType();
+                        }
+                    });
+                    
                     this.peer.on('error', (err) => {
                         this.log(`PeerJS Error: ${err.type}`, 'error');
-                        this.showError('Connection error. Please try again.');
+                        if (this.retryCount < this.maxRetries) {
+                            this.retryCount++;
+                            this.log(`Retrying connection... (${this.retryCount}/${this.maxRetries})`, 'warning');
+                            setTimeout(() => this.startSending(), 1000);
+                        } else {
+                            this.showError('Connection failed after retries. Check firewall settings.');
+                        }
                     });
                     
                 } catch (error) {
@@ -822,37 +875,56 @@
                     this.showStep('step2receive');
                     document.getElementById('backBtn').classList.remove('hidden');
                     
-                    this.updateStatus('Connecting to sender...');
-                    this.log(`Connecting to sender: ${peerId}`, 'system');
+                    this.updateStatus('Connecting to global sender...');
+                    this.log(`Connecting to global sender: ${peerId}`, 'system');
                     
-                    // Initialize PeerJS with optimized settings
+                    const iceServers = [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' },
+                        { urls: 'stun:stun2.l.google.com:19302' },
+                        { urls: 'stun:stun3.l.google.com:19302' },
+                        { urls: 'stun:stun4.l.google.com:19302' },
+                        { urls: 'turn:numb.viagenie.ca', username: 'webrtc@live.com', credential: 'muazkh' },
+                        { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' }
+                    ];
+                    
                     this.peer = new Peer({
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 0, // Reduced debug for performance
-                        config: {
-                            'iceServers': [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
+                        debug: 0,
+                        config: { iceServers },
+                        iceTransportPolicy: 'all'
                     });
                     
                     this.peer.on('open', (id) => {
                         this.peerId = id;
                         this.conn = this.peer.connect(peerId, {
                             reliable: true,
-                            serialization: 'binary' // Use binary for better performance
+                            serialization: 'binary'
                         });
-                        // Increase buffer size
-                        this.conn._bufferedAmountLowThreshold = 64 * 1024;
                         this.setupDataConnection();
+                    });
+                    
+                    this.peer.on('iceStateChanged', (state) => {
+                        if (state === 'connected') {
+                            this.connectionType = 'direct';
+                            this.updateConnectionType();
+                        } else if (state === 'completed') {
+                            this.connectionType = 'relay';
+                            this.updateConnectionType();
+                        }
                     });
                     
                     this.peer.on('error', (err) => {
                         this.log(`PeerJS Error: ${err.type}`, 'error');
-                        this.showError('Connection error. Please try again.');
+                        if (this.retryCount < this.maxRetries) {
+                            this.retryCount++;
+                            this.log(`Retrying connection... (${this.retryCount}/${this.maxRetries})`, 'warning');
+                            setTimeout(() => this.startReceiving(peerId), 1000);
+                        } else {
+                            this.showError('Connection failed. The link may be expired or invalid.');
+                        }
                     });
                     
                 } catch (error) {
@@ -861,17 +933,36 @@
                 }
             }
 
+            updateConnectionType() {
+                const typeElement = document.getElementById('connectionType');
+                const infoElement = this.isSender ? 
+                    document.getElementById('connectionInfo') : 
+                    document.getElementById('receiveConnectionInfo');
+                
+                if (typeElement) {
+                    typeElement.textContent = this.connectionType === 'direct' ? 'P2P' : 'RELAY';
+                    typeElement.className = `connection-type ${this.connectionType}`;
+                    typeElement.classList.remove('hidden');
+                }
+                
+                if (infoElement) {
+                    infoElement.textContent = this.connectionType === 'direct' ? ' (Direct)' : ' (Relay)';
+                    infoElement.style.color = this.connectionType === 'direct' ? 'var(--secondary)' : 'var(--warning)';
+                }
+                
+                this.log(`Connection type: ${this.connectionType.toUpperCase()}`, 'info');
+            }
+
             setupDataConnection() {
                 this.conn.on('open', () => {
-                    this.updateStatus('Connected to peer!');
+                    this.updateStatus('Global connection established!');
                     this.updateConnectionDot(true);
-                    this.log('High-speed data connection established', 'success');
+                    this.log('Internet data connection ready', 'success');
                     
                     if (this.isSender) {
-                        this.log('Ready to send file data at maximum speed', 'info');
+                        this.log('Ready for global file transfer', 'info');
                     } else {
-                        this.log('Ready to receive file data', 'info');
-                        // Send confirmation to sender that we're ready
+                        this.log('Ready to receive global file', 'info');
                         this.conn.send({
                             type: 'receiver-ready',
                             message: 'Receiver is ready for file transfer'
@@ -886,7 +977,7 @@
                 this.conn.on('close', () => {
                     this.updateStatus('Connection closed');
                     this.updateConnectionDot(false);
-                    this.log('Connection closed by peer', 'warning');
+                    this.log('Global connection closed', 'warning');
                 });
                 
                 this.conn.on('error', (err) => {
@@ -901,15 +992,20 @@
                 }
                 
                 try {
-                    this.log(`Starting ULTRA-FAST file transfer: ${this.file.name} (${this.formatFileSize(this.file.size)})`, 'system');
+                    this.log(`Starting GLOBAL file transfer: ${this.file.name} (${this.formatFileSize(this.file.size)})`, 'system');
                     
-                    // Calculate chunks with optimized size
+                    // Adaptive chunk sizing based on connection type
+                    if (this.connectionType === 'relay') {
+                        this.chunkSize = 64 * 1024; // Smaller chunks for relay
+                        this.log('Using smaller chunks for relay connection', 'info');
+                    }
+                    
                     this.totalChunks = Math.ceil(this.file.size / this.chunkSize);
                     this.currentChunk = 0;
                     this.transferStartTime = Date.now();
                     this.bytesTransferred = 0;
                     
-                    // Send file metadata first
+                    // Send file metadata
                     this.conn.send({
                         type: 'file-start',
                         name: this.file.name,
@@ -919,10 +1015,9 @@
                         chunkSize: this.chunkSize
                     });
                     
-                    this.log(`File metadata sent. Total chunks: ${this.totalChunks} (${this.chunkSize/1024}KB each)`, 'info');
-                    this.log(`Using parallel transfer with ${this.parallelChunks} concurrent chunks`, 'info');
+                    this.log(`File metadata sent. Total chunks: ${this.totalChunks}`, 'info');
                     
-                    // Start sending chunks in parallel
+                    // Start transfer
                     this.sendChunksParallel();
                     
                 } catch (error) {
@@ -931,15 +1026,15 @@
             }
 
             async sendChunksParallel() {
-                // Send multiple chunks simultaneously for maximum speed
                 while (this.currentChunk < this.totalChunks && this.chunksInFlight < this.maxChunksInFlight) {
                     this.sendChunk(this.currentChunk);
                     this.currentChunk++;
                     this.chunksInFlight++;
                     
-                    // Small delay to prevent overwhelming the connection
+                    // Adaptive delay based on connection type
+                    const delay = this.connectionType === 'relay' ? 10 : 2;
                     if (this.currentChunk % this.parallelChunks === 0) {
-                        await this.delay(1); // 1ms delay
+                        await this.delay(delay);
                     }
                 }
             }
@@ -955,36 +1050,31 @@
                     const arrayBuffer = await this.readFileChunk(chunk);
                     const uint8Array = new Uint8Array(arrayBuffer);
                     
-                    // Send chunk data directly as binary for maximum performance
                     this.conn.send({
                         type: 'file-chunk',
                         chunkIndex: chunkIndex,
-                        data: uint8Array, // Send as Uint8Array directly
+                        data: uint8Array,
                         isLast: chunkIndex === this.totalChunks - 1
                     });
                     
                     this.bytesTransferred += uint8Array.length;
                     this.updateSpeed();
                     
-                    // Update progress
                     const progress = (this.currentChunk / this.totalChunks) * 100;
                     this.updateProgress(progress);
                     
-                    if (chunkIndex % 10 === 0) { // Reduced logging for performance
-                        this.log(`Sent chunk ${chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                    if (chunkIndex % 20 === 0) {
+                        this.log(`Sent ${chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
                     }
                     
-                    // Send next chunks
                     this.chunksInFlight--;
                     if (this.currentChunk < this.totalChunks) {
                         this.sendChunksParallel();
                     } else if (this.chunksInFlight === 0) {
-                        // File transfer complete
-                        this.log('File transfer completed at high speed!', 'success');
+                        this.log('Global file transfer completed!', 'success');
                         this.updateStatus('Transfer completed!');
-                        document.getElementById('activeTransfers').textContent = '0';
-                        document.getElementById('finishedTransfers').textContent = '1';
-                        this.log(`Average speed: ${this.formatFileSize(this.bytesTransferred / ((Date.now() - this.transferStartTime) / 1000))}/s`, 'success');
+                        const avgSpeed = this.formatFileSize(this.bytesTransferred / ((Date.now() - this.transferStartTime) / 1000));
+                        this.log(`Average speed: ${avgSpeed}/s over ${this.connectionType}`, 'success');
                     }
                     
                 } catch (error) {
@@ -992,6 +1082,8 @@
                     this.chunksInFlight--;
                 }
             }
+
+            // ... (rest of the methods remain similar but optimized for internet)
 
             readFileChunk(chunk) {
                 return new Promise((resolve, reject) => {
@@ -1010,11 +1102,11 @@
                 try {
                     switch (data.type) {
                         case 'connection-confirmed':
-                            this.log('Sender confirmed connection, waiting for file...', 'success');
+                            this.log('Global sender confirmed connection', 'success');
                             this.updateStatus('Sender confirmed, waiting for file...');
                             break;
                         case 'receiver-ready':
-                            this.log('Receiver is ready, starting file transfer...', 'success');
+                            this.log('Global receiver is ready', 'success');
                             this.updateStatus('Receiver ready, sending file...');
                             this.sendFile();
                             break;
@@ -1035,7 +1127,7 @@
             handleFileStart(data) {
                 this.totalSize = data.size;
                 this.totalChunks = data.totalChunks;
-                this.chunkSize = data.chunkSize || 256 * 1024;
+                this.chunkSize = data.chunkSize || 128 * 1024;
                 this.chunks = new Array(this.totalChunks);
                 this.receivedSize = 0;
                 this.currentChunk = 0;
@@ -1045,39 +1137,32 @@
                 
                 document.getElementById('receiveFileName').textContent = data.name;
                 document.getElementById('receiveFileSize').textContent = this.formatFileSize(data.size);
-                this.updateStatus('Receiving file at high speed...');
-                this.log(`Receiving file: ${data.name} (${this.formatFileSize(data.size)})`, 'system');
-                this.log(`Expecting ${this.totalChunks} chunks (${this.chunkSize/1024}KB each)`, 'info');
+                this.updateStatus('Receiving global file...');
+                this.log(`Receiving global file: ${data.name}`, 'system');
+                this.log(`Expecting ${this.totalChunks} chunks via ${this.connectionType}`, 'info');
             }
 
             handleFileChunk(data) {
-                if (!this.fileTransferStarted) {
-                    this.log('File transfer not started yet', 'error');
-                    return;
-                }
+                if (!this.fileTransferStarted) return;
 
-                // Validate chunk index
                 if (data.chunkIndex < 0 || data.chunkIndex >= this.totalChunks) {
                     this.log(`Invalid chunk index: ${data.chunkIndex}`, 'error');
                     return;
                 }
 
-                // Store the chunk directly (data.data is already Uint8Array)
                 this.chunks[data.chunkIndex] = data.data;
                 this.receivedSize += data.data.length;
                 this.bytesTransferred += data.data.length;
                 this.updateSpeed();
                 
-                // Update progress based on received chunks count
                 const receivedChunks = this.chunks.filter(chunk => chunk !== undefined).length;
                 const progress = (receivedChunks / this.totalChunks) * 100;
                 this.updateProgress(progress);
                 
-                if (data.chunkIndex % 10 === 0) { // Reduced logging for performance
-                    this.log(`Received chunk ${data.chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                if (data.chunkIndex % 20 === 0) {
+                    this.log(`Received ${data.chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
                 }
                 
-                // Check if all chunks received
                 if (data.isLast || receivedChunks === this.totalChunks) {
                     this.completeFileAssembly();
                 }
@@ -1085,7 +1170,7 @@
 
             updateSpeed() {
                 const now = Date.now();
-                if (now - this.lastSpeedUpdate > 500) { // Update every 500ms
+                if (now - this.lastSpeedUpdate > 1000) {
                     const elapsed = (now - this.transferStartTime) / 1000;
                     const speed = elapsed > 0 ? this.bytesTransferred / elapsed : 0;
                     
@@ -1104,12 +1189,9 @@
             completeFileAssembly() {
                 this.log('All chunks received, assembling file...', 'success');
                 
-                // Check if we have all chunks
                 const missingChunks = [];
                 for (let i = 0; i < this.totalChunks; i++) {
-                    if (!this.chunks[i]) {
-                        missingChunks.push(i);
-                    }
+                    if (!this.chunks[i]) missingChunks.push(i);
                 }
                 
                 if (missingChunks.length > 0) {
@@ -1118,7 +1200,6 @@
                     return;
                 }
                 
-                // Use direct array buffer concatenation for maximum speed
                 const totalLength = this.chunks.reduce((sum, chunk) => sum + chunk.length, 0);
                 const result = new Uint8Array(totalLength);
                 let offset = 0;
@@ -1128,7 +1209,6 @@
                     offset += chunk.length;
                 }
                 
-                // Create blob and download link
                 const blob = new Blob([result], { type: this.getFileType() });
                 const url = URL.createObjectURL(blob);
                 
@@ -1139,26 +1219,22 @@
                 const transferTime = (Date.now() - this.transferStartTime) / 1000;
                 const avgSpeed = this.formatFileSize(this.totalSize / transferTime);
                 
-                this.log(`File assembled successfully! Average speed: ${avgSpeed}/s`, 'success');
+                this.log(`Global transfer completed! Average: ${avgSpeed}/s`, 'success');
                 this.showStep('step3');
                 this.updateStatus(`Download ready! (${avgSpeed}/s)`);
             }
 
             getFileType() {
-                // Use the file extension to determine MIME type
                 const fileName = document.getElementById('receiveFileName').textContent;
                 const extension = fileName.split('.').pop().toLowerCase();
                 
                 const mimeTypes = {
-                    'txt': 'text/plain',
-                    'jpg': 'image/jpeg',
-                    'jpeg': 'image/jpeg',
-                    'png': 'image/png',
-                    'gif': 'image/gif',
-                    'pdf': 'application/pdf',
-                    'zip': 'application/zip',
-                    'mp3': 'audio/mpeg',
-                    'mp4': 'video/mp4'
+                    'txt': 'text/plain', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg',
+                    'png': 'image/png', 'gif': 'image/gif', 'pdf': 'application/pdf',
+                    'zip': 'application/zip', 'mp3': 'audio/mpeg', 'mp4': 'video/mp4',
+                    'doc': 'application/msword', 'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'xls': 'application/vnd.ms-excel', 'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'ppt': 'application/vnd.ms-powerpoint', 'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
                 };
                 
                 return mimeTypes[extension] || 'application/octet-stream';
@@ -1243,7 +1319,6 @@
                     await navigator.clipboard.writeText(text);
                     this.log('Link copied to clipboard', 'success');
                     
-                    // Visual feedback
                     const btn = document.getElementById('copyBtn');
                     const originalHTML = btn.innerHTML;
                     btn.innerHTML = '<i class="fas fa-check"></i>';
@@ -1273,6 +1348,8 @@
                 this.totalChunks = 0;
                 this.fileTransferStarted = false;
                 this.chunksInFlight = 0;
+                this.retryCount = 0;
+                this.connectionType = 'unknown';
                 
                 document.getElementById('activeTransfers').textContent = '0';
                 document.getElementById('finishedTransfers').textContent = '0';
@@ -1282,8 +1359,10 @@
                 document.getElementById('backBtn').classList.add('hidden');
                 document.getElementById('sendSpeed').textContent = '0 MB/s';
                 document.getElementById('receiveSpeed').textContent = '0 MB/s';
+                document.getElementById('connectionType').classList.add('hidden');
+                document.getElementById('connectionInfo').textContent = '';
+                document.getElementById('receiveConnectionInfo').textContent = '';
                 
-                // Clear logs
                 const logs = document.querySelectorAll('.log');
                 logs.forEach(log => log.innerHTML = '');
                 
@@ -1298,14 +1377,12 @@
         window.addEventListener('DOMContentLoaded', () => {
             window.directShare = new DirectShare();
             
-            // Check for peer ID in URL hash
             const hash = window.location.hash.substr(1);
-            if (hash && hash.length > 5) { // Basic validation for peer ID
+            if (hash && hash.length > 5) {
                 window.directShare.startReceiving(hash);
             }
         });
 
-        // Handle hash changes
         window.addEventListener('hashchange', () => {
             const hash = window.location.hash.substr(1);
             if (hash && hash.length > 5 && !window.directShare.isSender) {
