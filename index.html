@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DirectShare - P2P File Transfer</title>
+    <title>DirectShare - Lightning Fast P2P</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Your existing CSS remains the same */
@@ -356,6 +356,24 @@
             color: var(--text-secondary);
         }
 
+        /* Speed indicator */
+        .speed-indicator {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 10px 15px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .speed-value {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
         /* File Info */
         .file-info {
             background: var(--surface);
@@ -509,7 +527,7 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header">
-            <h1><i class="fas fa-share-alt"></i> DirectShare</h1>
+            <h1><i class="fas fa-bolt"></i> DirectShare</h1>
             <div class="status-bar">
                 <div class="status-dot" id="statusDot"></div>
                 <span id="connectionStatus">Ready</span>
@@ -528,8 +546,8 @@
                 <div class="step-icon">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
-                <h2>Share Files Instantly</h2>
-                <p>Secure, fast, direct file transfers between devices with no size limits</p>
+                <h2>Lightning Fast File Transfer</h2>
+                <p>Optimized for maximum speed - No limits, no compromises</p>
                 <div class="btn-group">
                     <button id="sendBtn" class="btn primary large">
                         <i class="fas fa-file-upload"></i> Send a File
@@ -547,7 +565,7 @@
                     <i class="fas fa-paper-plane"></i>
                 </div>
                 <h2>Send File</h2>
-                <p>Share this link with the recipient. They can join instantly.</p>
+                <p>Share this link with the recipient</p>
                 
                 <div class="file-info" id="sendFileInfo">
                     <i class="fas fa-file file-icon"></i>
@@ -564,6 +582,10 @@
                             <i class="fas fa-copy"></i>
                         </button>
                     </div>
+                </div>
+
+                <div class="speed-indicator">
+                    <i class="fas fa-tachometer-alt"></i> Speed: <span class="speed-value" id="sendSpeed">0 MB/s</span>
                 </div>
                 
                 <div class="stats">
@@ -590,7 +612,7 @@
                     <i class="fas fa-download"></i>
                 </div>
                 <h2>Receive File</h2>
-                <p>Download will start automatically once connected</p>
+                <p>Download will start automatically</p>
                 
                 <div class="file-info" id="receiveFileInfo">
                     <i class="fas fa-file file-icon"></i>
@@ -598,6 +620,10 @@
                         <div class="file-name" id="receiveFileName">Waiting for file...</div>
                         <div class="file-size" id="receiveFileSize">-</div>
                     </div>
+                </div>
+
+                <div class="speed-indicator">
+                    <i class="fas fa-tachometer-alt"></i> Speed: <span class="speed-value" id="receiveSpeed">0 MB/s</span>
                 </div>
                 
                 <div class="progress-container">
@@ -664,10 +690,16 @@
                 this.chunks = [];
                 this.receivedSize = 0;
                 this.totalSize = 0;
-                this.chunkSize = 16384; // 16KB chunks
+                this.chunkSize = 256 * 1024; // 256KB chunks - OPTIMIZED
                 this.currentChunk = 0;
                 this.totalChunks = 0;
                 this.fileTransferStarted = false;
+                this.transferStartTime = 0;
+                this.lastSpeedUpdate = 0;
+                this.bytesTransferred = 0;
+                this.parallelChunks = 4; // Send multiple chunks simultaneously
+                this.chunksInFlight = 0;
+                this.maxChunksInFlight = 8; // Maximum parallel chunks
                 
                 this.setupEventListeners();
                 this.initialize();
@@ -677,7 +709,7 @@
                 this.showStep('step1');
                 this.updateStatus('Ready to share files');
                 this.updateConnectionDot(false);
-                this.log('App initialized', 'system');
+                this.log('App initialized - Optimized for speed', 'system');
             }
 
             setupEventListeners() {
@@ -731,14 +763,20 @@
                     document.getElementById('fileSize').textContent = this.formatFileSize(this.file.size);
                     
                     this.updateStatus('Connecting to PeerJS...');
-                    this.log('Initializing PeerJS connection', 'system');
+                    this.log('Initializing optimized PeerJS connection', 'system');
                     
-                    // Initialize PeerJS
+                    // Initialize PeerJS with optimized settings
                     this.peer = new Peer({
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 3
+                        debug: 0, // Reduced debug for performance
+                        config: {
+                            'iceServers': [
+                                { urls: 'stun:stun.l.google.com:19302' },
+                                { urls: 'stun:global.stun.twilio.com:3478' }
+                            ]
+                        }
                     });
                     
                     this.peer.on('open', (id) => {
@@ -754,6 +792,8 @@
                     
                     this.peer.on('connection', (connection) => {
                         this.conn = connection;
+                        // Increase buffer size for better performance
+                        this.conn._bufferedAmountLowThreshold = 64 * 1024; // 64KB
                         this.setupDataConnection();
                         this.updateStatus('Recipient connected!');
                         this.log('Recipient connected, starting file transfer', 'success');
@@ -785,19 +825,28 @@
                     this.updateStatus('Connecting to sender...');
                     this.log(`Connecting to sender: ${peerId}`, 'system');
                     
-                    // Initialize PeerJS
+                    // Initialize PeerJS with optimized settings
                     this.peer = new Peer({
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 3
+                        debug: 0, // Reduced debug for performance
+                        config: {
+                            'iceServers': [
+                                { urls: 'stun:stun.l.google.com:19302' },
+                                { urls: 'stun:global.stun.twilio.com:3478' }
+                            ]
+                        }
                     });
                     
                     this.peer.on('open', (id) => {
                         this.peerId = id;
                         this.conn = this.peer.connect(peerId, {
-                            reliable: true
+                            reliable: true,
+                            serialization: 'binary' // Use binary for better performance
                         });
+                        // Increase buffer size
+                        this.conn._bufferedAmountLowThreshold = 64 * 1024;
                         this.setupDataConnection();
                     });
                     
@@ -816,10 +865,10 @@
                 this.conn.on('open', () => {
                     this.updateStatus('Connected to peer!');
                     this.updateConnectionDot(true);
-                    this.log('Data connection established', 'success');
+                    this.log('High-speed data connection established', 'success');
                     
                     if (this.isSender) {
-                        this.log('Ready to send file data', 'info');
+                        this.log('Ready to send file data at maximum speed', 'info');
                     } else {
                         this.log('Ready to receive file data', 'info');
                         // Send confirmation to sender that we're ready
@@ -852,11 +901,13 @@
                 }
                 
                 try {
-                    this.log(`Starting file transfer: ${this.file.name} (${this.formatFileSize(this.file.size)})`, 'system');
+                    this.log(`Starting ULTRA-FAST file transfer: ${this.file.name} (${this.formatFileSize(this.file.size)})`, 'system');
                     
-                    // Calculate chunks
+                    // Calculate chunks with optimized size
                     this.totalChunks = Math.ceil(this.file.size / this.chunkSize);
                     this.currentChunk = 0;
+                    this.transferStartTime = Date.now();
+                    this.bytesTransferred = 0;
                     
                     // Send file metadata first
                     this.conn.send({
@@ -864,68 +915,95 @@
                         name: this.file.name,
                         size: this.file.size,
                         mimeType: this.file.type,
-                        totalChunks: this.totalChunks
+                        totalChunks: this.totalChunks,
+                        chunkSize: this.chunkSize
                     });
                     
-                    this.log(`File metadata sent. Total chunks: ${this.totalChunks}`, 'info');
+                    this.log(`File metadata sent. Total chunks: ${this.totalChunks} (${this.chunkSize/1024}KB each)`, 'info');
+                    this.log(`Using parallel transfer with ${this.parallelChunks} concurrent chunks`, 'info');
                     
-                    // Start sending chunks
-                    await this.sendNextChunk();
+                    // Start sending chunks in parallel
+                    this.sendChunksParallel();
                     
                 } catch (error) {
                     this.log(`Error sending file: ${error.message}`, 'error');
                 }
             }
 
-            async sendNextChunk() {
-                if (this.currentChunk >= this.totalChunks) {
-                    // File transfer complete
-                    this.log('File transfer completed!', 'success');
-                    this.updateStatus('Transfer completed!');
-                    document.getElementById('activeTransfers').textContent = '0';
-                    document.getElementById('finishedTransfers').textContent = '1';
-                    return;
+            async sendChunksParallel() {
+                // Send multiple chunks simultaneously for maximum speed
+                while (this.currentChunk < this.totalChunks && this.chunksInFlight < this.maxChunksInFlight) {
+                    this.sendChunk(this.currentChunk);
+                    this.currentChunk++;
+                    this.chunksInFlight++;
+                    
+                    // Small delay to prevent overwhelming the connection
+                    if (this.currentChunk % this.parallelChunks === 0) {
+                        await this.delay(1); // 1ms delay
+                    }
                 }
+            }
 
-                const start = this.currentChunk * this.chunkSize;
+            async sendChunk(chunkIndex) {
+                if (chunkIndex >= this.totalChunks) return;
+
+                const start = chunkIndex * this.chunkSize;
                 const end = Math.min(start + this.chunkSize, this.file.size);
                 const chunk = this.file.slice(start, end);
                 
-                const reader = new FileReader();
-                
-                reader.onload = (e) => {
-                    try {
-                        const arrayBuffer = e.target.result;
-                        const uint8Array = new Uint8Array(arrayBuffer);
-                        
-                        // Send chunk data
-                        this.conn.send({
-                            type: 'file-chunk',
-                            chunkIndex: this.currentChunk,
-                            data: Array.from(uint8Array),
-                            isLast: this.currentChunk === this.totalChunks - 1
-                        });
-                        
-                        this.currentChunk++;
-                        
-                        // Update progress
-                        const progress = (this.currentChunk / this.totalChunks) * 100;
-                        this.updateProgress(progress);
-                        this.log(`Sent chunk ${this.currentChunk}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
-                        
-                        // Send next chunk with small delay to avoid blocking
-                        setTimeout(() => this.sendNextChunk(), 10);
-                        
-                    } catch (error) {
-                        this.log(`Error processing chunk ${this.currentChunk}: ${error.message}`, 'error');
+                try {
+                    const arrayBuffer = await this.readFileChunk(chunk);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    
+                    // Send chunk data directly as binary for maximum performance
+                    this.conn.send({
+                        type: 'file-chunk',
+                        chunkIndex: chunkIndex,
+                        data: uint8Array, // Send as Uint8Array directly
+                        isLast: chunkIndex === this.totalChunks - 1
+                    });
+                    
+                    this.bytesTransferred += uint8Array.length;
+                    this.updateSpeed();
+                    
+                    // Update progress
+                    const progress = (this.currentChunk / this.totalChunks) * 100;
+                    this.updateProgress(progress);
+                    
+                    if (chunkIndex % 10 === 0) { // Reduced logging for performance
+                        this.log(`Sent chunk ${chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
                     }
-                };
-                
-                reader.onerror = () => {
-                    this.log(`Error reading chunk ${this.currentChunk}`, 'error');
-                };
-                
-                reader.readAsArrayBuffer(chunk);
+                    
+                    // Send next chunks
+                    this.chunksInFlight--;
+                    if (this.currentChunk < this.totalChunks) {
+                        this.sendChunksParallel();
+                    } else if (this.chunksInFlight === 0) {
+                        // File transfer complete
+                        this.log('File transfer completed at high speed!', 'success');
+                        this.updateStatus('Transfer completed!');
+                        document.getElementById('activeTransfers').textContent = '0';
+                        document.getElementById('finishedTransfers').textContent = '1';
+                        this.log(`Average speed: ${this.formatFileSize(this.bytesTransferred / ((Date.now() - this.transferStartTime) / 1000))}/s`, 'success');
+                    }
+                    
+                } catch (error) {
+                    this.log(`Error processing chunk ${chunkIndex}: ${error.message}`, 'error');
+                    this.chunksInFlight--;
+                }
+            }
+
+            readFileChunk(chunk) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.onerror = () => reject(new Error('Error reading chunk'));
+                    reader.readAsArrayBuffer(chunk);
+                });
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
             }
 
             handleIncomingData(data) {
@@ -957,16 +1035,19 @@
             handleFileStart(data) {
                 this.totalSize = data.size;
                 this.totalChunks = data.totalChunks;
+                this.chunkSize = data.chunkSize || 256 * 1024;
                 this.chunks = new Array(this.totalChunks);
                 this.receivedSize = 0;
                 this.currentChunk = 0;
                 this.fileTransferStarted = true;
+                this.transferStartTime = Date.now();
+                this.bytesTransferred = 0;
                 
                 document.getElementById('receiveFileName').textContent = data.name;
                 document.getElementById('receiveFileSize').textContent = this.formatFileSize(data.size);
-                this.updateStatus('Receiving file...');
+                this.updateStatus('Receiving file at high speed...');
                 this.log(`Receiving file: ${data.name} (${this.formatFileSize(data.size)})`, 'system');
-                this.log(`Expecting ${this.totalChunks} chunks`, 'info');
+                this.log(`Expecting ${this.totalChunks} chunks (${this.chunkSize/1024}KB each)`, 'info');
             }
 
             handleFileChunk(data) {
@@ -981,19 +1062,42 @@
                     return;
                 }
 
-                // Store the chunk
-                this.chunks[data.chunkIndex] = new Uint8Array(data.data);
+                // Store the chunk directly (data.data is already Uint8Array)
+                this.chunks[data.chunkIndex] = data.data;
                 this.receivedSize += data.data.length;
+                this.bytesTransferred += data.data.length;
+                this.updateSpeed();
                 
                 // Update progress based on received chunks count
                 const receivedChunks = this.chunks.filter(chunk => chunk !== undefined).length;
                 const progress = (receivedChunks / this.totalChunks) * 100;
                 this.updateProgress(progress);
-                this.log(`Received chunk ${data.chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                
+                if (data.chunkIndex % 10 === 0) { // Reduced logging for performance
+                    this.log(`Received chunk ${data.chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                }
                 
                 // Check if all chunks received
                 if (data.isLast || receivedChunks === this.totalChunks) {
                     this.completeFileAssembly();
+                }
+            }
+
+            updateSpeed() {
+                const now = Date.now();
+                if (now - this.lastSpeedUpdate > 500) { // Update every 500ms
+                    const elapsed = (now - this.transferStartTime) / 1000;
+                    const speed = elapsed > 0 ? this.bytesTransferred / elapsed : 0;
+                    
+                    const speedElement = this.isSender ? 
+                        document.getElementById('sendSpeed') : 
+                        document.getElementById('receiveSpeed');
+                    
+                    if (speedElement) {
+                        speedElement.textContent = `${this.formatFileSize(speed)}/s`;
+                    }
+                    
+                    this.lastSpeedUpdate = now;
                 }
             }
 
@@ -1014,7 +1118,7 @@
                     return;
                 }
                 
-                // Combine all chunks into single Uint8Array
+                // Use direct array buffer concatenation for maximum speed
                 const totalLength = this.chunks.reduce((sum, chunk) => sum + chunk.length, 0);
                 const result = new Uint8Array(totalLength);
                 let offset = 0;
@@ -1032,9 +1136,12 @@
                 downloadLink.href = url;
                 downloadLink.download = document.getElementById('receiveFileName').textContent;
                 
-                this.log('File assembled successfully!', 'success');
+                const transferTime = (Date.now() - this.transferStartTime) / 1000;
+                const avgSpeed = this.formatFileSize(this.totalSize / transferTime);
+                
+                this.log(`File assembled successfully! Average speed: ${avgSpeed}/s`, 'success');
                 this.showStep('step3');
-                this.updateStatus('Download ready!');
+                this.updateStatus(`Download ready! (${avgSpeed}/s)`);
             }
 
             getFileType() {
@@ -1165,6 +1272,7 @@
                 this.currentChunk = 0;
                 this.totalChunks = 0;
                 this.fileTransferStarted = false;
+                this.chunksInFlight = 0;
                 
                 document.getElementById('activeTransfers').textContent = '0';
                 document.getElementById('finishedTransfers').textContent = '0';
@@ -1172,6 +1280,8 @@
                 document.getElementById('fileInput').value = '';
                 document.getElementById('receiveLink').value = '';
                 document.getElementById('backBtn').classList.add('hidden');
+                document.getElementById('sendSpeed').textContent = '0 MB/s';
+                document.getElementById('receiveSpeed').textContent = '0 MB/s';
                 
                 // Clear logs
                 const logs = document.querySelectorAll('.log');
