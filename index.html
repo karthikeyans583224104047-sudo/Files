@@ -462,23 +462,24 @@
             color: var(--text-primary);
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Loading spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(-100%); }
-            to { transform: translateX(0); }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .slide-in {
-            animation: slideIn 0.3s ease forwards;
+        .hidden {
+            display: none !important;
         }
 
         /* Responsive */
@@ -500,21 +501,6 @@
         .btn, .copy-btn, .back-btn {
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
-        }
-
-        /* Loading spinner */
-        .spinner {
-            width: 24px;
-            height: 24px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -677,6 +663,9 @@
                 this.chunks = [];
                 this.receivedSize = 0;
                 this.totalSize = 0;
+                this.chunkSize = 16384; // 16KB chunks
+                this.currentChunk = 0;
+                this.totalChunks = 0;
                 
                 this.setupEventListeners();
                 this.initialize();
@@ -758,6 +747,7 @@
                         this.updateStatus('Waiting for recipient...');
                         this.updateConnectionDot(true);
                         this.log(`Ready! Share this ID: ${id}`, 'success');
+                        this.log('Share the link above with the recipient', 'info');
                     });
                     
                     this.peer.on('connection', (connection) => {
@@ -820,6 +810,12 @@
                     this.updateStatus('Connected to peer!');
                     this.updateConnectionDot(true);
                     this.log('Data connection established', 'success');
+                    
+                    if (this.isSender) {
+                        this.log('Ready to send file data', 'info');
+                    } else {
+                        this.log('Ready to receive file data', 'info');
+                    }
                 });
                 
                 this.conn.on('data', (data) => {
@@ -837,82 +833,176 @@
                 });
             }
 
-            sendFile() {
-                if (!this.file || !this.conn) return;
+            async sendFile() {
+                if (!this.file || !this.conn) {
+                    this.log('No file or connection available', 'error');
+                    return;
+                }
                 
-                this.log(`Starting file transfer: ${this.file.name}`, 'system');
-                
-                // Send file metadata first
-                this.conn.send({
-                    type: 'file-start',
-                    name: this.file.name,
-                    size: this.file.size,
-                    type: this.file.type
-                });
-                
-                // For demo, we'll simulate the transfer
-                this.simulateTransferProgress();
-            }
-
-            simulateTransferProgress() {
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += 2;
-                    this.updateProgress(progress);
+                try {
+                    this.log(`Starting file transfer: ${this.file.name} (${this.formatFileSize(this.file.size)})`, 'system');
                     
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        document.getElementById('activeTransfers').textContent = '0';
-                        document.getElementById('finishedTransfers').textContent = '1';
-                        this.updateStatus('Transfer completed!');
-                        this.log('File transfer completed successfully', 'success');
-                    }
-                }, 50);
-            }
-
-            handleIncomingData(data) {
-                if (data.type === 'file-start') {
-                    this.totalSize = data.size;
-                    document.getElementById('receiveFileName').textContent = data.name;
-                    document.getElementById('receiveFileSize').textContent = this.formatFileSize(data.size);
-                    this.updateStatus('Receiving file...');
-                    this.log(`Receiving file: ${data.name}`, 'system');
+                    // Calculate chunks
+                    this.totalChunks = Math.ceil(this.file.size / this.chunkSize);
+                    this.currentChunk = 0;
                     
-                    // Simulate receiving progress
-                    this.simulateReceiveProgress();
+                    // Send file metadata first
+                    this.conn.send({
+                        type: 'file-start',
+                        name: this.file.name,
+                        size: this.file.size,
+                        type: this.file.type,
+                        totalChunks: this.totalChunks
+                    });
+                    
+                    this.log(`File metadata sent. Total chunks: ${this.totalChunks}`, 'info');
+                    
+                    // Start sending chunks
+                    await this.sendNextChunk();
+                    
+                } catch (error) {
+                    this.log(`Error sending file: ${error.message}`, 'error');
                 }
             }
 
-            simulateReceiveProgress() {
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += 2;
-                    this.updateProgress(progress);
-                    
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        this.completeDownload();
+            async sendNextChunk() {
+                if (this.currentChunk >= this.totalChunks) {
+                    // File transfer complete
+                    this.log('File transfer completed!', 'success');
+                    this.updateStatus('Transfer completed!');
+                    document.getElementById('activeTransfers').textContent = '0';
+                    document.getElementById('finishedTransfers').textContent = '1';
+                    return;
+                }
+
+                const start = this.currentChunk * this.chunkSize;
+                const end = Math.min(start + this.chunkSize, this.file.size);
+                const chunk = this.file.slice(start, end);
+                
+                const reader = new FileReader();
+                
+                reader.onload = (e) => {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const uint8Array = new Uint8Array(arrayBuffer);
+                        
+                        // Send chunk data
+                        this.conn.send({
+                            type: 'file-chunk',
+                            chunkIndex: this.currentChunk,
+                            data: Array.from(uint8Array),
+                            isLast: this.currentChunk === this.totalChunks - 1
+                        });
+                        
+                        this.currentChunk++;
+                        
+                        // Update progress
+                        const progress = (this.currentChunk / this.totalChunks) * 100;
+                        this.updateProgress(progress);
+                        this.log(`Sent chunk ${this.currentChunk}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                        
+                        // Send next chunk with small delay to avoid blocking
+                        setTimeout(() => this.sendNextChunk(), 10);
+                        
+                    } catch (error) {
+                        this.log(`Error processing chunk ${this.currentChunk}: ${error.message}`, 'error');
                     }
-                }, 50);
+                };
+                
+                reader.onerror = () => {
+                    this.log(`Error reading chunk ${this.currentChunk}`, 'error');
+                };
+                
+                reader.readAsArrayBuffer(chunk);
             }
 
-            completeDownload() {
-                this.log('File received successfully', 'success');
-                this.showStep('step3');
+            handleIncomingData(data) {
+                try {
+                    switch (data.type) {
+                        case 'file-start':
+                            this.handleFileStart(data);
+                            break;
+                        case 'file-chunk':
+                            this.handleFileChunk(data);
+                            break;
+                        default:
+                            this.log(`Unknown data type: ${data.type}`, 'warning');
+                    }
+                } catch (error) {
+                    this.log(`Error handling incoming data: ${error.message}`, 'error');
+                }
+            }
+
+            handleFileStart(data) {
+                this.totalSize = data.size;
+                this.totalChunks = data.totalChunks;
+                this.chunks = new Array(this.totalChunks);
+                this.receivedSize = 0;
+                this.currentChunk = 0;
                 
-                // Create a sample file for download
-                const content = `This is a demo file received via DirectShare!\n\n` +
-                               `File: ${document.getElementById('receiveFileName').textContent}\n` +
-                               `Size: ${document.getElementById('receiveFileSize').textContent}\n` +
-                               `Time: ${new Date().toLocaleString()}\n` +
-                               `Sender: ${this.peerId}`;
+                document.getElementById('receiveFileName').textContent = data.name;
+                document.getElementById('receiveFileSize').textContent = this.formatFileSize(data.size);
+                this.updateStatus('Receiving file...');
+                this.log(`Receiving file: ${data.name} (${this.formatFileSize(data.size)})`, 'system');
+                this.log(`Expecting ${this.totalChunks} chunks`, 'info');
+            }
+
+            handleFileChunk(data) {
+                if (!this.chunks || this.chunks.length === 0) {
+                    this.log('File metadata not received yet', 'error');
+                    return;
+                }
+
+                // Store the chunk
+                this.chunks[data.chunkIndex] = new Uint8Array(data.data);
+                this.receivedSize += data.data.length;
+                this.currentChunk++;
                 
-                const blob = new Blob([content], { type: 'text/plain' });
+                // Update progress
+                const progress = (this.currentChunk / this.totalChunks) * 100;
+                this.updateProgress(progress);
+                this.log(`Received chunk ${this.currentChunk}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                
+                // Check if all chunks received
+                if (data.isLast || this.currentChunk === this.totalChunks) {
+                    this.completeFileAssembly();
+                }
+            }
+
+            completeFileAssembly() {
+                this.log('All chunks received, assembling file...', 'success');
+                
+                // Combine all chunks into single Uint8Array
+                const totalLength = this.chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+                const result = new Uint8Array(totalLength);
+                let offset = 0;
+                
+                for (const chunk of this.chunks) {
+                    result.set(chunk, offset);
+                    offset += chunk.length;
+                }
+                
+                // Create blob and download link
+                const blob = new Blob([result], { type: this.getFileType() });
                 const url = URL.createObjectURL(blob);
                 
                 const downloadLink = document.getElementById('downloadLink');
                 downloadLink.href = url;
-                downloadLink.download = `received-${document.getElementById('receiveFileName').textContent || 'file.txt'}`;
+                downloadLink.download = document.getElementById('receiveFileName').textContent;
+                
+                this.log('File assembled successfully!', 'success');
+                this.showStep('step3');
+                this.updateStatus('Download ready!');
+            }
+
+            getFileType() {
+                // Simple MIME type detection
+                const fileName = document.getElementById('receiveFileName').textContent;
+                if (fileName.endsWith('.txt')) return 'text/plain';
+                if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) return 'image/jpeg';
+                if (fileName.endsWith('.png')) return 'image/png';
+                if (fileName.endsWith('.pdf')) return 'application/pdf';
+                return 'application/octet-stream';
             }
 
             showStep(stepId) {
@@ -928,8 +1018,12 @@
                 const sendStatus = document.getElementById('sendStatus');
                 const receiveStatus = document.getElementById('receiveStatus');
                 
-                if (sendStatus) sendStatus.innerHTML = message;
-                if (receiveStatus) receiveStatus.innerHTML = message;
+                if (sendStatus) {
+                    sendStatus.innerHTML = message.includes('spinner') ? message : `<i class="fas fa-sync-alt spinner"></i> ${message}`;
+                }
+                if (receiveStatus) {
+                    receiveStatus.innerHTML = message.includes('spinner') ? message : `<i class="fas fa-sync-alt spinner"></i> ${message}`;
+                }
             }
 
             updateConnectionDot(connected) {
@@ -955,8 +1049,8 @@
                 if (logElement) {
                     const timestamp = new Date().toLocaleTimeString();
                     const logItem = document.createElement('div');
-                    logItem.className = `log-item ${type}`;
-                    logItem.innerHTML = `<span class="log-time">[${timestamp}]</span> ${message}`;
+                    logItem.className = `log-item`;
+                    logItem.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="log-${type}">${message}</span>`;
                     
                     logElement.appendChild(logItem);
                     logElement.scrollTop = logElement.scrollHeight;
@@ -1014,6 +1108,10 @@
                 this.file = null;
                 this.peerId = null;
                 this.chunks = [];
+                this.receivedSize = 0;
+                this.totalSize = 0;
+                this.currentChunk = 0;
+                this.totalChunks = 0;
                 
                 document.getElementById('activeTransfers').textContent = '0';
                 document.getElementById('finishedTransfers').textContent = '0';
