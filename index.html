@@ -6,6 +6,7 @@
     <title>DirectShare - P2P File Transfer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Your existing CSS remains the same */
         * {
             margin: 0;
             padding: 0;
@@ -666,6 +667,7 @@
                 this.chunkSize = 16384; // 16KB chunks
                 this.currentChunk = 0;
                 this.totalChunks = 0;
+                this.fileTransferStarted = false;
                 
                 this.setupEventListeners();
                 this.initialize();
@@ -755,7 +757,12 @@
                         this.setupDataConnection();
                         this.updateStatus('Recipient connected!');
                         this.log('Recipient connected, starting file transfer', 'success');
-                        this.sendFile();
+                        
+                        // Send confirmation to receiver
+                        this.conn.send({
+                            type: 'connection-confirmed',
+                            message: 'Sender is ready to send file'
+                        });
                     });
                     
                     this.peer.on('error', (err) => {
@@ -815,6 +822,11 @@
                         this.log('Ready to send file data', 'info');
                     } else {
                         this.log('Ready to receive file data', 'info');
+                        // Send confirmation to sender that we're ready
+                        this.conn.send({
+                            type: 'receiver-ready',
+                            message: 'Receiver is ready for file transfer'
+                        });
                     }
                 });
                 
@@ -851,7 +863,7 @@
                         type: 'file-start',
                         name: this.file.name,
                         size: this.file.size,
-                        type: this.file.type,
+                        mimeType: this.file.type,
                         totalChunks: this.totalChunks
                     });
                     
@@ -919,6 +931,15 @@
             handleIncomingData(data) {
                 try {
                     switch (data.type) {
+                        case 'connection-confirmed':
+                            this.log('Sender confirmed connection, waiting for file...', 'success');
+                            this.updateStatus('Sender confirmed, waiting for file...');
+                            break;
+                        case 'receiver-ready':
+                            this.log('Receiver is ready, starting file transfer...', 'success');
+                            this.updateStatus('Receiver ready, sending file...');
+                            this.sendFile();
+                            break;
                         case 'file-start':
                             this.handleFileStart(data);
                             break;
@@ -939,6 +960,7 @@
                 this.chunks = new Array(this.totalChunks);
                 this.receivedSize = 0;
                 this.currentChunk = 0;
+                this.fileTransferStarted = true;
                 
                 document.getElementById('receiveFileName').textContent = data.name;
                 document.getElementById('receiveFileSize').textContent = this.formatFileSize(data.size);
@@ -948,29 +970,49 @@
             }
 
             handleFileChunk(data) {
-                if (!this.chunks || this.chunks.length === 0) {
-                    this.log('File metadata not received yet', 'error');
+                if (!this.fileTransferStarted) {
+                    this.log('File transfer not started yet', 'error');
+                    return;
+                }
+
+                // Validate chunk index
+                if (data.chunkIndex < 0 || data.chunkIndex >= this.totalChunks) {
+                    this.log(`Invalid chunk index: ${data.chunkIndex}`, 'error');
                     return;
                 }
 
                 // Store the chunk
                 this.chunks[data.chunkIndex] = new Uint8Array(data.data);
                 this.receivedSize += data.data.length;
-                this.currentChunk++;
                 
-                // Update progress
-                const progress = (this.currentChunk / this.totalChunks) * 100;
+                // Update progress based on received chunks count
+                const receivedChunks = this.chunks.filter(chunk => chunk !== undefined).length;
+                const progress = (receivedChunks / this.totalChunks) * 100;
                 this.updateProgress(progress);
-                this.log(`Received chunk ${this.currentChunk}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
+                this.log(`Received chunk ${data.chunkIndex + 1}/${this.totalChunks} (${Math.round(progress)}%)`, 'info');
                 
                 // Check if all chunks received
-                if (data.isLast || this.currentChunk === this.totalChunks) {
+                if (data.isLast || receivedChunks === this.totalChunks) {
                     this.completeFileAssembly();
                 }
             }
 
             completeFileAssembly() {
                 this.log('All chunks received, assembling file...', 'success');
+                
+                // Check if we have all chunks
+                const missingChunks = [];
+                for (let i = 0; i < this.totalChunks; i++) {
+                    if (!this.chunks[i]) {
+                        missingChunks.push(i);
+                    }
+                }
+                
+                if (missingChunks.length > 0) {
+                    this.log(`Missing chunks: ${missingChunks.join(', ')}`, 'error');
+                    this.showError(`File transfer incomplete. Missing ${missingChunks.length} chunks.`);
+                    return;
+                }
                 
                 // Combine all chunks into single Uint8Array
                 const totalLength = this.chunks.reduce((sum, chunk) => sum + chunk.length, 0);
@@ -996,13 +1038,23 @@
             }
 
             getFileType() {
-                // Simple MIME type detection
+                // Use the file extension to determine MIME type
                 const fileName = document.getElementById('receiveFileName').textContent;
-                if (fileName.endsWith('.txt')) return 'text/plain';
-                if (fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) return 'image/jpeg';
-                if (fileName.endsWith('.png')) return 'image/png';
-                if (fileName.endsWith('.pdf')) return 'application/pdf';
-                return 'application/octet-stream';
+                const extension = fileName.split('.').pop().toLowerCase();
+                
+                const mimeTypes = {
+                    'txt': 'text/plain',
+                    'jpg': 'image/jpeg',
+                    'jpeg': 'image/jpeg',
+                    'png': 'image/png',
+                    'gif': 'image/gif',
+                    'pdf': 'application/pdf',
+                    'zip': 'application/zip',
+                    'mp3': 'audio/mpeg',
+                    'mp4': 'video/mp4'
+                };
+                
+                return mimeTypes[extension] || 'application/octet-stream';
             }
 
             showStep(stepId) {
@@ -1112,6 +1164,7 @@
                 this.totalSize = 0;
                 this.currentChunk = 0;
                 this.totalChunks = 0;
+                this.fileTransferStarted = false;
                 
                 document.getElementById('activeTransfers').textContent = '0';
                 document.getElementById('finishedTransfers').textContent = '0';
