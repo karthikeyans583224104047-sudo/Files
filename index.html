@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DirectShare - P2P File Transfer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #128C7E;
+            --primary-dark: #0C6B5F;
+            --secondary-color: #25D366;
+            --background-color: #f0f0f0;
+            --surface-color: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background-color);
+            color: var(--text-primary);
+            height: 100vh;
+            line-height: 1.5;
+        }
+
+        .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface-color);
+            box-shadow: var(--shadow);
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .status-bar {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: var(--surface-color);
+            padding: 40px 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+
+        .welcome-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn.secondary {
+            background: var(--surface-color);
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn.secondary:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn.large {
+            padding: 15px 30px;
+            font-size: 16px;
+        }
+
+        .btn.small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .join-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        .join-section input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 14px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .join-section input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            padding: 8px;
+            background: var(--background-color);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-container.hidden {
+            display: none;
+        }
+
+        .room-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: var(--background-color);
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .welcome-message h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 70%;
+            word-wrap: break-word;
+            animation: messageAppear 0.3s ease;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.received {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+        }
+
+        .message.sent {
+            background: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message.info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 80%;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 80%;
+            font-size: 14px;
+        }
+
+        .connection-status {
+            text-align: center;
+            padding: 10px;
+            margin: 10px 20px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .connection-status.connected {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px 20px;
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-group input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn.send-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 10px 20px;
+        }
+
+        .btn.send-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        .btn.icon-btn {
+            padding: 10px 15px;
+            font-size: 18px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Progress Container */
+        .progress-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 400px;
+            z-index: 100;
+        }
+
+        .progress-container.hidden {
+            display: none;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        .progress-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.hidden {
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Debug Button */
+        .debug-btn {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1001;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                height: 100vh;
+                max-width: 100%;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .join-section {
+                flex-direction: column;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+            
+            .progress-container {
+                bottom: 10px;
+                width: 95%;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📁 DirectShare</h1>
+            <div class="status-bar">
+                <div id="connectionStatus">Disconnected</div>
+            </div>
+        </div>
+
+        <!-- Connection Modal -->
+        <div id="connectionModal" class="modal">
+            <div class="modal-content">
+                <div class="welcome-section">
+                    <h2>🚀 Start Sharing Files</h2>
+                    <p>Secure, fast, direct file transfers</p>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="createRoomBtn" class="btn primary large">
+                        🆕 Create New Room
+                    </button>
+                    
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <div class="join-section">
+                        <input type="text" id="roomIdInput" placeholder="Enter Room ID" maxlength="8">
+                        <button id="joinRoomBtn" class="btn secondary">Join Room</button>
+                    </div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">🔒 End-to-End Encrypted</div>
+                    <div class="feature">⚡ Direct P2P Transfer</div>
+                    <div class="feature">💯 Completely Free</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Interface -->
+        <div id="chat-container" class="chat-container hidden">
+            <!-- Room Info -->
+            <div class="room-info">
+                <span>Room: <strong id="currentRoomId">-</strong></span>
+                <button id="leaveRoomBtn" class="btn small">Leave Room</button>
+            </div>
+
+            <!-- Connection Status -->
+            <div id="connectionStatusBar" class="connection-status">
+                🔄 Establishing P2P connection...
+            </div>
+
+            <!-- Messages Area -->
+            <div id="messages" class="messages-container">
+                <div class="welcome-message">
+                    <h3>Room Joined! 🎉</h3>
+                    <p>Establishing direct connection with peer...</p>
+                </div>
+            </div>
+            
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-group">
+                    <input type="file" id="fileInput" hidden multiple>
+                    <button id="attachBtn" class="btn icon-btn" title="Attach files">
+                        📎
+                    </button>
+                    <input type="text" id="messageInput" placeholder="Waiting for connection..." disabled>
+                    <button id="sendBtn" class="btn send-btn" disabled>Send</button>
+                </div>
+                <div class="file-info" id="fileInfo"></div>
+            </div>
+        </div>
+
+        <!-- Transfer Progress -->
+        <div id="progressContainer" class="progress-container hidden">
+            <div class="progress-header">
+                <span id="progressFileName">Transferring file...</span>
+                <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <div class="progress-stats">
+                <span id="progressStats">0 KB / 0 KB</span>
+                <span id="progressSpeed">-</span>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notification" class="notification hidden"></div>
+    </div>
+
+    <!-- Debug Button -->
+    <button id="debugBtn" class="debug-btn">Debug: Force Chat</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyBUrTuOkm3wre0W_h_R2vR7pGvNNf3fCHY",
+                authDomain: "files-6ab6b.firebaseapp.com",
+                projectId: "files-6ab6b",
+                storageBucket: "files-6ab6b.firebasestorage.app",
+                messagingSenderId: "989063158949",
+                appId: "1:989063158949:web:11802f7f057865bd98014c",
+                measurementId: "G-V3WH13DXJQ"
+            };
+
+            // Initialize Firebase
+            if (typeof firebase !== 'undefined') {
+                firebase.initializeApp(firebaseConfig);
+                const db = firebase.firestore();
+                initializeApp(db);
+            } else {
+                console.error('Firebase not loaded');
+                document.getElementById('connectionStatus').textContent = 'Error: Firebase not loaded';
+            }
+
+            function initializeApp(db) {
+                console.log('🔥 Firebase initialized successfully');
+
+                class FirebaseFileShare {
+                    constructor() {
+                        this.peerConnection = null;
+                        this.dataChannel = null;
+                        this.currentRoom = null;
+                        this.isInitiator = false;
+                        this.roomUnsubscribe = null;
+                        this.currentFile = null;
+                        this.transferStartTime = null;
+                        this.db = db;
+                        this.connected = false;
+                        
+                        this.initializeApp();
+                    }
+
+                    initializeApp() {
+                        this.setupEventListeners();
+                        this.updateStatus('Ready to connect');
+                        this.showNotification('App loaded successfully!', 'success');
+                        console.log('App initialized successfully');
+                    }
+
+                    setupEventListeners() {
+                        // Room management
+                        document.getElementById('createRoomBtn').addEventListener('click', () => {
+                            console.log('Create room clicked');
+                            this.createRoom();
+                        });
+
+                        document.getElementById('joinRoomBtn').addEventListener('click', () => {
+                            console.log('Join room clicked');
+                            const roomId = document.getElementById('roomIdInput').value.trim().toUpperCase();
+                            if (roomId) {
+                                this.joinRoom(roomId);
+                            } else {
+                                this.showNotification('Please enter a room ID', 'error');
+                            }
+                        });
+
+                        document.getElementById('leaveRoomBtn').addEventListener('click', () => {
+                            this.leaveRoom();
+                        });
+
+                        // File and message handling
+                        document.getElementById('attachBtn').addEventListener('click', () => {
+                            document.getElementById('fileInput').click();
+                        });
+
+                        document.getElementById('fileInput').addEventListener('change', (e) => {
+                            const files = e.target.files;
+                            if (files.length > 0) {
+                                this.handleFilesSelection(files);
+                            }
+                        });
+
+                        document.getElementById('sendBtn').addEventListener('click', () => {
+                            this.sendMessage();
+                        });
+
+                        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                            if (e.key === 'Enter') this.sendMessage();
+                        });
+
+                        // Debug button
+                        document.getElementById('debugBtn').addEventListener('click', () => {
+                            console.log('Debug: Forcing chat interface');
+                            this.forceShowChatInterface();
+                        });
+
+                        // Handle drag and drop
+                        this.setupDragAndDrop();
+
+                        // Cleanup on page unload
+                        window.addEventListener('beforeunload', () => {
+                            this.cleanup();
+                        });
+                    }
+
+                    setupDragAndDrop() {
+                        const messageContainer = document.getElementById('messages');
+                        
+                        messageContainer.addEventListener('dragover', (e) => {
+                            e.preventDefault();
+                            messageContainer.style.backgroundColor = '#f8f9fa';
+                        });
+
+                        messageContainer.addEventListener('dragleave', (e) => {
+                            e.preventDefault();
+                            messageContainer.style.backgroundColor = '';
+                        });
+
+                        messageContainer.addEventListener('drop', (e) => {
+                            e.preventDefault();
+                            messageContainer.style.backgroundColor = '';
+                            
+                            const files = e.dataTransfer.files;
+                            if (files.length > 0) {
+                                this.handleFilesSelection(files);
+                            }
+                        });
+                    }
+
+                    async createRoom() {
+                        try {
+                            console.log('Creating room...');
+                            const roomId = this.generateRoomId();
+                            this.currentRoom = roomId;
+                            this.isInitiator = true;
+                            
+                            // Create room in Firestore
+                            await this.db.collection('rooms').doc(roomId).set({
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                createdBy: 'user',
+                                status: 'waiting',
+                                initiatorConnected: true
+                            });
+                            
+                            this.listenToRoom(roomId);
+                            this.showChatInterface();
+                            this.updateStatus(`Room created: ${roomId}`);
+                            this.showNotification(`Room ${roomId} created! Share this ID with your friend.`, 'success');
+                            
+                            this.addMessage(`You created room: ${roomId}`, 'info');
+                            this.addMessage('Waiting for someone to join...', 'info');
+                            
+                            // Create peer connection immediately for initiator
+                            await this.createPeerConnection();
+                            
+                        } catch (error) {
+                            console.error('Error creating room:', error);
+                            this.showNotification('Error creating room. Please try again.', 'error');
+                        }
+                    }
+
+                    async joinRoom(roomId) {
+                        try {
+                            console.log('Joining room:', roomId);
+                            const roomRef = this.db.collection('rooms').doc(roomId);
+                            const roomDoc = await roomRef.get();
+                            
+                            if (!roomDoc.exists) {
+                                this.showNotification('Room not found! Please check the room ID.', 'error');
+                                return;
+                            }
+                            
+                            this.currentRoom = roomId;
+                            this.isInitiator = false;
+                            
+                            // Update room status
+                            await roomRef.update({
+                                participantJoined: true,
+                                status: 'connected',
+                                participantConnected: true
+                            });
+                            
+                            this.listenToRoom(roomId);
+                            this.showChatInterface();
+                            this.updateStatus(`Joined room: ${roomId}`);
+                            this.showNotification(`Successfully joined room ${roomId}`, 'success');
+                            
+                            this.addMessage(`You joined room: ${roomId}`, 'info');
+                            this.addMessage('Connecting to room creator...', 'info');
+                            
+                            // Create peer connection for joiner
+                            await this.createPeerConnection();
+                            
+                        } catch (error) {
+                            console.error('Error joining room:', error);
+                            this.showNotification('Error joining room. Please try again.', 'error');
+                        }
+                    }
+
+                    showChatInterface() {
+                        console.log('Switching to chat interface...');
+                        
+                        // HIDE the connection modal
+                        const connectionModal = document.getElementById('connectionModal');
+                        if (connectionModal) {
+                            connectionModal.classList.add('hidden');
+                            console.log('Connection modal hidden');
+                        }
+                        
+                        // SHOW the chat container
+                        const chatContainer = document.getElementById('chat-container');
+                        if (chatContainer) {
+                            chatContainer.classList.remove('hidden');
+                            console.log('Chat container shown');
+                        }
+                        
+                        // Update room ID display
+                        const currentRoomId = document.getElementById('currentRoomId');
+                        if (currentRoomId) {
+                            currentRoomId.textContent = this.currentRoom;
+                            console.log('Room ID updated:', this.currentRoom);
+                        }
+                    }
+
+                    updateConnectionUI() {
+                        const messageInput = document.getElementById('messageInput');
+                        const sendBtn = document.getElementById('sendBtn');
+                        const statusBar = document.getElementById('connectionStatusBar');
+                        
+                        if (this.connected) {
+                            messageInput.placeholder = "Type a message or send files...";
+                            messageInput.disabled = false;
+                            sendBtn.disabled = false;
+                            statusBar.textContent = "✅ P2P Connection Established! Ready to send files and messages.";
+                            statusBar.className = "connection-status connected";
+                        } else {
+                            messageInput.placeholder = "Waiting for connection...";
+                            messageInput.disabled = true;
+                            sendBtn.disabled = true;
+                            statusBar.textContent = "🔄 Establishing P2P connection...";
+                            statusBar.className = "connection-status";
+                        }
+                    }
+
+                    forceShowChatInterface() {
+                        console.log('DEBUG: Forcing chat interface');
+                        this.currentRoom = this.currentRoom || 'DEBUG123';
+                        this.showChatInterface();
+                        this.addMessage('DEBUG: Forced into chat interface', 'info');
+                        this.showNotification('DEBUG: Forced chat interface', 'info');
+                    }
+
+                    listenToRoom(roomId) {
+                        // Clean up previous listener if exists
+                        if (this.roomUnsubscribe) {
+                            this.roomUnsubscribe();
+                        }
+
+                        // Listen for WebRTC signaling messages
+                        this.roomUnsubscribe = this.db.collection('rooms').doc(roomId)
+                            .collection('signaling')
+                            .orderBy('timestamp')
+                            .onSnapshot((snapshot) => {
+                                snapshot.docChanges().forEach((change) => {
+                                    if (change.type === 'added') {
+                                        const data = change.doc.data();
+                                        console.log('Received signaling message:', data.type);
+                                        this.handleSignalingMessage(data);
+                                    }
+                                });
+                            }, (error) => {
+                                console.error('Firestore listen error:', error);
+                                this.showNotification('Connection error. Please refresh.', 'error');
+                            });
+                    }
+
+                    async sendSignalingMessage(message) {
+                        if (!this.currentRoom) return;
+                        
+                        try {
+                            console.log('Sending signaling message:', message.type);
+                            await this.db.collection('rooms').doc(this.currentRoom)
+                                .collection('signaling')
+                                .add({
+                                    ...message,
+                                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                                    sender: this.isInitiator ? 'initiator' : 'participant'
+                                });
+                        } catch (error) {
+                            console.error('Error sending signaling message:', error);
+                        }
+                    }
+
+                    async handleSignalingMessage(data) {
+                        // Only process messages from the other peer
+                        if (data.sender === (this.isInitiator ? 'initiator' : 'participant')) {
+                            return;
+                        }
+
+                        console.log('Processing signaling message:', data.type);
+
+                        try {
+                            switch (data.type) {
+                                case 'offer':
+                                    await this.handleOffer(data.offer);
+                                    break;
+                                case 'answer':
+                                    await this.handleAnswer(data.answer);
+                                    break;
+                                case 'ice-candidate':
+                                    await this.handleIceCandidate(data.candidate);
+                                    break;
+                                case 'user-joined':
+                                    if (this.isInitiator) {
+                                        this.showNotification('Friend joined the room!', 'success');
+                                        this.addMessage('Friend joined the room!', 'success');
+                                        // Initiator should already have created peer connection
+                                    }
+                                    break;
+                            }
+                        } catch (error) {
+                            console.error('Error handling signaling message:', error);
+                            this.showNotification('Connection error occurred', 'error');
+                        }
+                    }
+
+                    async createPeerConnection() {
+                        try {
+                            console.log('Creating peer connection...');
+                            const configuration = {
+                                iceServers: [
+                                    { urls: 'stun:stun.l.google.com:19302' },
+                                    { urls: 'stun:stun1.l.google.com:19302' }
+                                ]
+                            };
+
+                            this.peerConnection = new RTCPeerConnection(configuration);
+
+                            // Set up data channel if we're the initiator
+                            if (this.isInitiator) {
+                                console.log('Creating data channel as initiator');
+                                this.dataChannel = this.peerConnection.createDataChannel('fileTransfer', {
+                                    ordered: true
+                                });
+                                this.setupDataChannel();
+                            }
+
+                            // Listen for incoming data channel
+                            this.peerConnection.ondatachannel = (event) => {
+                                console.log('Data channel received!');
+                                this.dataChannel = event.channel;
+                                this.setupDataChannel();
+                            };
+
+                            // Handle ICE candidates
+                            this.peerConnection.onicecandidate = (event) => {
+                                if (event.candidate) {
+                                    console.log('Sending ICE candidate');
+                                    this.sendSignalingMessage({
+                                        type: 'ice-candidate',
+                                        candidate: event.candidate
+                                    });
+                                }
+                            };
+
+                            this.peerConnection.onconnectionstatechange = () => {
+                                const state = this.peerConnection.connectionState;
+                                console.log('Connection state:', state);
+                                this.updateStatus(`P2P: ${state}`);
+                                
+                                if (state === 'connected') {
+                                    this.connected = true;
+                                    this.updateConnectionUI();
+                                    this.showNotification('Direct connection established!', 'success');
+                                    this.addMessage('🎉 Direct connection established! You can now send files and messages.', 'success');
+                                } else if (state === 'disconnected' || state === 'failed') {
+                                    this.connected = false;
+                                    this.updateConnectionUI();
+                                    this.showNotification('Connection lost', 'error');
+                                }
+                            };
+
+                            this.peerConnection.oniceconnectionstatechange = () => {
+                                console.log('ICE connection state:', this.peerConnection.iceConnectionState);
+                            };
+
+                            // Create and send offer if we're the initiator
+                            if (this.isInitiator) {
+                                console.log('Creating offer as initiator');
+                                const offer = await this.peerConnection.createOffer();
+                                await this.peerConnection.setLocalDescription(offer);
+                                
+                                this.sendSignalingMessage({
+                                    type: 'offer',
+                                    offer: offer
+                                });
+                                
+                                this.updateStatus('Connection offer sent');
+                            }
+                        } catch (error) {
+                            console.error('Error creating peer connection:', error);
+                            this.showNotification('Error creating connection', 'error');
+                        }
+                    }
+
+                    setupDataChannel() {
+                        this.dataChannel.onopen = () => {
+                            console.log('Data channel opened!');
+                            this.connected = true;
+                            this.updateConnectionUI();
+                            this.updateStatus('Connected! Ready to share files.');
+                        };
+
+                        this.dataChannel.onmessage = (event) => {
+                            try {
+                                const data = JSON.parse(event.data);
+                                this.handleIncomingData(data);
+                            } catch (error) {
+                                console.error('Error parsing incoming data:', error);
+                            }
+                        };
+
+                        this.dataChannel.onclose = () => {
+                            console.log('Data channel closed');
+                            this.connected = false;
+                            this.updateConnectionUI();
+                            this.updateStatus('Connection closed');
+                            this.addMessage('Connection closed', 'info');
+                        };
+
+                        this.dataChannel.onerror = (error) => {
+                            console.error('Data channel error:', error);
+                            this.showNotification('Connection error occurred', 'error');
+                        };
+                    }
+
+                    async handleOffer(offer) {
+                        console.log('Received offer, creating answer');
+                        if (!this.peerConnection) {
+                            await this.createPeerConnection();
+                        }
+
+                        await this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+                        const answer = await this.peerConnection.createAnswer();
+                        await this.peerConnection.setLocalDescription(answer);
+                        
+                        this.sendSignalingMessage({
+                            type: 'answer',
+                            answer: answer
+                        });
+                        
+                        this.updateStatus('Connection answer sent');
+                    }
+
+                    async handleAnswer(answer) {
+                        console.log('Received answer');
+                        await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+                        this.updateStatus('Connection established!');
+                    }
+
+                    async handleIceCandidate(candidate) {
+                        console.log('Received ICE candidate');
+                        if (this.peerConnection && this.peerConnection.remoteDescription) {
+                            await this.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                        }
+                    }
+
+                    handleFilesSelection(files) {
+                        if (!files || files.length === 0) return;
+
+                        if (!this.connected || !this.dataChannel || this.dataChannel.readyState !== 'open') {
+                            this.showNotification('Please wait for connection to be established first!', 'error');
+                            return;
+                        }
+
+                        // Show file info
+                        const fileInfo = document.getElementById('fileInfo');
+                        if (files.length === 1) {
+                            fileInfo.textContent = `Selected: ${files[0].name} (${this.formatFileSize(files[0].size)})`;
+                        } else {
+                            fileInfo.textContent = `Selected: ${files.length} files`;
+                        }
+
+                        // Send files
+                        for (let file of files) {
+                            this.sendFile(file);
+                        }
+
+                        // Clear file input
+                        document.getElementById('fileInput').value = '';
+                    }
+
+                    sendFile(file) {
+                        if (!this.connected) {
+                            this.showNotification('Not connected!', 'error');
+                            return;
+                        }
+
+                        const CHUNK_SIZE = 16 * 1024; // 16KB chunks
+                        const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+                        let currentChunk = 0;
+                        let bytesTransferred = 0;
+
+                        const fileInfo = {
+                            type: 'file-start',
+                            name: file.name,
+                            size: file.size,
+                            totalChunks: totalChunks,
+                            mimeType: file.type,
+                            timestamp: Date.now()
+                        };
+
+                        // Send file metadata first
+                        this.dataChannel.send(JSON.stringify(fileInfo));
+                        this.transferStartTime = Date.now();
+                        this.showProgress(file.name, 0, file.size, 0);
+                        
+                        this.addMessage(`Sending: ${file.name} (${this.formatFileSize(file.size)})`, 'sent');
+
+                        const readNextChunk = () => {
+                            if (currentChunk >= totalChunks) {
+                                const transferTime = (Date.now() - this.transferStartTime) / 1000;
+                                this.addMessage(`File sent: ${file.name} (${transferTime.toFixed(1)}s)`, 'info');
+                                setTimeout(() => this.hideProgress(), 2000);
+                                return;
+                            }
+
+                            const start = currentChunk * CHUNK_SIZE;
+                            const end = Math.min(start + CHUNK_SIZE, file.size);
+                            const chunk = file.slice(start, end);
+                            
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                try {
+                                    this.dataChannel.send(JSON.stringify({
+                                        type: 'file-chunk',
+                                        chunk: Array.from(new Uint8Array(e.target.result)),
+                                        chunkIndex: currentChunk
+                                    }));
+
+                                    currentChunk++;
+                                    bytesTransferred += (end - start);
+                                    const progress = (currentChunk / totalChunks) * 100;
+                                    
+                                    // Calculate speed
+                                    const elapsedTime = (Date.now() - this.transferStartTime) / 1000;
+                                    const speed = elapsedTime > 0 ? bytesTransferred / elapsedTime : 0;
+                                    
+                                    this.showProgress(file.name, progress, file.size, speed);
+                                    
+                                    // Use setTimeout to avoid blocking UI
+                                    setTimeout(readNextChunk, 0);
+                                } catch (error) {
+                                    console.error('Error sending chunk:', error);
+                                    this.hideProgress();
+                                    this.showNotification('Error sending file. Connection may be lost.', 'error');
+                                }
+                            };
+                            reader.onerror = () => {
+                                console.error('Error reading file chunk');
+                                this.hideProgress();
+                                this.showNotification('Error reading file', 'error');
+                            };
+                            reader.readAsArrayBuffer(chunk);
+                        };
+
+                        readNextChunk();
+                    }
+
+                    handleIncomingData(data) {
+                        switch (data.type) {
+                            case 'file-start':
+                                this.receiveFile(data);
+                                break;
+                            case 'file-chunk':
+                                this.receiveFileChunk(data);
+                                break;
+                            case 'message':
+                                this.addMessage(data.text, 'received');
+                                break;
+                        }
+                    }
+
+                    receiveFile(fileInfo) {
+                        this.currentFile = {
+                            name: fileInfo.name,
+                            size: fileInfo.size,
+                            totalChunks: fileInfo.totalChunks,
+                            receivedChunks: 0,
+                            chunks: new Array(fileInfo.totalChunks),
+                            mimeType: fileInfo.mimeType,
+                            startTime: Date.now(),
+                            bytesReceived: 0
+                        };
+
+                        this.showProgress(fileInfo.name, 0, fileInfo.size, 0);
+                        this.addMessage(`Receiving: ${fileInfo.name} (${this.formatFileSize(fileInfo.size)})`, 'received');
+                    }
+
+                    receiveFileChunk(chunkData) {
+                        if (!this.currentFile) return;
+
+                        this.currentFile.chunks[chunkData.chunkIndex] = new Uint8Array(chunkData.chunk);
+                        this.currentFile.receivedChunks++;
+                        this.currentFile.bytesReceived += chunkData.chunk.length;
+
+                        const progress = (this.currentFile.receivedChunks / this.currentFile.totalChunks) * 100;
+                        
+                        // Calculate receive speed
+                        const elapsedTime = (Date.now() - this.currentFile.startTime) / 1000;
+                        const speed = elapsedTime > 0 ? this.currentFile.bytesReceived / elapsedTime : 0;
+                        
+                        this.showProgress(this.currentFile.name, progress, this.currentFile.size, speed);
+
+                        if (this.currentFile.receivedChunks === this.currentFile.totalChunks) {
+                            this.completeFileReceive();
+                        }
+                    }
+
+                    completeFileReceive() {
+                        const fileData = new Blob(this.currentFile.chunks, { type: this.currentFile.mimeType });
+                        const receiveTime = (Date.now() - this.currentFile.startTime) / 1000;
+                        
+                        this.downloadFile(fileData, this.currentFile.name);
+                        
+                        this.addMessage(`Received: ${this.currentFile.name} (${receiveTime.toFixed(1)}s)`, 'success');
+                        this.showNotification(`File received: ${this.currentFile.name}`, 'success');
+                        
+                        setTimeout(() => this.hideProgress(), 2000);
+                        this.currentFile = null;
+                    }
+
+                    downloadFile(blob, fileName) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }
+
+                    sendMessage() {
+                        const input = document.getElementById('messageInput');
+                        const text = input.value.trim();
+                        
+                        if (!text) return;
+
+                        if (this.connected && this.dataChannel && this.dataChannel.readyState === 'open') {
+                            this.dataChannel.send(JSON.stringify({
+                                type: 'message',
+                                text: text
+                            }));
+                            this.addMessage(text, 'sent');
+                            input.value = '';
+                        } else {
+                            this.showNotification('Please wait for connection to be established first!', 'error');
+                        }
+                    }
+
+                    addMessage(text, type) {
+                        const messagesContainer = document.getElementById('messages');
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = `message ${type}`;
+                        messageDiv.textContent = text;
+                        messagesContainer.appendChild(messageDiv);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
+
+                    showProgress(fileName, percentage, totalSize, speed) {
+                        const container = document.getElementById('progressContainer');
+                        const fill = document.getElementById('progressFill');
+                        const fileNameElement = document.getElementById('progressFileName');
+                        const percentElement = document.getElementById('progressPercent');
+                        const statsElement = document.getElementById('progressStats');
+                        const speedElement = document.getElementById('progressSpeed');
+
+                        container.classList.remove('hidden');
+                        fileNameElement.textContent = fileName;
+                        fill.style.width = `${percentage}%`;
+                        percentElement.textContent = `${Math.round(percentage)}%`;
+                        
+                        const transferred = (percentage / 100) * totalSize;
+                        statsElement.textContent = `${this.formatFileSize(transferred)} / ${this.formatFileSize(totalSize)}`;
+                        speedElement.textContent = speed > 0 ? `${this.formatFileSize(speed)}/s` : '-';
+                    }
+
+                    hideProgress() {
+                        document.getElementById('progressContainer').classList.add('hidden');
+                        document.getElementById('fileInfo').textContent = '';
+                    }
+
+                    showNotification(message, type = 'info') {
+                        const notification = document.getElementById('notification');
+                        notification.textContent = message;
+                        notification.className = `notification`;
+                        notification.classList.remove('hidden');
+                        
+                        setTimeout(() => {
+                            notification.classList.add('hidden');
+                        }, 3000);
+                    }
+
+                    updateStatus(text) {
+                        document.getElementById('connectionStatus').textContent = text;
+                    }
+
+                    formatFileSize(bytes) {
+                        if (bytes === 0) return '0 Bytes';
+                        const k = 1024;
+                        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                        const i = Math.floor(Math.log(bytes) / Math.log(k));
+                        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                    }
+
+                    generateRoomId() {
+                        return Math.random().toString(36).substring(2, 6).toUpperCase();
+                    }
+
+                    leaveRoom() {
+                        this.cleanup();
+                        document.getElementById('chat-container').classList.add('hidden');
+                        document.getElementById('connectionModal').classList.remove('hidden');
+                        document.getElementById('messages').innerHTML = `
+                            <div class="welcome-message">
+                                <h3>Connection Established! 🎉</h3>
+                                <p>You can now send files and messages directly to your friend.</p>
+                            </div>`;
+                        document.getElementById('roomIdInput').value = '';
+                        this.updateStatus('Disconnected');
+                        this.showNotification('Left the room', 'info');
+                    }
+
+                    cleanup() {
+                        this.connected = false;
+                        this.updateConnectionUI();
+                        
+                        // Clean up Firestore listeners
+                        if (this.roomUnsubscribe) {
+                            this.roomUnsubscribe();
+                        }
+                        
+                        // Clean up room document
+                        if (this.currentRoom) {
+                            this.db.collection('rooms').doc(this.currentRoom).delete().catch(error => 
+                                console.error('Error cleaning up room:', error)
+                            );
+                        }
+                        
+                        // Close data channel
+                        if (this.dataChannel) {
+                            this.dataChannel.close();
+                        }
+                        
+                        // Close peer connection
+                        if (this.peerConnection) {
+                            this.peerConnection.close();
+                        }
+                        
+                        this.currentRoom = null;
+                        this.isInitiator = false;
+                    }
+                }
+
+                // Initialize the app
+                window.fileShareApp = new FirebaseFileShare();
+            }
+        });
+    </script>
+</body>
+</html>
