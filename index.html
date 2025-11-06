@@ -315,74 +315,6 @@
             line-height: 1.3;
         }
 
-        /* Quick Transfer UI */
-        .quick-transfer-options {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .transfer-option-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 20px;
-            text-align: center;
-            border: 1.5px solid var(--border);
-        }
-
-        .transfer-option-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-            color: var(--primary);
-        }
-
-        .transfer-option-title {
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .transfer-option-desc {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-            margin-bottom: 16px;
-        }
-
-        .qr-container {
-            background: white;
-            padding: 16px;
-            border-radius: var(--radius);
-            margin: 12px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .qr-code {
-            width: 160px;
-            height: 160px;
-        }
-
-        .share-id {
-            background: var(--surface-light);
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-            margin: 12px 0;
-        }
-
-        .share-id-value {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            letter-spacing: 1px;
-            margin: 8px 0;
-        }
-
         /* Room Interface */
         .room-interface {
             width: 100%;
@@ -657,6 +589,22 @@
             margin-bottom: 12px;
         }
 
+        /* QR Code */
+        .qr-container {
+            background: white;
+            padding: 16px;
+            border-radius: var(--radius);
+            margin: 12px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .qr-code {
+            width: 160px;
+            height: 160px;
+        }
+
         /* Back Button */
         .back-btn {
             position: absolute;
@@ -701,13 +649,6 @@
             letter-spacing: 2px;
             font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
             margin-bottom: 16px;
-        }
-
-        /* File Input - Hidden but accessible */
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
         }
 
         /* Responsive */
@@ -772,105 +713,12 @@
             background: var(--primary);
             border-radius: 2px;
         }
-
-        /* Improved Room UI Elements */
-        .room-stats {
-            display: flex;
-            justify-content: space-around;
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-
-        .stat-item {
-            text-align: center;
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 2px;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .empty-state i {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            opacity: 0.5;
-        }
-
-        /* Progress bar */
-        .progress-container {
-            width: 100%;
-            background: var(--surface-light);
-            border-radius: 10px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 6px;
-            background: var(--primary);
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-
-        .progress-text {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-align: center;
-            margin-top: 4px;
-        }
-
-        /* Toast notifications */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--surface);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            z-index: 1000;
-            max-width: 80%;
-            text-align: center;
-            animation: toastSlideUp 0.3s ease;
-        }
-
-        @keyframes toastSlideUp {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
-        }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="header">
-            <h1><i class="fas fa-bolt"></i> SplitShare</h1>
+            <h1><i class="fas fa-bolt"></i> DirectShare</h1>
             <div class="status-bar">
                 <div class="status-dot" id="statusDot"></div>
                 <span id="connectionStatus">Ready</span>
@@ -880,9 +728,6 @@
         <button id="backBtn" class="back-btn hidden">
             <i class="fas fa-chevron-left"></i>
         </button>
-
-        <!-- Hidden File Input -->
-        <input type="file" id="fileInput" class="file-input" multiple>
 
         <div class="main-content">
             <!-- Step 1: Main Menu -->
@@ -919,88 +764,12 @@
                             <i class="fas fa-file-download"></i> Receive Files
                         </button>
                     </div>
+                    <input type="file" id="fileInput" class="file-input" multiple>
                 </div>
             </div>
 
-            <!-- Step 2: Quick Transfer -->
+            <!-- Step 2: Room Creation/Join -->
             <div id="step2" class="step">
-                <div class="step-content">
-                    <div class="step-icon">
-                        <i class="fas fa-rocket"></i>
-                    </div>
-                    <h2>Quick Transfer</h2>
-                    <p>Fast one-to-one file sharing</p>
-                    
-                    <div class="quick-transfer-options">
-                        <div class="transfer-option-card">
-                            <div class="transfer-option-icon">
-                                <i class="fas fa-qrcode"></i>
-                            </div>
-                            <div class="transfer-option-title">Scan QR Code</div>
-                            <div class="transfer-option-desc">Let recipient scan this code</div>
-                            <div class="qr-container" id="quickQrContainer">
-                                <canvas class="qr-code" id="quickQrCode"></canvas>
-                            </div>
-                            <button class="btn outline" id="refreshQrBtn">
-                                <i class="fas fa-sync-alt"></i> Refresh QR Code
-                            </button>
-                        </div>
-
-                        <div class="transfer-option-card">
-                            <div class="transfer-option-icon">
-                                <i class="fas fa-id-card"></i>
-                            </div>
-                            <div class="transfer-option-title">Share ID</div>
-                            <div class="transfer-option-desc">Share this code manually</div>
-                            <div class="share-id">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary);">Connection ID:</div>
-                                <div class="share-id-value" id="quickShareId">-</div>
-                                <button class="btn outline" id="copyQuickIdBtn">
-                                    <i class="fas fa-copy"></i> Copy ID
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="quickSelectFileBtn" class="btn primary">
-                            <i class="fas fa-file"></i> Select File to Send
-                        </button>
-                        <button id="quickReceiveBtn" class="btn secondary">
-                            <i class="fas fa-download"></i> Receive File
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 3: Quick Receive -->
-            <div id="step3" class="step">
-                <div class="step-content">
-                    <div class="step-icon">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <h2>Receive Quick Transfer</h2>
-                    <p>Connect to sender to receive files</p>
-                    
-                    <div class="share-options">
-                        <div class="share-option-card">
-                            <div class="share-option-icon">
-                                <i class="fas fa-keyboard"></i>
-                            </div>
-                            <div class="share-option-title">Enter Connection ID</div>
-                            <div class="share-option-desc">Enter the sender's connection ID</div>
-                            <input type="text" id="quickConnectInput" class="room-code-input" placeholder="Enter ID" 
-                                   style="font-size: 1rem; letter-spacing: 1px;">
-                            <button id="quickConnectBtn" class="btn primary full-width">
-                                <i class="fas fa-plug"></i> Connect
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 4: Room Creation/Join -->
-            <div id="step4" class="step">
                 <div class="step-content">
                     <div class="step-icon">
                         <i class="fas fa-users"></i>
@@ -1034,29 +803,13 @@
                 </div>
             </div>
 
-            <!-- Step 5: Room Interface -->
-            <div id="step5" class="step">
+            <!-- Step 3: Room Interface -->
+            <div id="step3" class="step">
                 <div class="room-interface">
-                    <!-- Room Header with Stats -->
+                    <!-- Room Header -->
                     <div class="room-header">
                         <div style="font-size: 0.8rem; color: var(--text-secondary);">Room Code</div>
                         <div class="room-code" id="currentRoomCode">------</div>
-                        
-                        <div class="room-stats">
-                            <div class="stat-item">
-                                <div class="stat-value" id="membersCount">1</div>
-                                <div class="stat-label">Members</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="filesCount">0</div>
-                                <div class="stat-label">Files</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="messagesCount">1</div>
-                                <div class="stat-label">Messages</div>
-                            </div>
-                        </div>
-                        
                         <div class="room-members" id="roomMembers">
                             <div class="member you">
                                 <i class="fas fa-user"></i> You
@@ -1088,10 +841,7 @@
                             </button>
                         </div>
                         <div class="file-list" id="fileList">
-                            <div class="empty-state">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <div>No files shared yet</div>
-                            </div>
+                            <!-- Files will appear here -->
                         </div>
                     </div>
                 </div>
@@ -1110,11 +860,9 @@
                 this.transferMode = 'quick';
                 this.userName = `User${Math.floor(Math.random() * 1000)}`;
                 this.roomMembers = new Map();
-                this.sharedFiles = new Map();
+                this.sharedFiles = new Map(); // Stores fileId -> {file, fileInfo}
                 this.fileInput = document.getElementById('fileInput');
-                this.messagesCount = 1; // Start with welcome message
-                this.chunkSize = 16000; // 16KB chunks for reliable transfer
-                this.fileTransfers = new Map();
+                this.pendingFileRequests = new Map();
                 
                 this.setupEventListeners();
                 this.initialize();
@@ -1138,45 +886,22 @@
                 // Main menu buttons
                 document.getElementById('sendBtn').addEventListener('click', () => {
                     if (this.transferMode === 'room') {
-                        this.showStep('step4');
+                        this.showStep('step2');
                         document.getElementById('roomTitle').textContent = 'Create Secure Room';
                         document.getElementById('roomDescription').textContent = 'Create a room to share files and chat with multiple people';
                         document.getElementById('joinRoomOptions').style.display = 'none';
                     } else {
-                        this.startQuickSend();
+                        this.fileInput.click();
                     }
                 });
 
                 document.getElementById('receiveBtn').addEventListener('click', () => {
                     if (this.transferMode === 'room') {
-                        this.showStep('step4');
+                        this.showStep('step2');
                         document.getElementById('roomTitle').textContent = 'Join Secure Room';
                         document.getElementById('roomDescription').textContent = 'Join an existing room to share files and chat';
                         document.getElementById('joinRoomOptions').style.display = 'block';
-                    } else {
-                        this.showStep('step3');
                     }
-                });
-
-                // Quick transfer
-                document.getElementById('quickSelectFileBtn').addEventListener('click', () => {
-                    this.fileInput.click();
-                });
-
-                document.getElementById('quickReceiveBtn').addEventListener('click', () => {
-                    this.showStep('step3');
-                });
-
-                document.getElementById('quickConnectBtn').addEventListener('click', () => {
-                    this.startQuickReceive();
-                });
-
-                document.getElementById('refreshQrBtn').addEventListener('click', () => {
-                    this.refreshQrCode();
-                });
-
-                document.getElementById('copyQuickIdBtn').addEventListener('click', () => {
-                    this.copyToClipboard(document.getElementById('quickShareId').textContent, 'Connection ID copied!');
                 });
 
                 // Room creation/join
@@ -1214,332 +939,21 @@
 
                 this.fileInput.addEventListener('change', (e) => {
                     if (e.target.files.length > 0) {
-                        if (this.transferMode === 'room' && this.roomCode) {
+                        if (this.transferMode === 'room') {
                             Array.from(e.target.files).forEach(file => {
                                 this.shareFileInRoom(file);
                             });
-                        } else if (this.transferMode === 'quick' && this.peer) {
-                            // Quick transfer file handling
-                            this.sendQuickFile(Array.from(e.target.files)[0]);
                         }
                     }
                 });
 
                 // Back button
                 document.getElementById('backBtn').addEventListener('click', () => {
-                    if (this.roomCode) {
-                        this.leaveRoom();
-                    } else if (this.peer && this.transferMode === 'quick') {
-                        this.leaveQuickTransfer();
-                    }
+                    this.leaveRoom();
                     this.showStep('step1');
                 });
             }
 
-            // Quick Transfer Methods
-            async startQuickSend() {
-                try {
-                    this.showStep('step2');
-                    document.getElementById('backBtn').classList.remove('hidden');
-                    
-                    this.updateStatus('Starting quick transfer...');
-                    
-                    // Try multiple PeerJS servers for better reliability
-                    const peerOptions = {
-                        host: '0.peerjs.com',
-                        port: 443,
-                        secure: true,
-                        debug: 0,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
-                    };
-
-                    this.peer = new Peer(peerOptions);
-
-                    this.peer.on('open', (id) => {
-                        document.getElementById('quickShareId').textContent = id;
-                        this.generateQuickQrCode(id);
-                        this.updateStatus('Ready! Share your ID or QR code');
-                        document.getElementById('statusDot').classList.add('connected');
-                    });
-
-                    this.peer.on('connection', (conn) => {
-                        this.setupQuickConnection(conn);
-                    });
-
-                    this.peer.on('error', (err) => {
-                        console.error('Quick transfer error:', err);
-                        if (err.type === 'unavailable-id') {
-                            // Try again with a different ID
-                            this.startQuickSend();
-                        } else {
-                            this.showError('Quick transfer failed: ' + err.type);
-                        }
-                    });
-
-                } catch (error) {
-                    this.showError('Failed to start quick transfer: ' + error.message);
-                }
-            }
-
-            generateQuickQrCode(peerId) {
-                const qrContainer = document.getElementById('quickQrContainer');
-                const qrCanvas = document.getElementById('quickQrCode');
-                
-                // Clear previous QR code
-                const ctx = qrCanvas.getContext('2d');
-                ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
-                
-                qrCanvas.width = 160;
-                qrCanvas.height = 160;
-                
-                const qrData = `directshare://quick/${peerId}`;
-                
-                QRCode.toCanvas(qrCanvas, qrData, {
-                    width: 140,
-                    margin: 1,
-                    color: {
-                        dark: '#000000',
-                        light: '#FFFFFF'
-                    }
-                }, (error) => {
-                    if (error) {
-                        console.error('QR Code generation failed:', error);
-                        this.showToast('QR Code generation failed. Please try refreshing.');
-                    } else {
-                        this.showToast('QR Code generated successfully!');
-                    }
-                });
-            }
-
-            refreshQrCode() {
-                if (this.peer && this.peer.id) {
-                    this.generateQuickQrCode(this.peer.id);
-                }
-            }
-
-            async startQuickReceive() {
-                const peerId = document.getElementById('quickConnectInput').value.trim();
-                if (!peerId) {
-                    this.showError('Please enter a connection ID');
-                    return;
-                }
-
-                try {
-                    this.updateStatus('Connecting to sender...');
-                    
-                    this.peer = new Peer({
-                        host: '0.peerjs.com',
-                        port: 443,
-                        secure: true,
-                        debug: 0,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
-                    });
-
-                    this.peer.on('open', (id) => {
-                        const conn = this.peer.connect(peerId, {
-                            reliable: true,
-                            serialization: 'json'
-                        });
-                        this.setupQuickConnection(conn);
-                    });
-
-                    this.peer.on('error', (err) => {
-                        this.showError('Failed to connect: ' + err.type);
-                    });
-
-                } catch (error) {
-                    this.showError('Failed to start receiving: ' + error.message);
-                }
-            }
-
-            setupQuickConnection(conn) {
-                conn.on('open', () => {
-                    this.updateStatus('Connected! Ready for transfer');
-                    this.connections.set(conn.peer, conn);
-                    document.getElementById('statusDot').classList.add('connected');
-                    this.showToast('Connection established!');
-                });
-
-                conn.on('data', (data) => {
-                    this.handleQuickData(data, conn);
-                });
-
-                conn.on('close', () => {
-                    this.updateStatus('Connection closed');
-                    this.connections.delete(conn.peer);
-                    document.getElementById('statusDot').classList.remove('connected');
-                    this.showToast('Connection closed');
-                });
-
-                conn.on('error', (err) => {
-                    console.error('Quick connection error:', err);
-                    this.showError('Connection error: ' + err.type);
-                });
-            }
-
-            handleQuickData(data, conn) {
-                // Handle quick transfer data
-                if (data.type === 'file-transfer') {
-                    this.handleFileTransfer(data);
-                } else if (data.type === 'file-chunk') {
-                    this.handleFileChunk(data);
-                } else if (data.type === 'file-transfer-start') {
-                    this.handleFileTransferStart(data);
-                } else if (data.type === 'file-transfer-end') {
-                    this.handleFileTransferEnd(data);
-                }
-            }
-
-            async sendQuickFile(file) {
-                if (!this.connections.size) {
-                    this.showError('No recipient connected');
-                    return;
-                }
-
-                try {
-                    const fileId = Math.random().toString(36).substring(2, 15);
-                    
-                    // Send file info first
-                    this.connections.forEach(conn => {
-                        conn.send({
-                            type: 'file-transfer-start',
-                            fileId: fileId,
-                            fileInfo: {
-                                name: file.name,
-                                size: file.size,
-                                type: file.type
-                            }
-                        });
-                    });
-
-                    // Send file in chunks
-                    const arrayBuffer = await file.arrayBuffer();
-                    const totalChunks = Math.ceil(arrayBuffer.byteLength / this.chunkSize);
-                    
-                    for (let i = 0; i < totalChunks; i++) {
-                        const start = i * this.chunkSize;
-                        const end = Math.min(start + this.chunkSize, arrayBuffer.byteLength);
-                        const chunk = arrayBuffer.slice(start, end);
-                        const base64 = btoa(String.fromCharCode(...new Uint8Array(chunk)));
-                        
-                        this.connections.forEach(conn => {
-                            conn.send({
-                                type: 'file-chunk',
-                                fileId: fileId,
-                                chunkIndex: i,
-                                totalChunks: totalChunks,
-                                data: base64
-                            });
-                        });
-                        
-                        // Update progress
-                        const progress = Math.round((i + 1) / totalChunks * 100);
-                        this.updateStatus(`Sending file: ${progress}%`);
-                    }
-
-                    // Send transfer complete
-                    this.connections.forEach(conn => {
-                        conn.send({
-                            type: 'file-transfer-end',
-                            fileId: fileId
-                        });
-                    });
-                    
-                    this.updateStatus('File sent: ' + file.name);
-                    this.showToast(`File "${file.name}" sent successfully!`);
-                } catch (error) {
-                    this.showError('Failed to send file: ' + error.message);
-                }
-            }
-
-            handleFileTransferStart(data) {
-                this.fileTransfers.set(data.fileId, {
-                    fileInfo: data.fileInfo,
-                    chunks: [],
-                    receivedChunks: 0
-                });
-                
-                this.updateStatus(`Receiving file: ${data.fileInfo.name}`);
-                this.showToast(`Receiving file: ${data.fileInfo.name}`);
-            }
-
-            handleFileChunk(data) {
-                const transfer = this.fileTransfers.get(data.fileId);
-                if (transfer) {
-                    transfer.chunks[data.chunkIndex] = data.data;
-                    transfer.receivedChunks++;
-                    
-                    const progress = Math.round(transfer.receivedChunks / data.totalChunks * 100);
-                    this.updateStatus(`Receiving file: ${progress}%`);
-                    
-                    if (transfer.receivedChunks === data.totalChunks) {
-                        // All chunks received, reconstruct file
-                        this.reconstructFile(data.fileId);
-                    }
-                }
-            }
-
-            handleFileTransferEnd(data) {
-                // File transfer complete
-                const transfer = this.fileTransfers.get(data.fileId);
-                if (transfer && transfer.receivedChunks === transfer.chunks.length) {
-                    this.reconstructFile(data.fileId);
-                }
-            }
-
-            reconstructFile(fileId) {
-                const transfer = this.fileTransfers.get(fileId);
-                if (!transfer) return;
-                
-                try {
-                    // Combine all chunks
-                    let binaryString = '';
-                    for (let i = 0; i < transfer.chunks.length; i++) {
-                        if (transfer.chunks[i]) {
-                            binaryString += transfer.chunks[i];
-                        }
-                    }
-                    
-                    const binary = atob(binaryString);
-                    const bytes = new Uint8Array(binary.length);
-                    for (let i = 0; i < binary.length; i++) {
-                        bytes[i] = binary.charCodeAt(i);
-                    }
-                    
-                    const file = new File([bytes], transfer.fileInfo.name, { type: transfer.fileInfo.type });
-                    this.downloadFileDirect(file);
-                    
-                    this.fileTransfers.delete(fileId);
-                    this.updateStatus('File received: ' + transfer.fileInfo.name);
-                    this.showToast(`File "${transfer.fileInfo.name}" received successfully!`);
-                } catch (error) {
-                    console.error('Error reconstructing file:', error);
-                    this.showError('Failed to reconstruct file');
-                }
-            }
-
-            leaveQuickTransfer() {
-                if (this.peer) {
-                    this.connections.forEach(conn => conn.close());
-                    this.connections.clear();
-                    this.peer.destroy();
-                    this.peer = null;
-                }
-                document.getElementById('backBtn').classList.add('hidden');
-                document.getElementById('statusDot').classList.remove('connected');
-            }
-
-            // Room Methods
             generateRoomCode() {
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 let result = '';
@@ -1560,13 +974,7 @@
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 0,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
+                        debug: 0
                     });
 
                     this.setupRoomHost();
@@ -1582,7 +990,6 @@
                     this.showRoomInterface();
                     this.addChatMessage('System', `Room created with code: ${this.roomCode}`, 'system');
                     this.addChatMessage('System', 'Share this code with others to join the room', 'system');
-                    document.getElementById('statusDot').classList.add('connected');
                 });
 
                 this.peer.on('connection', (conn) => {
@@ -1592,7 +999,7 @@
                 this.peer.on('error', (err) => {
                     console.error('Peer error:', err);
                     if (err.type === 'unavailable-id') {
-                        // Room code already taken, try another
+                        // Room code already taken, generate new one
                         this.createRoom();
                     } else {
                         this.showError('Room connection error: ' + err.type);
@@ -1617,13 +1024,7 @@
                         host: '0.peerjs.com',
                         port: 443,
                         secure: true,
-                        debug: 0,
-                        config: {
-                            iceServers: [
-                                { urls: 'stun:stun.l.google.com:19302' },
-                                { urls: 'stun:global.stun.twilio.com:3478' }
-                            ]
-                        }
+                        debug: 0
                     });
 
                     this.setupRoomClient();
@@ -1653,6 +1054,7 @@
                 conn.on('open', () => {
                     this.connections.set(conn.peer, conn);
                     
+                    // Send join notification
                     conn.send({
                         type: 'user-join',
                         userName: this.userName,
@@ -1661,8 +1063,6 @@
 
                     this.updateStatus('Connected to room');
                     this.showRoomInterface();
-                    document.getElementById('statusDot').classList.add('connected');
-                    this.showToast('Successfully joined the room!');
                 });
 
                 conn.on('data', (data) => {
@@ -1675,7 +1075,6 @@
 
                 conn.on('error', (err) => {
                     console.error('Connection error:', err);
-                    this.showError('Connection error: ' + err.type);
                 });
             }
 
@@ -1699,15 +1098,6 @@
                     case 'file-transfer':
                         this.handleFileTransfer(data);
                         break;
-                    case 'file-chunk':
-                        this.handleFileChunk(data);
-                        break;
-                    case 'file-transfer-start':
-                        this.handleFileTransferStart(data);
-                        break;
-                    case 'file-transfer-end':
-                        this.handleFileTransferEnd(data);
-                        break;
                 }
             }
 
@@ -1720,12 +1110,14 @@
                 this.addChatMessage('System', `${data.userName} joined the room`, 'system');
                 this.updateMemberList();
                 
+                // If we're the host, broadcast to all other members
                 if (this.isHost) {
                     this.broadcastToRoom({
                         type: 'user-join',
                         ...data
                     }, conn.peer);
                     
+                    // Send existing files to new member
                     this.sharedFiles.forEach((fileData, fileId) => {
                         if (fileData.fileInfo.owner === this.peer.id) {
                             conn.send({
@@ -1746,6 +1138,7 @@
                     this.connections.delete(peerId);
                     this.updateMemberList();
                     
+                    // Broadcast user left if we're host
                     if (this.isHost) {
                         this.broadcastToRoom({
                             type: 'user-left',
@@ -1768,31 +1161,31 @@
 
             handleChatMessage(data) {
                 this.addChatMessage(data.userName, data.message, 'received');
-                this.messagesCount++;
-                this.updateRoomStats();
             }
 
             handleFileShare(data) {
+                // Only add file if we don't already have it
                 if (!this.sharedFiles.has(data.fileInfo.id)) {
                     this.sharedFiles.set(data.fileInfo.id, {
                         fileInfo: data.fileInfo,
-                        file: null
+                        file: null // File will be downloaded when requested
                     });
                     this.addSharedFile(data.fileInfo);
                     this.addChatMessage('System', `${data.userName} shared: ${data.fileInfo.name}`, 'system');
-                    this.updateRoomStats();
                 }
             }
 
             handleFileRequest(data, conn) {
                 const fileData = this.sharedFiles.get(data.fileId);
                 if (fileData && fileData.file && data.requester !== this.peer.id) {
+                    // We have the file, send it to requester
                     this.sendFileToUser(fileData.file, data.fileId, data.requester);
                 }
             }
 
             handleFileTransfer(data) {
                 if (data.fileId && data.fileData) {
+                    // Convert base64 back to file
                     const binaryString = atob(data.fileData);
                     const bytes = new Uint8Array(binaryString.length);
                     for (let i = 0; i < binaryString.length; i++) {
@@ -1800,20 +1193,13 @@
                     }
                     const file = new File([bytes], data.fileInfo.name, { type: data.fileInfo.type });
                     
+                    // Store the file
                     this.sharedFiles.set(data.fileId, {
                         fileInfo: data.fileInfo,
                         file: file
                     });
                     
-                    this.downloadFileDirect(file);
-                } else if (data.fileInfo && data.fileData) {
-                    // For quick transfer without fileId
-                    const binaryString = atob(data.fileData);
-                    const bytes = new Uint8Array(binaryString.length);
-                    for (let i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    const file = new File([bytes], data.fileInfo.name, { type: data.fileInfo.type });
+                    // Download the file
                     this.downloadFileDirect(file);
                 }
             }
@@ -1829,8 +1215,6 @@
                         userName: this.userName,
                         message: message
                     });
-                    this.messagesCount++;
-                    this.updateRoomStats();
                     input.value = '';
                 }
             }
@@ -1865,6 +1249,7 @@
                     timestamp: Date.now()
                 };
 
+                // Store file locally
                 this.sharedFiles.set(fileInfo.id, {
                     fileInfo: fileInfo,
                     file: file
@@ -1872,6 +1257,7 @@
 
                 this.addSharedFile(fileInfo);
                 
+                // Notify room members
                 this.broadcastToRoom({
                     type: 'file-share',
                     userName: this.userName,
@@ -1879,19 +1265,10 @@
                 });
 
                 this.addChatMessage('System', `You shared: ${file.name}`, 'system');
-                this.updateRoomStats();
-                this.showToast(`File "${file.name}" shared successfully!`);
             }
 
             addSharedFile(fileInfo) {
                 const fileList = document.getElementById('fileList');
-                
-                // Remove empty state if it exists
-                const emptyState = fileList.querySelector('.empty-state');
-                if (emptyState) {
-                    emptyState.remove();
-                }
-
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 fileItem.innerHTML = `
@@ -1911,6 +1288,7 @@
                     }
                 `;
                 
+                // Add click event for download button
                 const downloadBtn = fileItem.querySelector('.download-btn');
                 if (downloadBtn) {
                     downloadBtn.addEventListener('click', (e) => {
@@ -1931,10 +1309,13 @@
                 }
 
                 if (fileData.file) {
+                    // We already have the file locally
                     this.downloadFileDirect(fileData.file);
                 } else {
+                    // Request file from owner
                     this.addChatMessage('System', `Requesting file: ${fileData.fileInfo.name}`, 'system');
                     
+                    // Find the file owner's connection
                     let ownerConn = null;
                     this.connections.forEach((conn, peerId) => {
                         if (peerId === fileData.fileInfo.owner) {
@@ -1962,36 +1343,15 @@
                 }
 
                 try {
-                    // Send file info first
-                    targetConn.send({
-                        type: 'file-transfer-start',
-                        fileId: fileId,
-                        fileInfo: this.sharedFiles.get(fileId).fileInfo
-                    });
-
-                    // Send file in chunks
+                    // Convert file to base64 for transfer
                     const arrayBuffer = await file.arrayBuffer();
-                    const totalChunks = Math.ceil(arrayBuffer.byteLength / this.chunkSize);
+                    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
                     
-                    for (let i = 0; i < totalChunks; i++) {
-                        const start = i * this.chunkSize;
-                        const end = Math.min(start + this.chunkSize, arrayBuffer.byteLength);
-                        const chunk = arrayBuffer.slice(start, end);
-                        const base64 = btoa(String.fromCharCode(...new Uint8Array(chunk)));
-                        
-                        targetConn.send({
-                            type: 'file-chunk',
-                            fileId: fileId,
-                            chunkIndex: i,
-                            totalChunks: totalChunks,
-                            data: base64
-                        });
-                    }
-
-                    // Send transfer complete
                     targetConn.send({
-                        type: 'file-transfer-end',
-                        fileId: fileId
+                        type: 'file-transfer',
+                        fileId: fileId,
+                        fileInfo: this.sharedFiles.get(fileId).fileInfo,
+                        fileData: base64
                     });
                     
                     this.addChatMessage('System', `Sent file: ${file.name} to user`, 'system');
@@ -2027,21 +1387,12 @@
                     memberDiv.innerHTML = `<i class="fas fa-user"></i> ${member.userName}`;
                     membersContainer.appendChild(memberDiv);
                 });
-
-                this.updateRoomStats();
-            }
-
-            updateRoomStats() {
-                document.getElementById('membersCount').textContent = this.roomMembers.size + 1; // +1 for yourself
-                document.getElementById('filesCount').textContent = this.sharedFiles.size;
-                document.getElementById('messagesCount').textContent = this.messagesCount;
             }
 
             showRoomInterface() {
                 document.getElementById('currentRoomCode').textContent = this.roomCode;
                 document.getElementById('backBtn').classList.remove('hidden');
-                this.showStep('step5');
-                this.updateRoomStats();
+                this.showStep('step3');
             }
 
             leaveRoom() {
@@ -2062,7 +1413,6 @@
                     this.connections.clear();
                     this.roomMembers.clear();
                     this.sharedFiles.clear();
-                    this.messagesCount = 1;
                     
                     if (this.peer) {
                         this.peer.destroy();
@@ -2078,14 +1428,7 @@
                             Welcome to the secure room! You can now share files and chat.
                         </div>
                     `;
-                    document.getElementById('fileList').innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <div>No files shared yet</div>
-                        </div>
-                    `;
-                    
-                    document.getElementById('statusDot').classList.remove('connected');
+                    document.getElementById('fileList').innerHTML = '';
                 }
             }
 
@@ -2114,19 +1457,6 @@
                 console.error(message);
             }
 
-            showToast(message, duration = 3000) {
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.textContent = message;
-                document.body.appendChild(toast);
-                
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, duration);
-            }
-
             downloadFileDirect(file) {
                 const url = URL.createObjectURL(file);
                 const a = document.createElement('a');
@@ -2138,16 +1468,6 @@
                 URL.revokeObjectURL(url);
                 
                 this.addChatMessage('System', `Downloaded: ${file.name}`, 'system');
-                this.showToast(`File "${file.name}" downloaded successfully!`);
-            }
-
-            async copyToClipboard(text, successMessage = 'Copied to clipboard!') {
-                try {
-                    await navigator.clipboard.writeText(text);
-                    this.showToast(successMessage);
-                } catch (err) {
-                    this.showError('Failed to copy to clipboard');
-                }
             }
         }
 
