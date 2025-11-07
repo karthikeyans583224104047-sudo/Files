@@ -1,1478 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DirectShare - Secure Room Sharing</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        :root {
-            --primary: #007AFF;
-            --primary-dark: #0056CC;
-            --primary-light: #4DA3FF;
-            --secondary: #34C759;
-            --secondary-dark: #28A745;
-            --danger: #FF3B30;
-            --warning: #FF9500;
-            --background: #000000;
-            --surface: #1C1C1E;
-            --surface-light: #2C2C2E;
-            --surface-lighter: #3A3A3C;
-            --text-primary: #FFFFFF;
-            --text-secondary: #8E8E93;
-            --text-muted: #636366;
-            --border: #38383A;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            --radius: 14px;
-            --radius-sm: 10px;
-            --radius-lg: 20px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-fast: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --transition-slow: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            --blur: blur(20px);
-            --backdrop: rgba(0, 0, 0, 0.4);
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: var(--background);
-            color: var(--text-primary);
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-            line-height: 1.5;
-            -webkit-user-select: none;
-            user-select: none;
-            touch-action: manipulation;
-        }
-
-        .app-container {
-            height: 100vh;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            max-width: 500px;
-            margin: 0 auto;
-            position: relative;
-            background: var(--background);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .header {
-            background: var(--surface);
-            padding: 12px 16px;
-            text-align: center;
-            position: relative;
-            z-index: 100;
-            border-bottom: 0.5px solid var(--border);
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            flex-shrink: 0;
-        }
-
-        .header h1 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            letter-spacing: -0.5px;
-        }
-
-        .status-bar {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--danger);
-            transition: var(--transition-fast);
-        }
-
-        .status-dot.connected {
-            background: var(--secondary);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Main Content */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            height: calc(100vh - 80px);
-            height: calc(100dvh - 80px);
-        }
-
-        /* Steps */
-        .step {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transform: translateY(30px);
-            pointer-events: none;
-            transition: var(--transition-slow);
-            background: var(--background);
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .step.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .step-content {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .step-icon {
-            font-size: 3rem;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: saturate(1.2);
-        }
-
-        .step h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .step p {
-            color: var(--text-secondary);
-            text-align: center;
-            margin-bottom: 24px;
-            max-width: 300px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 14px 20px;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: var(--transition-fast);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            min-height: 44px;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn.primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
-        }
-
-        .btn.primary:active {
-            background: var(--primary-dark);
-            transform: scale(0.98);
-        }
-
-        .btn.secondary {
-            background: var(--surface-light);
-            color: var(--text-primary);
-            border: 0.5px solid var(--border);
-        }
-
-        .btn.secondary:active {
-            background: var(--surface-lighter);
-            transform: scale(0.98);
-        }
-
-        .btn.outline {
-            background: transparent;
-            color: var(--primary);
-            border: 1.5px solid var(--primary);
-        }
-
-        .btn.outline:active {
-            background: rgba(0, 122, 255, 0.1);
-        }
-
-        .btn.large {
-            padding: 16px 20px;
-            font-size: 1rem;
-        }
-
-        .btn.full-width {
-            width: 100%;
-        }
-
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        /* Mode Selection */
-        .mode-selection {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 24px;
-        }
-
-        .mode-card {
-            flex: 1;
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-            border: 1.5px solid transparent;
-            transition: var(--transition-fast);
-            cursor: pointer;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .mode-card.active {
-            border-color: var(--primary);
-            background: var(--surface-light);
-        }
-
-        .mode-card:active {
-            transform: scale(0.98);
-        }
-
-        .mode-icon {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
-            color: var(--primary);
-        }
-
-        .mode-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 0.9rem;
-        }
-
-        .mode-desc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.3;
-        }
-
-        /* Room Interface */
-        .room-interface {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            height: 100%;
-        }
-
-        .room-header {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            flex-shrink: 0;
-        }
-
-        .room-code {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            letter-spacing: 2px;
-            margin: 8px 0;
-        }
-
-        .room-members {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-            margin-top: 12px;
-        }
-
-        .member {
-            background: var(--surface-light);
-            padding: 6px 10px;
-            border-radius: var(--radius-sm);
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .member.you {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Chat Interface */
-        .chat-container {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            flex: 1;
-            min-height: 200px;
-            max-height: 300px;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding-right: 4px;
-        }
-
-        .chat-message {
-            padding: 8px 12px;
-            border-radius: var(--radius);
-            font-size: 0.85rem;
-            line-height: 1.4;
-            max-width: 85%;
-            word-wrap: break-word;
-        }
-
-        .chat-message.received {
-            background: var(--surface-light);
-            align-self: flex-start;
-            border-bottom-left-radius: var(--radius-sm);
-        }
-
-        .chat-message.sent {
-            background: var(--primary);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: var(--radius-sm);
-        }
-
-        .chat-message.system {
-            background: var(--warning);
-            color: black;
-            align-self: center;
-            font-size: 0.75rem;
-            text-align: center;
-            max-width: 90%;
-        }
-
-        .message-sender {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            margin-bottom: 2px;
-            font-weight: 600;
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: var(--surface-light);
-            border: none;
-            border-radius: var(--radius);
-            padding: 10px 14px;
-            color: var(--text-primary);
-            font-size: 0.85rem;
-            outline: none;
-            min-height: 44px;
-        }
-
-        .send-btn {
-            background: var(--primary);
-            border: none;
-            border-radius: var(--radius);
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            flex-shrink: 0;
-        }
-
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* File Sharing in Room */
-        .file-sharing {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 12px;
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            flex-shrink: 0;
-        }
-
-        .file-sharing-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .file-sharing-title {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .file-list {
-            max-height: 120px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px;
-            background: var(--surface-light);
-            border-radius: var(--radius-sm);
-        }
-
-        .file-icon {
-            font-size: 1.3rem;
-            color: var(--primary);
-            flex-shrink: 0;
-        }
-
-        .file-details {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .file-name {
-            font-weight: 600;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-meta {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2px;
-        }
-
-        .download-btn {
-            background: var(--primary);
-            border: none;
-            border-radius: var(--radius-sm);
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            flex-shrink: 0;
-        }
-
-        .download-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Share Options */
-        .share-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 300px;
-            margin: 16px 0;
-        }
-
-        .share-option-card {
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 16px;
-            text-align: center;
-            border: 1.5px solid var(--border);
-            transition: var(--transition-fast);
-        }
-
-        .share-option-icon {
-            font-size: 2rem;
-            margin-bottom: 12px;
-            color: var(--primary);
-        }
-
-        .share-option-title {
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-
-        .share-option-desc {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-
-        /* QR Code */
-        .qr-container {
-            background: white;
-            padding: 16px;
-            border-radius: var(--radius);
-            margin: 12px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .qr-code {
-            width: 160px;
-            height: 160px;
-        }
-
-        /* Back Button */
-        .back-btn {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            background: var(--surface);
-            border: none;
-            color: var(--text-primary);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition-fast);
-            z-index: 200;
-            backdrop-filter: var(--blur);
-            -webkit-backdrop-filter: var(--blur);
-            border: 0.5px solid var(--border);
-        }
-
-        .back-btn:active {
-            background: var(--surface-light);
-            transform: scale(0.95);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Room Code Input */
-        .room-code-input {
-            width: 100%;
-            padding: 14px;
-            background: var(--surface-light);
-            border: none;
-            border-radius: var(--radius);
-            color: var(--text-primary);
-            text-align: center;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-            margin-bottom: 16px;
-        }
-
-        /* Responsive */
-        @media (max-width: 380px) {
-            .step {
-                padding: 16px 12px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>WallpaperHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'ios-bg': '#F2F2F7',
+            'ios-card': '#FFFFFF',
+            'ios-primary': '#007AFF',
+            'ios-red': '#FF3B30',
+            'ios-green': '#34C759',
+            'ios-gray': '#8E8E93',
+            'ios-dark': '#1C1C1E'
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+            'scale-in': 'scaleIn 0.3s ease-out',
+            'bounce-in': 'bounceIn 0.5s ease-out'
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' }
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' }
+            },
+            scaleIn: {
+              '0%': { transform: 'scale(0.9)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            bounceIn: {
+              '0%': { transform: 'scale(0.3)', opacity: '0' },
+              '50%': { transform: 'scale(1.05)' },
+              '70%': { transform: 'scale(0.9)' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
             }
-            
-            .mode-selection {
-                flex-direction: column;
-            }
-            
-            .mode-card {
-                min-height: 80px;
-                padding: 12px;
-            }
-            
-            .chat-container {
-                max-height: 250px;
-            }
-            
-            .file-list {
-                max-height: 100px;
-            }
+          }
         }
-
-        @media (max-height: 700px) {
-            .chat-container {
-                max-height: 200px;
-            }
-            
-            .file-list {
-                max-height: 80px;
-            }
-        }
-
-        /* iOS Safari specific fixes */
-        @supports (-webkit-touch-callout: none) {
-            body {
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            .step {
-                padding-bottom: 20px;
-            }
-        }
-
-        /* Scrollbar styling */
-        .chat-messages::-webkit-scrollbar,
-        .file-list::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track,
-        .file-list::-webkit-scrollbar-track {
-            background: var(--surface-light);
-            border-radius: 2px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb,
-        .file-list::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 2px;
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    
+    .ios-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+    
+    .ios-button {
+      background: #007AFF;
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    
+    .ios-button:active {
+      transform: scale(0.98);
+      opacity: 0.8;
+    }
+    
+    .ios-input {
+      background: #F2F2F7;
+      border-radius: 10px;
+      padding: 14px 16px;
+      border: none;
+      font-size: 16px;
+    }
+    
+    .ios-input:focus {
+      outline: none;
+      background: #E5E5EA;
+    }
+    
+    .tab-bar {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-item {
+      transition: all 0.2s ease;
+    }
+    
+    .tab-item.active {
+      color: #007AFF;
+    }
+    
+    .wallpaper-card {
+      transition: all 0.3s ease;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+    
+    .wallpaper-card:active {
+      transform: scale(0.96);
+    }
+    
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+    
+    .loading-spinner {
+      border: 3px solid rgba(0, 122, 255, 0.2);
+      border-radius: 50%;
+      border-top: 3px solid #007AFF;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      z-index: 1000;
+      animation: slideUp 0.3s ease-out;
+    }
+  </style>
 </head>
-<body>
-    <div class="app-container">
-        <div class="header">
-            <h1><i class="fas fa-bolt"></i> DirectShare</h1>
-            <div class="status-bar">
-                <div class="status-dot" id="statusDot"></div>
-                <span id="connectionStatus">Ready</span>
-            </div>
-        </div>
+<body class="bg-ios-bg text-ios-dark min-h-screen flex flex-col overflow-x-hidden">
 
-        <button id="backBtn" class="back-btn hidden">
-            <i class="fas fa-chevron-left"></i>
+  <!-- Auth Screen -->
+  <div id="authScreen" class="flex flex-col justify-center items-center min-h-screen p-6 animate-fade-in">
+    <div class="ios-card p-8 w-full max-w-sm flex flex-col items-center animate-scale-in">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center mb-6">
+        <i class="fas fa-image text-white text-2xl"></i>
+      </div>
+      <h1 class="text-2xl font-bold mb-2">WallpaperHub</h1>
+      <p class="text-ios-gray text-center mb-8">Sign in to explore and upload beautiful wallpapers</p>
+      
+      <div class="w-full space-y-4">
+        <input id="emailInput" type="email" placeholder="Email" class="ios-input w-full">
+        <input id="passwordInput" type="password" placeholder="Password" class="ios-input w-full">
+        
+        <button id="loginBtn" class="ios-button w-full py-4 flex items-center justify-center">
+          <span id="loginText">Sign In</span>
+          <div id="loginSpinner" class="loading-spinner ml-2 hidden"></div>
         </button>
-
-        <div class="main-content">
-            <!-- Step 1: Main Menu -->
-            <div id="step1" class="step active">
-                <div class="step-content">
-                    <div class="step-icon">
-                        <i class="fas fa-share-alt"></i>
-                    </div>
-                    <h2>Secure File Sharing</h2>
-                    <p>Choose how you want to share files</p>
-                    
-                    <div class="mode-selection">
-                        <div class="mode-card active" data-mode="quick">
-                            <div class="mode-icon">
-                                <i class="fas fa-rocket"></i>
-                            </div>
-                            <div class="mode-title">Quick Transfer</div>
-                            <div class="mode-desc">Fast one-to-one file transfer</div>
-                        </div>
-                        <div class="mode-card" data-mode="room">
-                            <div class="mode-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="mode-title">Room Share</div>
-                            <div class="mode-desc">Create secure room for group sharing</div>
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button id="sendBtn" class="btn primary large">
-                            <i class="fas fa-file-upload"></i> Send Files
-                        </button>
-                        <button id="receiveBtn" class="btn secondary">
-                            <i class="fas fa-file-download"></i> Receive Files
-                        </button>
-                    </div>
-                    <input type="file" id="fileInput" class="file-input" multiple>
-                </div>
-            </div>
-
-            <!-- Step 2: Room Creation/Join -->
-            <div id="step2" class="step">
-                <div class="step-content">
-                    <div class="step-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h2 id="roomTitle">Create Secure Room</h2>
-                    <p id="roomDescription">Share files and chat securely with multiple people</p>
-                    
-                    <div class="btn-group">
-                        <button id="createRoomBtn" class="btn primary large">
-                            <i class="fas fa-plus"></i> Create New Room
-                        </button>
-                        <button id="joinRoomBtn" class="btn secondary">
-                            <i class="fas fa-sign-in-alt"></i> Join Existing Room
-                        </button>
-                    </div>
-
-                    <div class="share-options" id="joinRoomOptions" style="display: none;">
-                        <div class="share-option-card">
-                            <div class="share-option-icon">
-                                <i class="fas fa-keyboard"></i>
-                            </div>
-                            <div class="share-option-title">Enter Room Code</div>
-                            <div class="share-option-desc">Enter the 6-digit room code</div>
-                            <input type="text" id="roomCodeInput" class="room-code-input" placeholder="ABCDEF" 
-                                   maxlength="6" pattern="[A-Z0-9]{6}" inputmode="text" autocomplete="off">
-                            <button id="connectRoomBtn" class="btn primary full-width">
-                                <i class="fas fa-plug"></i> Join Room
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Step 3: Room Interface -->
-            <div id="step3" class="step">
-                <div class="room-interface">
-                    <!-- Room Header -->
-                    <div class="room-header">
-                        <div style="font-size: 0.8rem; color: var(--text-secondary);">Room Code</div>
-                        <div class="room-code" id="currentRoomCode">------</div>
-                        <div class="room-members" id="roomMembers">
-                            <div class="member you">
-                                <i class="fas fa-user"></i> You
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chat Interface -->
-                    <div class="chat-container">
-                        <div class="chat-messages" id="chatMessages">
-                            <div class="chat-message system">
-                                Welcome to the secure room! You can now share files and chat.
-                            </div>
-                        </div>
-                        <div class="chat-input-container">
-                            <input type="text" id="chatInput" class="chat-input" placeholder="Type a message...">
-                            <button class="send-btn" id="sendMessageBtn">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- File Sharing -->
-                    <div class="file-sharing">
-                        <div class="file-sharing-header">
-                            <span class="file-sharing-title">Shared Files</span>
-                            <button class="btn outline" id="shareFileBtn" style="padding: 6px 12px; font-size: 0.8rem;">
-                                <i class="fas fa-plus"></i> Add File
-                            </button>
-                        </div>
-                        <div class="file-list" id="fileList">
-                            <!-- Files will appear here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+        
+        <div class="flex items-center my-4">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="px-4 text-ios-gray text-sm">or</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
         </div>
+        
+        <button id="signupBtn" class="w-full py-4 rounded-lg border border-ios-primary text-ios-primary font-semibold">
+          Create Account
+        </button>
+      </div>
     </div>
+    
+    <p class="text-ios-gray text-sm mt-8 text-center">
+      By continuing, you agree to our Terms and Privacy Policy
+    </p>
+  </div>
 
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <script>
-        class DirectShare {
-            constructor() {
-                this.peer = null;
-                this.connections = new Map();
-                this.roomCode = null;
-                this.isHost = false;
-                this.transferMode = 'quick';
-                this.userName = `User${Math.floor(Math.random() * 1000)}`;
-                this.roomMembers = new Map();
-                this.sharedFiles = new Map(); // Stores fileId -> {file, fileInfo}
-                this.fileInput = document.getElementById('fileInput');
-                this.pendingFileRequests = new Map();
-                
-                this.setupEventListeners();
-                this.initialize();
-            }
+  <!-- Main App Screen -->
+  <div id="appScreen" class="hidden flex flex-col min-h-screen">
+    <!-- Header -->
+    <div class="pt-12 px-4 pb-4 bg-gradient-to-b from-ios-primary to-blue-500 text-white">
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl font-bold">WallpaperHub</h1>
+        <div class="flex items-center space-x-4">
+          <button id="uploadIconBtn" class="p-2 rounded-full bg-white/20">
+            <i class="fas fa-plus text-sm"></i>
+          </button>
+          <button id="userMenuBtn" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <i class="fas fa-user text-sm"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
+        <button class="tab-button active text-white font-medium pb-2 border-b-2 border-white whitespace-nowrap">Featured</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Nature</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Abstract</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Dark</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Minimal</button>
+      </div>
+    </div>
+    
+    <!-- Wallpapers Grid -->
+    <div class="flex-1 p-4">
+      <div id="gallery" class="grid grid-cols-2 gap-3">
+        <!-- Wallpaper cards will be inserted here -->
+      </div>
+    </div>
+    
+    <!-- Tab Bar -->
+    <div class="tab-bar py-3 px-6 flex justify-between items-center">
+      <button class="tab-item active flex flex-col items-center text-xs">
+        <i class="fas fa-home text-lg mb-1"></i>
+        <span>Home</span>
+      </button>
+      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
+        <i class="fas fa-search text-lg mb-1"></i>
+        <span>Explore</span>
+      </button>
+      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
+        <i class="fas fa-cloud-upload-alt text-lg mb-1"></i>
+        <span>Upload</span>
+      </button>
+      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
+        <i class="fas fa-user text-lg mb-1"></i>
+        <span>Profile</span>
+      </button>
+    </div>
+  </div>
 
-            initialize() {
-                this.showStep('step1');
-                this.updateStatus('Ready to share');
-            }
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
+    <div class="modal-overlay absolute inset-0" id="uploadModalOverlay"></div>
+    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Upload Wallpaper</h2>
+        <button id="closeUploadModal" class="p-2 rounded-full bg-ios-bg">
+          <i class="fas fa-times text-ios-gray"></i>
+        </button>
+      </div>
+      
+      <div class="border-2 border-dashed border-ios-gray/30 rounded-xl p-8 text-center mb-6">
+        <i class="fas fa-cloud-upload-alt text-4xl text-ios-gray/50 mb-4"></i>
+        <p class="text-ios-gray mb-2">Drag & drop your image here</p>
+        <p class="text-ios-gray text-sm">or</p>
+        <input id="fileInput" type="file" accept="image/*" class="hidden" />
+        <button id="browseFilesBtn" class="ios-button mt-4 px-6 py-2">Browse Files</button>
+      </div>
+      
+      <div class="flex space-x-3">
+        <button id="cancelUploadBtn" class="flex-1 py-3 rounded-lg border border-ios-gray/30 font-semibold">Cancel</button>
+        <button id="confirmUploadBtn" class="flex-1 py-3 rounded-lg bg-ios-primary text-white font-semibold flex items-center justify-center">
+          <span id="uploadText">Upload</span>
+          <div id="uploadSpinner" class="loading-spinner ml-2 hidden"></div>
+        </button>
+      </div>
+    </div>
+  </div>
 
-            setupEventListeners() {
-                // Mode selection
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
-                        card.classList.add('active');
-                        this.transferMode = card.dataset.mode;
-                    });
-                });
+  <!-- Wallpaper Detail Modal -->
+  <div id="detailModal" class="hidden fixed inset-0 z-50">
+    <div class="absolute inset-0 bg-black" id="detailModalBg"></div>
+    <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10">
+      <button id="closeDetailModal" class="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center">
+        <i class="fas fa-times text-white"></i>
+      </button>
+      <button id="downloadWallpaperBtn" class="px-4 py-2 rounded-full bg-black/40 text-white font-medium">
+        <i class="fas fa-download mr-2"></i>Download
+      </button>
+    </div>
+    
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <img id="detailImage" src="" class="max-w-full max-h-full rounded-lg" />
+    </div>
+  </div>
 
-                // Main menu buttons
-                document.getElementById('sendBtn').addEventListener('click', () => {
-                    if (this.transferMode === 'room') {
-                        this.showStep('step2');
-                        document.getElementById('roomTitle').textContent = 'Create Secure Room';
-                        document.getElementById('roomDescription').textContent = 'Create a room to share files and chat with multiple people';
-                        document.getElementById('joinRoomOptions').style.display = 'none';
-                    } else {
-                        this.fileInput.click();
-                    }
-                });
+  <!-- User Menu Modal -->
+  <div id="userMenuModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
+    <div class="modal-overlay absolute inset-0" id="userMenuOverlay"></div>
+    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-2 relative animate-slide-up">
+      <div class="p-4 border-b border-ios-bg">
+        <p class="font-semibold" id="userEmail">user@example.com</p>
+        <p class="text-ios-gray text-sm">Free Account</p>
+      </div>
+      
+      <button class="w-full text-left p-4 flex items-center">
+        <i class="fas fa-user-circle text-ios-gray mr-3"></i>
+        <span>Edit Profile</span>
+      </button>
+      
+      <button class="w-full text-left p-4 flex items-center">
+        <i class="fas fa-moon text-ios-gray mr-3"></i>
+        <span>Dark Mode</span>
+      </button>
+      
+      <button class="w-full text-left p-4 flex items-center">
+        <i class="fas fa-cog text-ios-gray mr-3"></i>
+        <span>Settings</span>
+      </button>
+      
+      <div class="p-2">
+        <button id="logoutBtn" class="w-full text-left p-4 flex items-center text-ios-red rounded-lg bg-ios-bg">
+          <i class="fas fa-sign-out-alt mr-3"></i>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-                document.getElementById('receiveBtn').addEventListener('click', () => {
-                    if (this.transferMode === 'room') {
-                        this.showStep('step2');
-                        document.getElementById('roomTitle').textContent = 'Join Secure Room';
-                        document.getElementById('roomDescription').textContent = 'Join an existing room to share files and chat';
-                        document.getElementById('joinRoomOptions').style.display = 'block';
-                    }
-                });
+  <!-- Script -->
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-                // Room creation/join
-                document.getElementById('createRoomBtn').addEventListener('click', () => {
-                    this.createRoom();
-                });
+    // Replace with your project credentials
+    const SUPABASE_URL = "https://ablcfxrtbhmbneucunkw.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibGNmeHJ0YmhtYm5ldWN1bmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MjA0NTMsImV4cCI6MjA3ODA5NjQ1M30.9YjUJmml5L0S0N7JwcgHh0kV-WxWHqWejFsm0qcfuks";
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-                document.getElementById('joinRoomBtn').addEventListener('click', () => {
-                    document.getElementById('joinRoomOptions').style.display = 'block';
-                });
+    // Elements
+    const authScreen = document.getElementById("authScreen");
+    const appScreen = document.getElementById("appScreen");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginText = document.getElementById("loginText");
+    const loginSpinner = document.getElementById("loginSpinner");
+    const signupBtn = document.getElementById("signupBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const gallery = document.getElementById("gallery");
+    const uploadIconBtn = document.getElementById("uploadIconBtn");
+    const userMenuBtn = document.getElementById("userMenuBtn");
+    const userEmail = document.getElementById("userEmail");
+    
+    // Modal elements
+    const uploadModal = document.getElementById("uploadModal");
+    const uploadModalOverlay = document.getElementById("uploadModalOverlay");
+    const closeUploadModal = document.getElementById("closeUploadModal");
+    const browseFilesBtn = document.getElementById("browseFilesBtn");
+    const fileInput = document.getElementById("fileInput");
+    const cancelUploadBtn = document.getElementById("cancelUploadBtn");
+    const confirmUploadBtn = document.getElementById("confirmUploadBtn");
+    const uploadText = document.getElementById("uploadText");
+    const uploadSpinner = document.getElementById("uploadSpinner");
+    
+    const detailModal = document.getElementById("detailModal");
+    const detailModalBg = document.getElementById("detailModalBg");
+    const closeDetailModal = document.getElementById("closeDetailModal");
+    const detailImage = document.getElementById("detailImage");
+    const downloadWallpaperBtn = document.getElementById("downloadWallpaperBtn");
+    
+    const userMenuModal = document.getElementById("userMenuModal");
+    const userMenuOverlay = document.getElementById("userMenuOverlay");
 
-                document.getElementById('connectRoomBtn').addEventListener('click', () => {
-                    this.joinRoom();
-                });
+    // Show/Hide screens
+    function showApp(user) {
+      if (user) {
+        authScreen.classList.add("hidden");
+        appScreen.classList.remove("hidden");
+        userEmail.textContent = user.email;
+        loadWallpapers();
+      } else {
+        authScreen.classList.remove("hidden");
+        appScreen.classList.add("hidden");
+      }
+    }
 
-                // Room code input
-                document.getElementById('roomCodeInput').addEventListener('input', (e) => {
-                    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                });
+    // Auth state listener
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      showApp(session?.user);
+    });
 
-                // Room functionality
-                document.getElementById('sendMessageBtn').addEventListener('click', () => {
-                    this.sendMessage();
-                });
+    // Manual check on load
+    const { data: sessionData } = await supabase.auth.getSession();
+    showApp(sessionData.session?.user);
 
-                document.getElementById('chatInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.sendMessage();
-                    }
-                });
-
-                document.getElementById('shareFileBtn').addEventListener('click', () => {
-                    this.fileInput.click();
-                });
-
-                this.fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        if (this.transferMode === 'room') {
-                            Array.from(e.target.files).forEach(file => {
-                                this.shareFileInRoom(file);
-                            });
-                        }
-                    }
-                });
-
-                // Back button
-                document.getElementById('backBtn').addEventListener('click', () => {
-                    this.leaveRoom();
-                    this.showStep('step1');
-                });
-            }
-
-            generateRoomCode() {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let result = '';
-                for (let i = 0; i < 6; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
-            }
-
-            async createRoom() {
-                try {
-                    this.roomCode = this.generateRoomCode();
-                    this.isHost = true;
-                    
-                    this.updateStatus('Creating secure room...');
-                    
-                    this.peer = new Peer(this.roomCode, {
-                        host: '0.peerjs.com',
-                        port: 443,
-                        secure: true,
-                        debug: 0
-                    });
-
-                    this.setupRoomHost();
-                    
-                } catch (error) {
-                    this.showError('Failed to create room: ' + error.message);
-                }
-            }
-
-            setupRoomHost() {
-                this.peer.on('open', (id) => {
-                    this.updateStatus('Room created!');
-                    this.showRoomInterface();
-                    this.addChatMessage('System', `Room created with code: ${this.roomCode}`, 'system');
-                    this.addChatMessage('System', 'Share this code with others to join the room', 'system');
-                });
-
-                this.peer.on('connection', (conn) => {
-                    this.setupRoomConnection(conn);
-                });
-
-                this.peer.on('error', (err) => {
-                    console.error('Peer error:', err);
-                    if (err.type === 'unavailable-id') {
-                        // Room code already taken, generate new one
-                        this.createRoom();
-                    } else {
-                        this.showError('Room connection error: ' + err.type);
-                    }
-                });
-            }
-
-            async joinRoom() {
-                const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
-                if (roomCode.length !== 6) {
-                    this.showError('Please enter a valid 6-digit room code');
-                    return;
-                }
-
-                try {
-                    this.roomCode = roomCode;
-                    this.isHost = false;
-                    
-                    this.updateStatus('Joining room...');
-                    
-                    this.peer = new Peer({
-                        host: '0.peerjs.com',
-                        port: 443,
-                        secure: true,
-                        debug: 0
-                    });
-
-                    this.setupRoomClient();
-                    
-                } catch (error) {
-                    this.showError('Failed to join room: ' + error.message);
-                }
-            }
-
-            setupRoomClient() {
-                this.peer.on('open', (id) => {
-                    const conn = this.peer.connect(this.roomCode, {
-                        reliable: true,
-                        serialization: 'json'
-                    });
-                    
-                    this.setupRoomConnection(conn);
-                });
-
-                this.peer.on('error', (err) => {
-                    console.error('Peer error:', err);
-                    this.showError('Failed to join room. The room may not exist.');
-                });
-            }
-
-            setupRoomConnection(conn) {
-                conn.on('open', () => {
-                    this.connections.set(conn.peer, conn);
-                    
-                    // Send join notification
-                    conn.send({
-                        type: 'user-join',
-                        userName: this.userName,
-                        peerId: this.peer.id
-                    });
-
-                    this.updateStatus('Connected to room');
-                    this.showRoomInterface();
-                });
-
-                conn.on('data', (data) => {
-                    this.handleRoomData(data, conn);
-                });
-
-                conn.on('close', () => {
-                    this.handleUserDisconnect(conn.peer);
-                });
-
-                conn.on('error', (err) => {
-                    console.error('Connection error:', err);
-                });
-            }
-
-            handleRoomData(data, conn) {
-                switch (data.type) {
-                    case 'user-join':
-                        this.handleUserJoin(data, conn);
-                        break;
-                    case 'user-left':
-                        this.handleUserLeft(data);
-                        break;
-                    case 'chat-message':
-                        this.handleChatMessage(data);
-                        break;
-                    case 'file-share':
-                        this.handleFileShare(data);
-                        break;
-                    case 'file-request':
-                        this.handleFileRequest(data, conn);
-                        break;
-                    case 'file-transfer':
-                        this.handleFileTransfer(data);
-                        break;
-                }
-            }
-
-            handleUserJoin(data, conn) {
-                this.roomMembers.set(data.peerId, {
-                    userName: data.userName,
-                    connection: conn
-                });
-                
-                this.addChatMessage('System', `${data.userName} joined the room`, 'system');
-                this.updateMemberList();
-                
-                // If we're the host, broadcast to all other members
-                if (this.isHost) {
-                    this.broadcastToRoom({
-                        type: 'user-join',
-                        ...data
-                    }, conn.peer);
-                    
-                    // Send existing files to new member
-                    this.sharedFiles.forEach((fileData, fileId) => {
-                        if (fileData.fileInfo.owner === this.peer.id) {
-                            conn.send({
-                                type: 'file-share',
-                                userName: this.userName,
-                                fileInfo: fileData.fileInfo
-                            });
-                        }
-                    });
-                }
-            }
-
-            handleUserDisconnect(peerId) {
-                const member = this.roomMembers.get(peerId);
-                if (member) {
-                    this.addChatMessage('System', `${member.userName} left the room`, 'system');
-                    this.roomMembers.delete(peerId);
-                    this.connections.delete(peerId);
-                    this.updateMemberList();
-                    
-                    // Broadcast user left if we're host
-                    if (this.isHost) {
-                        this.broadcastToRoom({
-                            type: 'user-left',
-                            peerId: peerId,
-                            userName: member.userName
-                        });
-                    }
-                }
-            }
-
-            handleUserLeft(data) {
-                const member = this.roomMembers.get(data.peerId);
-                if (member) {
-                    this.addChatMessage('System', `${member.userName} left the room`, 'system');
-                    this.roomMembers.delete(data.peerId);
-                    this.connections.delete(data.peerId);
-                    this.updateMemberList();
-                }
-            }
-
-            handleChatMessage(data) {
-                this.addChatMessage(data.userName, data.message, 'received');
-            }
-
-            handleFileShare(data) {
-                // Only add file if we don't already have it
-                if (!this.sharedFiles.has(data.fileInfo.id)) {
-                    this.sharedFiles.set(data.fileInfo.id, {
-                        fileInfo: data.fileInfo,
-                        file: null // File will be downloaded when requested
-                    });
-                    this.addSharedFile(data.fileInfo);
-                    this.addChatMessage('System', `${data.userName} shared: ${data.fileInfo.name}`, 'system');
-                }
-            }
-
-            handleFileRequest(data, conn) {
-                const fileData = this.sharedFiles.get(data.fileId);
-                if (fileData && fileData.file && data.requester !== this.peer.id) {
-                    // We have the file, send it to requester
-                    this.sendFileToUser(fileData.file, data.fileId, data.requester);
-                }
-            }
-
-            handleFileTransfer(data) {
-                if (data.fileId && data.fileData) {
-                    // Convert base64 back to file
-                    const binaryString = atob(data.fileData);
-                    const bytes = new Uint8Array(binaryString.length);
-                    for (let i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    const file = new File([bytes], data.fileInfo.name, { type: data.fileInfo.type });
-                    
-                    // Store the file
-                    this.sharedFiles.set(data.fileId, {
-                        fileInfo: data.fileInfo,
-                        file: file
-                    });
-                    
-                    // Download the file
-                    this.downloadFileDirect(file);
-                }
-            }
-
-            sendMessage() {
-                const input = document.getElementById('chatInput');
-                const message = input.value.trim();
-                
-                if (message) {
-                    this.addChatMessage(this.userName, message, 'sent');
-                    this.broadcastToRoom({
-                        type: 'chat-message',
-                        userName: this.userName,
-                        message: message
-                    });
-                    input.value = '';
-                }
-            }
-
-            addChatMessage(sender, message, type) {
-                const messagesContainer = document.getElementById('chatMessages');
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${type}`;
-                
-                if (type !== 'system') {
-                    const senderDiv = document.createElement('div');
-                    senderDiv.className = 'message-sender';
-                    senderDiv.textContent = sender + (type === 'sent' ? ' (You)' : '');
-                    messageDiv.appendChild(senderDiv);
-                }
-                
-                const messageText = document.createElement('div');
-                messageText.textContent = message;
-                messageDiv.appendChild(messageText);
-                
-                messagesContainer.appendChild(messageDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-
-            async shareFileInRoom(file) {
-                const fileInfo = {
-                    id: Math.random().toString(36).substring(2, 9),
-                    name: file.name,
-                    size: file.size,
-                    type: file.type,
-                    owner: this.peer.id,
-                    timestamp: Date.now()
-                };
-
-                // Store file locally
-                this.sharedFiles.set(fileInfo.id, {
-                    fileInfo: fileInfo,
-                    file: file
-                });
-
-                this.addSharedFile(fileInfo);
-                
-                // Notify room members
-                this.broadcastToRoom({
-                    type: 'file-share',
-                    userName: this.userName,
-                    fileInfo: fileInfo
-                });
-
-                this.addChatMessage('System', `You shared: ${file.name}`, 'system');
-            }
-
-            addSharedFile(fileInfo) {
-                const fileList = document.getElementById('fileList');
-                const fileItem = document.createElement('div');
-                fileItem.className = 'file-item';
-                fileItem.innerHTML = `
-                    <i class="fas fa-file file-icon"></i>
-                    <div class="file-details">
-                        <div class="file-name">${fileInfo.name}</div>
-                        <div class="file-meta">
-                            <span>${this.formatFileSize(fileInfo.size)}</span>
-                            <span>${fileInfo.owner === this.peer.id ? 'You' : 'Other'}</span>
-                        </div>
-                    </div>
-                    ${fileInfo.owner !== this.peer.id ? 
-                        `<button class="download-btn" data-file-id="${fileInfo.id}">
-                            <i class="fas fa-download"></i>
-                        </button>` : 
-                        '<div style="width: 32px;"></div>'
-                    }
-                `;
-                
-                // Add click event for download button
-                const downloadBtn = fileItem.querySelector('.download-btn');
-                if (downloadBtn) {
-                    downloadBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.downloadFile(fileInfo.id);
-                    });
-                }
-                
-                fileList.appendChild(fileItem);
-            }
-
-            async downloadFile(fileId) {
-                const fileData = this.sharedFiles.get(fileId);
-                
-                if (!fileData) {
-                    this.showError('File not available for download');
-                    return;
-                }
-
-                if (fileData.file) {
-                    // We already have the file locally
-                    this.downloadFileDirect(fileData.file);
-                } else {
-                    // Request file from owner
-                    this.addChatMessage('System', `Requesting file: ${fileData.fileInfo.name}`, 'system');
-                    
-                    // Find the file owner's connection
-                    let ownerConn = null;
-                    this.connections.forEach((conn, peerId) => {
-                        if (peerId === fileData.fileInfo.owner) {
-                            ownerConn = conn;
-                        }
-                    });
-
-                    if (ownerConn && ownerConn.open) {
-                        ownerConn.send({
-                            type: 'file-request',
-                            fileId: fileId,
-                            requester: this.peer.id
-                        });
-                    } else {
-                        this.showError('File owner is not connected');
-                    }
-                }
-            }
-
-            async sendFileToUser(file, fileId, targetPeerId) {
-                const targetConn = this.connections.get(targetPeerId);
-                if (!targetConn || !targetConn.open) {
-                    console.log('Target user not connected');
-                    return;
-                }
-
-                try {
-                    // Convert file to base64 for transfer
-                    const arrayBuffer = await file.arrayBuffer();
-                    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-                    
-                    targetConn.send({
-                        type: 'file-transfer',
-                        fileId: fileId,
-                        fileInfo: this.sharedFiles.get(fileId).fileInfo,
-                        fileData: base64
-                    });
-                    
-                    this.addChatMessage('System', `Sent file: ${file.name} to user`, 'system');
-                } catch (error) {
-                    console.error('Error sending file:', error);
-                    this.showError('Failed to send file');
-                }
-            }
-
-            broadcastToRoom(data, excludePeer = null) {
-                this.connections.forEach((conn, peerId) => {
-                    if (peerId !== excludePeer && conn.open) {
-                        try {
-                            conn.send(data);
-                        } catch (error) {
-                            console.error('Error broadcasting to peer:', peerId, error);
-                        }
-                    }
-                });
-            }
-
-            updateMemberList() {
-                const membersContainer = document.getElementById('roomMembers');
-                membersContainer.innerHTML = `
-                    <div class="member you">
-                        <i class="fas fa-user"></i> ${this.userName} (You)
-                    </div>
-                `;
-
-                this.roomMembers.forEach((member, peerId) => {
-                    const memberDiv = document.createElement('div');
-                    memberDiv.className = 'member';
-                    memberDiv.innerHTML = `<i class="fas fa-user"></i> ${member.userName}`;
-                    membersContainer.appendChild(memberDiv);
-                });
-            }
-
-            showRoomInterface() {
-                document.getElementById('currentRoomCode').textContent = this.roomCode;
-                document.getElementById('backBtn').classList.remove('hidden');
-                this.showStep('step3');
-            }
-
-            leaveRoom() {
-                if (this.roomCode) {
-                    this.broadcastToRoom({
-                        type: 'user-left',
-                        peerId: this.peer.id,
-                        userName: this.userName
-                    });
-
-                    this.connections.forEach(conn => {
-                        try {
-                            conn.close();
-                        } catch (error) {
-                            console.error('Error closing connection:', error);
-                        }
-                    });
-                    this.connections.clear();
-                    this.roomMembers.clear();
-                    this.sharedFiles.clear();
-                    
-                    if (this.peer) {
-                        this.peer.destroy();
-                        this.peer = null;
-                    }
-
-                    this.roomCode = null;
-                    this.isHost = false;
-                    
-                    // Clear UI
-                    document.getElementById('chatMessages').innerHTML = `
-                        <div class="chat-message system">
-                            Welcome to the secure room! You can now share files and chat.
-                        </div>
-                    `;
-                    document.getElementById('fileList').innerHTML = '';
-                }
-            }
-
-            // Utility methods
-            showStep(stepId) {
-                document.querySelectorAll('.step').forEach(step => {
-                    step.classList.remove('active');
-                });
-                document.getElementById(stepId).classList.add('active');
-            }
-
-            updateStatus(message) {
-                document.getElementById('connectionStatus').textContent = message;
-            }
-
-            formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-            }
-
-            showError(message) {
-                alert(message);
-                console.error(message);
-            }
-
-            downloadFileDirect(file) {
-                const url = URL.createObjectURL(file);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = file.name;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                this.addChatMessage('System', `Downloaded: ${file.name}`, 'system');
-            }
+    // Login handler
+    loginBtn.addEventListener("click", async () => {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      
+      if (!email || !password) {
+        showToast("Please enter email and password");
+        return;
+      }
+      
+      // Show loading state
+      loginText.textContent = "Signing In...";
+      loginSpinner.classList.remove("hidden");
+      loginBtn.disabled = true;
+      
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        if (error.message.includes("Invalid login")) {
+          // Try to sign up instead
+          const { error: signUpError } = await supabase.auth.signUp({ email, password });
+          
+          if (signUpError) {
+            showToast(signUpError.message);
+          } else {
+            showToast("Signup successful! Check your email to confirm.");
+          }
+        } else {
+          showToast(error.message);
         }
+      }
+      
+      // Reset button state
+      loginText.textContent = "Sign In";
+      loginSpinner.classList.add("hidden");
+      loginBtn.disabled = false;
+    });
 
-        // Initialize the app
-        window.directShare = new DirectShare();
-    </script>
+    // Signup handler
+    signupBtn.addEventListener("click", async () => {
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      
+      if (!email || !password) {
+        showToast("Please enter email and password");
+        return;
+      }
+      
+      // Show loading state
+      signupBtn.innerHTML = "Creating Account...";
+      signupBtn.disabled = true;
+      
+      const { error } = await supabase.auth.signUp({ email, password });
+      
+      if (error) {
+        showToast(error.message);
+      } else {
+        showToast("Signup successful! Check your email to confirm.");
+      }
+      
+      // Reset button state
+      signupBtn.innerHTML = "Create Account";
+      signupBtn.disabled = false;
+    });
+
+    // Logout
+    logoutBtn.addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      showApp(null);
+      closeModal(userMenuModal);
+    });
+
+    // Upload handlers
+    uploadIconBtn.addEventListener("click", () => {
+      openModal(uploadModal);
+    });
+    
+    browseFilesBtn.addEventListener("click", () => {
+      fileInput.click();
+    });
+    
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files.length > 0) {
+        browseFilesBtn.textContent = "File Selected";
+        browseFilesBtn.classList.add("bg-ios-green");
+      }
+    });
+    
+    confirmUploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        showToast("Please select a wallpaper first!");
+        return;
+      }
+
+      // Show loading state
+      uploadText.textContent = "Uploading...";
+      uploadSpinner.classList.remove("hidden");
+      confirmUploadBtn.disabled = true;
+
+      const compressed = await compressImage(file, 0.7);
+      const filename = `${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("wallpapers").upload(filename, compressed);
+
+      if (uploadError) {
+        showToast(uploadError.message);
+        uploadText.textContent = "Upload";
+        uploadSpinner.classList.add("hidden");
+        confirmUploadBtn.disabled = false;
+        return;
+      }
+
+      const { data: publicUrl } = supabase.storage.from("wallpapers").getPublicUrl(filename);
+      await supabase.from("wallpapers").insert({ image_url: publicUrl.publicUrl });
+
+      fileInput.value = "";
+      browseFilesBtn.textContent = "Browse Files";
+      browseFilesBtn.classList.remove("bg-ios-green");
+      
+      uploadText.textContent = "Upload";
+      uploadSpinner.classList.add("hidden");
+      confirmUploadBtn.disabled = false;
+      
+      closeModal(uploadModal);
+      loadWallpapers();
+      showToast("Wallpaper uploaded successfully!");
+    });
+
+    // Load wallpapers
+    async function loadWallpapers() {
+      const { data, error } = await supabase
+        .from("wallpapers")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      gallery.innerHTML = data
+        .map(w => `
+          <div class="wallpaper-card animate-scale-in" data-url="${w.image_url}">
+            <img src="${w.image_url}" class="w-full h-48 object-cover rounded-xl" loading="lazy" />
+          </div>
+        `)
+        .join("");
+        
+      // Add click event to wallpaper cards
+      document.querySelectorAll('.wallpaper-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const imageUrl = card.getAttribute('data-url');
+          openWallpaperDetail(imageUrl);
+        });
+      });
+    }
+
+    // Open wallpaper detail view
+    function openWallpaperDetail(imageUrl) {
+      detailImage.src = imageUrl;
+      openModal(detailModal);
+      
+      // Set download functionality
+      downloadWallpaperBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.href = imageUrl;
+        a.download = 'wallpaper.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast("Wallpaper downloaded!");
+      };
+    }
+
+    // Compress image before upload
+    function compressImage(file, quality = 0.7) {
+      return new Promise(resolve => {
+        const img = new Image();
+        const reader = new FileReader();
+        reader.onload = e => {
+          img.src = e.target.result;
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const maxWidth = 1080;
+            const scale = Math.min(1, maxWidth / img.width);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(
+              blob => resolve(new File([blob], file.name, { type: "image/jpeg" })),
+              "image/jpeg",
+              quality
+            );
+          };
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Modal functions
+    function openModal(modal) {
+      modal.classList.remove('hidden');
+    }
+    
+    function closeModal(modal) {
+      modal.classList.add('hidden');
+    }
+    
+    // Close modals when clicking on overlay or close buttons
+    uploadModalOverlay.addEventListener('click', () => closeModal(uploadModal));
+    closeUploadModal.addEventListener('click', () => closeModal(uploadModal));
+    cancelUploadBtn.addEventListener('click', () => closeModal(uploadModal));
+    
+    detailModalBg.addEventListener('click', () => closeModal(detailModal));
+    closeDetailModal.addEventListener('click', () => closeModal(detailModal));
+    
+    userMenuOverlay.addEventListener('click', () => closeModal(userMenuModal));
+    userMenuBtn.addEventListener('click', () => openModal(userMenuModal));
+    
+    // Tab functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(btn => {
+          btn.classList.remove('active', 'text-white');
+          btn.classList.add('text-white/70');
+          btn.classList.remove('border-white');
+          btn.classList.add('border-transparent');
+        });
+        
+        button.classList.add('active', 'text-white');
+        button.classList.remove('text-white/70');
+        button.classList.add('border-white');
+        button.classList.remove('border-transparent');
+        
+        // In a real app, you would filter wallpapers by category here
+        showToast(`Showing ${button.textContent} wallpapers`);
+      });
+    });
+    
+    // Tab bar functionality
+    document.querySelectorAll('.tab-item').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.textContent.includes('Upload')) {
+          openModal(uploadModal);
+          return;
+        }
+        
+        document.querySelectorAll('.tab-item').forEach(t => {
+          t.classList.remove('active', 'text-ios-primary');
+          t.classList.add('text-ios-gray');
+        });
+        
+        tab.classList.add('active', 'text-ios-primary');
+        tab.classList.remove('text-ios-gray');
+        
+        showToast(`Switched to ${tab.textContent} tab`);
+      });
+    });
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+  </script>
 </body>
 </html>
