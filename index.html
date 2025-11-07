@@ -3,27 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>WallpaperHub</title>
+  <title>Splitshare Wallpapers</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            'poppins': ['Poppins', 'sans-serif'],
+          },
           colors: {
-            'ios-bg': '#F2F2F7',
-            'ios-card': '#FFFFFF',
-            'ios-primary': '#007AFF',
-            'ios-red': '#FF3B30',
-            'ios-green': '#34C759',
-            'ios-gray': '#8E8E93',
-            'ios-dark': '#1C1C1E'
+            // Material You × iOS color palette
+            'primary-bg': '#F9FAFB',
+            'card-bg': '#FFFFFF',
+            'accent-start': '#4F8CFF',
+            'accent-end': '#A175FF',
+            'mint': '#A7F2BA',
+            'blush': '#FFD6E0',
+            'beige': '#F5E6D3',
+            'text-primary': '#1A1D1F',
+            'text-secondary': '#6F767E',
+            'dark-bg': '#0A0A0A',
+            'dark-card': '#1A1D1F',
+            'dark-text': '#FFFFFF',
           },
           animation: {
             'fade-in': 'fadeIn 0.3s ease-in-out',
-            'slide-up': 'slideUp 0.4s ease-out',
-            'scale-in': 'scaleIn 0.3s ease-out',
-            'bounce-in': 'bounceIn 0.5s ease-out'
+            'slide-up': 'slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            'scale-in': 'scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            'bounce-in': 'bounceIn 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            'pulse-gentle': 'pulseGentle 2s infinite',
+            'morph-heart': 'morphHeart 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+            'card-hover': 'cardHover 0.3s ease-out',
+            'hero-transition': 'heroTransition 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
           },
           keyframes: {
             fadeIn: {
@@ -35,7 +49,7 @@
               '100%': { transform: 'translateY(0)', opacity: '1' }
             },
             scaleIn: {
-              '0%': { transform: 'scale(0.9)', opacity: '0' },
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
               '100%': { transform: 'scale(1)', opacity: '1' }
             },
             bounceIn: {
@@ -43,56 +57,131 @@
               '50%': { transform: 'scale(1.05)' },
               '70%': { transform: 'scale(0.9)' },
               '100%': { transform: 'scale(1)', opacity: '1' }
+            },
+            pulseGentle: {
+              '0%, 100%': { opacity: '1' },
+              '50%': { opacity: '0.85' }
+            },
+            morphHeart: {
+              '0%': { transform: 'scale(1)' },
+              '25%': { transform: 'scale(1.2)' },
+              '50%': { transform: 'scale(0.9)' },
+              '100%': { transform: 'scale(1)' }
+            },
+            cardHover: {
+              '0%': { transform: 'translateY(0)', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)' },
+              '100%': { transform: 'translateY(-4px)', boxShadow: '0 12px 28px rgba(0, 0, 0, 0.12)' }
+            },
+            heroTransition: {
+              '0%': { transform: 'scale(0.95)', opacity: '0' },
+              '100%': { transform: 'scale(1)', opacity: '1' }
             }
+          },
+          boxShadow: {
+            'soft': '0 4px 16px rgba(0, 0, 0, 0.08)',
+            'medium': '0 8px 24px rgba(0, 0, 0, 0.12)',
+            'floating': '0 12px 28px rgba(0, 0, 0, 0.12)',
+          },
+          borderRadius: {
+            'card': '24px',
+            'button': '16px',
+            'full': '50%',
           }
         }
       }
     }
   </script>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    * {
+      font-family: 'Poppins', sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      background-color: #F9FAFB;
+      color: #1A1D1F;
       overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
     
-    .ios-card {
+    body.dark {
+      background-color: #0A0A0A;
+      color: #FFFFFF;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #4F8CFF 0%, #A175FF 100%);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #4F8CFF 0%, #A175FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .card {
       background: #FFFFFF;
-      border-radius: 14px;
+      border-radius: 24px;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
     }
     
-    .ios-button {
-      background: #007AFF;
-      border-radius: 10px;
+    .dark .card {
+      background: #1A1D1F;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+    
+    .dark .card:hover {
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+    }
+    
+    .card-overlay {
+      background: linear-gradient(transparent 40%, rgba(0, 0, 0, 0.7));
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px 16px 16px;
+      color: white;
+      border-radius: 0 0 24px 24px;
+    }
+    
+    .button-primary {
+      background: linear-gradient(135deg, #4F8CFF 0%, #A175FF 100%);
+      border-radius: 16px;
       color: white;
       font-weight: 600;
       transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(79, 140, 255, 0.3);
     }
     
-    .ios-button:active {
+    .button-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(79, 140, 255, 0.4);
+    }
+    
+    .button-primary:active {
       transform: scale(0.98);
-      opacity: 0.8;
-    }
-    
-    .ios-input {
-      background: #F2F2F7;
-      border-radius: 10px;
-      padding: 14px 16px;
-      border: none;
-      font-size: 16px;
-    }
-    
-    .ios-input:focus {
-      outline: none;
-      background: #E5E5EA;
     }
     
     .tab-bar {
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(20px);
       border-top: 1px solid rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .dark .tab-bar {
+      background: rgba(26, 29, 31, 0.9);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .tab-item {
@@ -100,28 +189,19 @@
     }
     
     .tab-item.active {
-      color: #007AFF;
-    }
-    
-    .wallpaper-card {
-      transition: all 0.3s ease;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-    
-    .wallpaper-card:active {
-      transform: scale(0.96);
+      color: #4F8CFF;
     }
     
     .modal-overlay {
       background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
     }
     
     .loading-spinner {
-      border: 3px solid rgba(0, 122, 255, 0.2);
+      border: 3px solid rgba(79, 140, 255, 0.2);
       border-radius: 50%;
-      border-top: 3px solid #007AFF;
+      border-top: 3px solid #4F8CFF;
       width: 24px;
       height: 24px;
       animation: spin 1s linear infinite;
@@ -140,45 +220,184 @@
       background: rgba(0, 0, 0, 0.8);
       color: white;
       padding: 12px 20px;
-      border-radius: 10px;
+      border-radius: 16px;
       z-index: 1000;
       animation: slideUp 0.3s ease-out;
+      backdrop-filter: blur(10px);
+    }
+    
+    .chip {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+    }
+    
+    .image-loading {
+      background: linear-gradient(90deg, #F2F2F7 25%, #E5E5EA 50%, #F2F2F7 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+    
+    .dark .image-loading {
+      background: linear-gradient(90deg, #2C2C2E 25%, #3A3A3C 50%, #2C2C2E 75%);
+      background-size: 200% 100%;
+    }
+    
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
+    .heart-animation {
+      animation: morphHeart 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Hide scrollbar for tabs */
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #C6C6C8;
+      border-radius: 10px;
+    }
+    
+    .dark ::-webkit-scrollbar-thumb {
+      background: #48484A;
+    }
+    
+    /* Focus styles */
+    button:focus-visible, 
+    input:focus-visible, 
+    select:focus-visible {
+      outline: 2px solid #4F8CFF;
+      outline-offset: 2px;
+    }
+    
+    /* Profile icon upload */
+    .profile-icon-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .profile-icon-edit {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: #4F8CFF;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* User attribution */
+    .user-attribution {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .user-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    /* Floating Action Button */
+    .fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4F8CFF 0%, #A175FF 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(79, 140, 255, 0.4);
+      z-index: 10;
+      transition: all 0.3s ease;
+    }
+    
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(79, 140, 255, 0.5);
+    }
+    
+    /* Hero transition for detail view */
+    .hero-transition {
+      animation: heroTransition 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
   </style>
 </head>
-<body class="bg-ios-bg text-ios-dark min-h-screen flex flex-col overflow-x-hidden">
+<body class="min-h-screen flex flex-col overflow-x-hidden">
 
   <!-- Auth Screen -->
   <div id="authScreen" class="flex flex-col justify-center items-center min-h-screen p-6 animate-fade-in">
-    <div class="ios-card p-8 w-full max-w-sm flex flex-col items-center animate-scale-in">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center mb-6">
-        <i class="fas fa-image text-white text-2xl"></i>
+    <div class="card p-8 w-full max-w-sm flex flex-col items-center animate-scale-in">
+      <div class="w-20 h-20 rounded-full gradient-bg flex items-center justify-center mb-6 shadow-lg">
+        <i class="fas fa-palette text-white text-2xl"></i>
       </div>
-      <h1 class="text-2xl font-bold mb-2">WallpaperHub</h1>
-      <p class="text-ios-gray text-center mb-8">Sign in to explore and upload beautiful wallpapers</p>
+      <h1 class="text-2xl font-bold mb-2 gradient-text">Splitshare</h1>
+      <p class="text-text-secondary text-center mb-8">Discover and share beautiful wallpapers</p>
       
       <div class="w-full space-y-4">
-        <input id="emailInput" type="email" placeholder="Email" class="ios-input w-full">
-        <input id="passwordInput" type="password" placeholder="Password" class="ios-input w-full">
+        <input id="emailInput" type="email" placeholder="Email" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start">
+        <input id="passwordInput" type="password" placeholder="Password" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start">
         
-        <button id="loginBtn" class="ios-button w-full py-4 flex items-center justify-center">
+        <button id="loginBtn" class="button-primary w-full py-4 flex items-center justify-center">
           <span id="loginText">Sign In</span>
           <div id="loginSpinner" class="loading-spinner ml-2 hidden"></div>
         </button>
         
         <div class="flex items-center my-4">
           <div class="flex-1 h-px bg-gray-200"></div>
-          <span class="px-4 text-ios-gray text-sm">or</span>
+          <span class="px-4 text-text-secondary text-sm">or</span>
           <div class="flex-1 h-px bg-gray-200"></div>
         </div>
         
-        <button id="signupBtn" class="w-full py-4 rounded-lg border border-ios-primary text-ios-primary font-semibold">
+        <button id="signupBtn" class="w-full py-4 rounded-card border border-accent-start text-accent-start font-semibold transition-all hover:bg-accent-start hover:bg-opacity-5">
           Create Account
         </button>
       </div>
     </div>
     
-    <p class="text-ios-gray text-sm mt-8 text-center">
+    <p class="text-text-secondary text-sm mt-8 text-center">
       By continuing, you agree to our Terms and Privacy Policy
     </p>
   </div>
@@ -186,79 +405,109 @@
   <!-- Main App Screen -->
   <div id="appScreen" class="hidden flex flex-col min-h-screen">
     <!-- Header -->
-    <div class="pt-12 px-4 pb-4 bg-gradient-to-b from-ios-primary to-blue-500 text-white">
+    <div class="pt-12 px-4 pb-4 gradient-bg text-white shadow-lg">
       <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl font-bold">WallpaperHub</h1>
+        <h1 class="text-xl font-bold">Splitshare</h1>
         <div class="flex items-center space-x-4">
-          <button id="uploadIconBtn" class="p-2 rounded-full bg-white/20">
-            <i class="fas fa-plus text-sm"></i>
+          <button id="searchBtn" class="p-2 rounded-full bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30">
+            <i class="fas fa-search text-sm"></i>
           </button>
-          <button id="userMenuBtn" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <i class="fas fa-user text-sm"></i>
+          <button id="userMenuBtn" class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:bg-white/30">
+            <img id="userAvatarImg" src="" class="w-full h-full rounded-full object-cover hidden">
+            <i id="userAvatarFallback" class="fas fa-user text-sm"></i>
           </button>
         </div>
       </div>
       
       <!-- Tabs -->
       <div class="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
-        <button class="tab-button active text-white font-medium pb-2 border-b-2 border-white whitespace-nowrap">Featured</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Nature</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Abstract</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Dark</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap">Minimal</button>
+        <button class="tab-button active text-white font-medium pb-2 border-b-2 border-white whitespace-nowrap transition-all" data-category="all">All</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="popular">Popular</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="new">New</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="minimal">Minimal</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="amoled">Amoled</button>
+        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="favorites">Favorites</button>
       </div>
     </div>
     
     <!-- Wallpapers Grid -->
     <div class="flex-1 p-4">
-      <div id="gallery" class="grid grid-cols-2 gap-3">
+      <div id="gallery" class="grid grid-cols-2 gap-4">
         <!-- Wallpaper cards will be inserted here -->
+      </div>
+      <div id="emptyState" class="hidden flex flex-col items-center justify-center py-12 text-center animate-pulse-gentle">
+        <i class="fas fa-image text-6xl text-text-secondary mb-4"></i>
+        <h3 class="text-xl font-semibold mb-2">No wallpapers yet</h3>
+        <p class="text-text-secondary max-w-xs">Be the first to upload a wallpaper to this category!</p>
+        <button id="emptyUploadBtn" class="button-primary mt-4 px-6 py-3">Upload Now</button>
       </div>
     </div>
     
     <!-- Tab Bar -->
     <div class="tab-bar py-3 px-6 flex justify-between items-center">
-      <button class="tab-item active flex flex-col items-center text-xs">
+      <button class="tab-item active flex flex-col items-center text-xs text-accent-start transition-all" data-tab="home">
         <i class="fas fa-home text-lg mb-1"></i>
         <span>Home</span>
       </button>
-      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
-        <i class="fas fa-search text-lg mb-1"></i>
+      <button class="tab-item flex flex-col items-center text-xs text-text-secondary transition-all hover:text-accent-start" data-tab="explore">
+        <i class="fas fa-compass text-lg mb-1"></i>
         <span>Explore</span>
       </button>
-      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
-        <i class="fas fa-cloud-upload-alt text-lg mb-1"></i>
-        <span>Upload</span>
+      <button class="tab-item flex flex-col items-center text-xs text-text-secondary transition-all hover:text-accent-start" data-tab="favorites">
+        <i class="fas fa-heart text-lg mb-1"></i>
+        <span>Favorites</span>
       </button>
-      <button class="tab-item flex flex-col items-center text-xs text-ios-gray">
+      <button class="tab-item flex flex-col items-center text-xs text-text-secondary transition-all hover:text-accent-start" data-tab="profile">
         <i class="fas fa-user text-lg mb-1"></i>
         <span>Profile</span>
       </button>
     </div>
+    
+    <!-- Floating Action Button -->
+    <button id="fabUpload" class="fab animate-bounce-in">
+      <i class="fas fa-plus text-lg"></i>
+    </button>
   </div>
 
   <!-- Upload Modal -->
   <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
     <div class="modal-overlay absolute inset-0" id="uploadModalOverlay"></div>
-    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
+    <div class="card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-xl font-bold">Upload Wallpaper</h2>
-        <button id="closeUploadModal" class="p-2 rounded-full bg-ios-bg">
-          <i class="fas fa-times text-ios-gray"></i>
+        <button id="closeUploadModal" class="p-2 rounded-full bg-primary-bg transition-all hover:bg-gray-100">
+          <i class="fas fa-times text-text-secondary"></i>
         </button>
       </div>
       
-      <div class="border-2 border-dashed border-ios-gray/30 rounded-xl p-8 text-center mb-6">
-        <i class="fas fa-cloud-upload-alt text-4xl text-ios-gray/50 mb-4"></i>
-        <p class="text-ios-gray mb-2">Drag & drop your image here</p>
-        <p class="text-ios-gray text-sm">or</p>
+      <div class="border-2 border-dashed border-gray-300 rounded-card p-8 text-center mb-6 transition-all hover:border-accent-start">
+        <i class="fas fa-cloud-upload-alt text-4xl text-text-secondary mb-4"></i>
+        <p class="text-text-secondary mb-2">Drag & drop your image here</p>
+        <p class="text-text-secondary text-sm">or</p>
         <input id="fileInput" type="file" accept="image/*" class="hidden" />
-        <button id="browseFilesBtn" class="ios-button mt-4 px-6 py-2">Browse Files</button>
+        <button id="browseFilesBtn" class="button-primary mt-4 px-6 py-2">Browse Files</button>
+      </div>
+      
+      <div class="mb-4">
+        <label class="block text-text-secondary mb-2">Title</label>
+        <input id="wallpaperTitle" type="text" placeholder="Enter wallpaper title" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start">
+      </div>
+      
+      <div class="mb-6">
+        <label class="block text-text-secondary mb-2">Category</label>
+        <select id="wallpaperCategory" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start">
+          <option value="minimal">Minimal</option>
+          <option value="amoled">Amoled</option>
+          <option value="nature">Nature</option>
+          <option value="abstract">Abstract</option>
+          <option value="gradient">Gradient</option>
+          <option value="other">Other</option>
+        </select>
       </div>
       
       <div class="flex space-x-3">
-        <button id="cancelUploadBtn" class="flex-1 py-3 rounded-lg border border-ios-gray/30 font-semibold">Cancel</button>
-        <button id="confirmUploadBtn" class="flex-1 py-3 rounded-lg bg-ios-primary text-white font-semibold flex items-center justify-center">
+        <button id="cancelUploadBtn" class="flex-1 py-3 rounded-card border border-gray-300 font-semibold transition-all hover:bg-primary-bg">Cancel</button>
+        <button id="confirmUploadBtn" class="flex-1 py-3 rounded-card button-primary flex items-center justify-center">
           <span id="uploadText">Upload</span>
           <div id="uploadSpinner" class="loading-spinner ml-2 hidden"></div>
         </button>
@@ -270,45 +519,79 @@
   <div id="detailModal" class="hidden fixed inset-0 z-50">
     <div class="absolute inset-0 bg-black" id="detailModalBg"></div>
     <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10">
-      <button id="closeDetailModal" class="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center">
-        <i class="fas fa-times text-white"></i>
+      <button id="closeDetailModal" class="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-sm transition-all hover:bg-black/60">
+        <i class="fas fa-arrow-left text-white"></i>
       </button>
-      <button id="downloadWallpaperBtn" class="px-4 py-2 rounded-full bg-black/40 text-white font-medium">
-        <i class="fas fa-download mr-2"></i>Download
-      </button>
+      <div class="flex space-x-2">
+        <button id="likeDetailBtn" class="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-sm transition-all hover:bg-black/60">
+          <i class="fas fa-heart text-white"></i>
+        </button>
+        <button id="downloadDetailBtn" class="px-4 py-2 rounded-full bg-black/40 text-white font-medium backdrop-blur-sm transition-all hover:bg-black/60">
+          <i class="fas fa-download mr-2"></i>Download
+        </button>
+      </div>
     </div>
     
     <div class="absolute inset-0 flex items-center justify-center p-4">
-      <img id="detailImage" src="" class="max-w-full max-h-full rounded-lg" />
+      <img id="detailImage" src="" class="max-w-full max-h-full rounded-card shadow-2xl hero-transition" />
+    </div>
+    
+    <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
+      <h2 id="detailTitle" class="text-xl font-bold mb-2"></h2>
+      <div class="flex justify-between items-center">
+        <div class="user-attribution">
+          <img id="detailUserAvatar" src="" class="user-avatar hidden">
+          <i id="detailUserFallback" class="fas fa-user"></i>
+          <span id="detailUserName"></span>
+        </div>
+        <div class="flex space-x-2">
+          <span id="detailCategory" class="chip"></span>
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- User Menu Modal -->
   <div id="userMenuModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
     <div class="modal-overlay absolute inset-0" id="userMenuOverlay"></div>
-    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-2 relative animate-slide-up">
-      <div class="p-4 border-b border-ios-bg">
-        <p class="font-semibold" id="userEmail">user@example.com</p>
-        <p class="text-ios-gray text-sm">Free Account</p>
+    <div class="card w-full max-w-lg mx-4 mb-4 p-2 relative animate-slide-up">
+      <div class="p-4 border-b border-primary-bg flex items-center gap-3">
+        <div class="profile-icon-container">
+          <img id="menuUserAvatar" src="" class="w-12 h-12 rounded-full object-cover hidden">
+          <div id="menuUserFallback" class="w-12 h-12 rounded-full gradient-bg flex items-center justify-center">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <input type="file" id="avatarUpload" accept="image/*" class="hidden">
+          <label for="avatarUpload" class="profile-icon-edit">
+            <i class="fas fa-camera"></i>
+          </label>
+        </div>
+        <div>
+          <p class="font-semibold" id="userEmail">user@example.com</p>
+          <p class="text-text-secondary text-sm">Free Account</p>
+        </div>
       </div>
       
-      <button class="w-full text-left p-4 flex items-center">
-        <i class="fas fa-user-circle text-ios-gray mr-3"></i>
+      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-primary-bg rounded-card" id="editProfileBtn">
+        <i class="fas fa-user-edit text-text-secondary mr-3"></i>
         <span>Edit Profile</span>
       </button>
       
-      <button class="w-full text-left p-4 flex items-center">
-        <i class="fas fa-moon text-ios-gray mr-3"></i>
+      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-primary-bg rounded-card" id="darkModeToggle">
+        <i class="fas fa-moon text-text-secondary mr-3"></i>
         <span>Dark Mode</span>
+        <div class="ml-auto bg-gray-300 w-10 h-6 rounded-full relative transition-all" id="darkModeToggleSwitch">
+          <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200"></div>
+        </div>
       </button>
       
-      <button class="w-full text-left p-4 flex items-center">
-        <i class="fas fa-cog text-ios-gray mr-3"></i>
+      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-primary-bg rounded-card" id="settingsBtn">
+        <i class="fas fa-cog text-text-secondary mr-3"></i>
         <span>Settings</span>
       </button>
       
       <div class="p-2">
-        <button id="logoutBtn" class="w-full text-left p-4 flex items-center text-ios-red rounded-lg bg-ios-bg">
+        <button id="logoutBtn" class="w-full text-left p-4 flex items-center text-red-500 rounded-card bg-primary-bg transition-all hover:bg-red-50">
           <i class="fas fa-sign-out-alt mr-3"></i>
           <span>Sign Out</span>
         </button>
@@ -316,14 +599,78 @@
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
+    <div class="modal-overlay absolute inset-0" id="editProfileOverlay"></div>
+    <div class="card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold">Edit Profile</h2>
+        <button id="closeEditProfileModal" class="p-2 rounded-full bg-primary-bg transition-all hover:bg-gray-100">
+          <i class="fas fa-times text-text-secondary"></i>
+        </button>
+      </div>
+      
+      <div class="flex flex-col items-center mb-6">
+        <div class="profile-icon-container mb-4">
+          <img id="editProfileAvatar" src="" class="w-20 h-20 rounded-full object-cover hidden">
+          <div id="editProfileFallback" class="w-20 h-20 rounded-full gradient-bg flex items-center justify-center">
+            <i class="fas fa-user text-white text-2xl"></i>
+          </div>
+          <input type="file" id="editAvatarUpload" accept="image/*" class="hidden">
+          <label for="editAvatarUpload" class="profile-icon-edit">
+            <i class="fas fa-camera"></i>
+          </label>
+        </div>
+        <button class="text-accent-start font-medium transition-all hover:text-accent-end" id="changePhotoBtn">Change Photo</button>
+      </div>
+      
+      <div class="space-y-4 mb-6">
+        <div>
+          <label class="block text-text-secondary mb-2">Display Name</label>
+          <input type="text" id="displayNameInput" placeholder="Your name" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start" value="User">
+        </div>
+        
+        <div>
+          <label class="block text-text-secondary mb-2">Email</label>
+          <input type="email" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none opacity-70" value="user@example.com" readonly>
+        </div>
+        
+        <div>
+          <label class="block text-text-secondary mb-2">Bio</label>
+          <textarea id="bioInput" class="w-full px-4 py-3 bg-primary-bg rounded-card border-none focus:ring-2 focus:ring-accent-start h-24" placeholder="Tell us about yourself">Wallpaper enthusiast</textarea>
+        </div>
+      </div>
+      
+      <div class="flex space-x-3">
+        <button id="cancelEditProfileBtn" class="flex-1 py-3 rounded-card border border-gray-300 font-semibold transition-all hover:bg-primary-bg">Cancel</button>
+        <button id="saveProfileBtn" class="flex-1 py-3 rounded-card button-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
+    // Import Supabase (using the same credentials as before)
     import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-    // Replace with your project credentials
     const SUPABASE_URL = "https://ablcfxrtbhmbneucunkw.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibGNmeHJ0YmhtYm5ldWN1bmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MjA0NTMsImV4cCI6MjA3ODA5NjQ1M30.9YjUJmml5L0S0N7JwcgHh0kV-WxWHqWejFsm0qcfuks";
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    
+    const getSiteUrl = () => {
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000';
+      }
+      return window.location.origin;
+    };
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+        redirectTo: getSiteUrl()
+      }
+    });
 
     // Elements
     const authScreen = document.getElementById("authScreen");
@@ -336,9 +683,20 @@
     const signupBtn = document.getElementById("signupBtn");
     const logoutBtn = document.getElementById("logoutBtn");
     const gallery = document.getElementById("gallery");
-    const uploadIconBtn = document.getElementById("uploadIconBtn");
+    const emptyState = document.getElementById("emptyState");
+    const emptyUploadBtn = document.getElementById("emptyUploadBtn");
+    const uploadIconBtn = document.getElementById("fabUpload");
     const userMenuBtn = document.getElementById("userMenuBtn");
     const userEmail = document.getElementById("userEmail");
+    const userAvatarImg = document.getElementById("userAvatarImg");
+    const userAvatarFallback = document.getElementById("userAvatarFallback");
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const darkModeToggleSwitch = document.getElementById("darkModeToggleSwitch");
+    const avatarUpload = document.getElementById("avatarUpload");
+    const editAvatarUpload = document.getElementById("editAvatarUpload");
+    const changePhotoBtn = document.getElementById("changePhotoBtn");
+    const displayNameInput = document.getElementById("displayNameInput");
+    const bioInput = document.getElementById("bioInput");
     
     // Modal elements
     const uploadModal = document.getElementById("uploadModal");
@@ -346,6 +704,8 @@
     const closeUploadModal = document.getElementById("closeUploadModal");
     const browseFilesBtn = document.getElementById("browseFilesBtn");
     const fileInput = document.getElementById("fileInput");
+    const wallpaperTitle = document.getElementById("wallpaperTitle");
+    const wallpaperCategory = document.getElementById("wallpaperCategory");
     const cancelUploadBtn = document.getElementById("cancelUploadBtn");
     const confirmUploadBtn = document.getElementById("confirmUploadBtn");
     const uploadText = document.getElementById("uploadText");
@@ -355,19 +715,114 @@
     const detailModalBg = document.getElementById("detailModalBg");
     const closeDetailModal = document.getElementById("closeDetailModal");
     const detailImage = document.getElementById("detailImage");
-    const downloadWallpaperBtn = document.getElementById("downloadWallpaperBtn");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailUserAvatar = document.getElementById("detailUserAvatar");
+    const detailUserFallback = document.getElementById("detailUserFallback");
+    const detailUserName = document.getElementById("detailUserName");
+    const detailCategory = document.getElementById("detailCategory");
+    const downloadDetailBtn = document.getElementById("downloadDetailBtn");
+    const likeDetailBtn = document.getElementById("likeDetailBtn");
     
     const userMenuModal = document.getElementById("userMenuModal");
     const userMenuOverlay = document.getElementById("userMenuOverlay");
+    const menuUserAvatar = document.getElementById("menuUserAvatar");
+    const menuUserFallback = document.getElementById("menuUserFallback");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const settingsBtn = document.getElementById("settingsBtn");
+    
+    const editProfileModal = document.getElementById("editProfileModal");
+    const editProfileOverlay = document.getElementById("editProfileOverlay");
+    const closeEditProfileModal = document.getElementById("closeEditProfileModal");
+    const editProfileAvatar = document.getElementById("editProfileAvatar");
+    const editProfileFallback = document.getElementById("editProfileFallback");
+    const cancelEditProfileBtn = document.getElementById("cancelEditProfileBtn");
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+
+    // Current state
+    let currentUser = null;
+    let currentCategory = 'all';
+    let currentWallpapers = [];
+    let isDarkMode = localStorage.getItem('darkMode') === 'true';
+    let userProfile = {
+      displayName: 'User',
+      bio: 'Wallpaper enthusiast',
+      avatarUrl: null
+    };
+
+    // Initialize app
+    function initApp() {
+      initDarkMode();
+      loadUserProfile();
+    }
+
+    // Initialize dark mode
+    function initDarkMode() {
+      if (isDarkMode) {
+        document.body.classList.add('dark');
+        darkModeToggleSwitch.classList.add('bg-accent-start');
+        darkModeToggleSwitch.querySelector('div').style.transform = 'translateX(20px)';
+      } else {
+        document.body.classList.remove('dark');
+        darkModeToggleSwitch.classList.remove('bg-accent-start');
+        darkModeToggleSwitch.querySelector('div').style.transform = 'translateX(0)';
+      }
+    }
+
+    // Load user profile from localStorage
+    function loadUserProfile() {
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        userProfile = JSON.parse(savedProfile);
+        displayNameInput.value = userProfile.displayName;
+        bioInput.value = userProfile.bio;
+        
+        // Update avatar if exists
+        if (userProfile.avatarUrl) {
+          updateAvatarElements(userProfile.avatarUrl);
+        }
+      }
+    }
+
+    // Save user profile to localStorage
+    function saveUserProfile() {
+      localStorage.setItem('userProfile', JSON.stringify(userProfile));
+    }
+
+    // Update avatar across all UI elements
+    function updateAvatarElements(avatarUrl) {
+      // Update in header
+      userAvatarImg.src = avatarUrl;
+      userAvatarImg.classList.remove('hidden');
+      userAvatarFallback.classList.add('hidden');
+      
+      // Update in user menu
+      menuUserAvatar.src = avatarUrl;
+      menuUserAvatar.classList.remove('hidden');
+      menuUserFallback.classList.add('hidden');
+      
+      // Update in edit profile
+      editProfileAvatar.src = avatarUrl;
+      editProfileAvatar.classList.remove('hidden');
+      editProfileFallback.classList.add('hidden');
+    }
+
+    // Toggle dark mode
+    function toggleDarkMode() {
+      isDarkMode = !isDarkMode;
+      localStorage.setItem('darkMode', isDarkMode);
+      initDarkMode();
+    }
 
     // Show/Hide screens
     function showApp(user) {
       if (user) {
+        currentUser = user;
         authScreen.classList.add("hidden");
         appScreen.classList.remove("hidden");
         userEmail.textContent = user.email;
         loadWallpapers();
       } else {
+        currentUser = null;
         authScreen.classList.remove("hidden");
         appScreen.classList.add("hidden");
       }
@@ -375,12 +830,19 @@
 
     // Auth state listener
     supabase.auth.onAuthStateChange(async (event, session) => {
-      showApp(session?.user);
+      if (event === 'SIGNED_IN') {
+        showApp(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        showApp(null);
+      }
     });
 
     // Manual check on load
-    const { data: sessionData } = await supabase.auth.getSession();
-    showApp(sessionData.session?.user);
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      showApp(session?.user);
+      initApp();
+    });
 
     // Login handler
     loginBtn.addEventListener("click", async () => {
@@ -397,27 +859,18 @@
       loginSpinner.classList.remove("hidden");
       loginBtn.disabled = true;
       
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       
       if (error) {
-        if (error.message.includes("Invalid login")) {
-          // Try to sign up instead
-          const { error: signUpError } = await supabase.auth.signUp({ email, password });
-          
-          if (signUpError) {
-            showToast(signUpError.message);
-          } else {
-            showToast("Signup successful! Check your email to confirm.");
-          }
-        } else {
-          showToast(error.message);
-        }
+        showToast(error.message);
+        loginText.textContent = "Sign In";
+        loginSpinner.classList.add("hidden");
+        loginBtn.disabled = false;
+        return;
       }
       
-      // Reset button state
-      loginText.textContent = "Sign In";
-      loginSpinner.classList.add("hidden");
-      loginBtn.disabled = false;
+      showApp(data.user);
+      showToast("Welcome back!");
     });
 
     // Signup handler
@@ -430,16 +883,29 @@
         return;
       }
       
+      if (password.length < 6) {
+        showToast("Password must be at least 6 characters");
+        return;
+      }
+      
       // Show loading state
       signupBtn.innerHTML = "Creating Account...";
       signupBtn.disabled = true;
       
-      const { error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          emailRedirectTo: getSiteUrl()
+        }
+      });
       
       if (error) {
         showToast(error.message);
       } else {
-        showToast("Signup successful! Check your email to confirm.");
+        showToast("Account created! Check your email for verification.");
+        emailInput.value = "";
+        passwordInput.value = "";
       }
       
       // Reset button state
@@ -452,10 +918,15 @@
       await supabase.auth.signOut();
       showApp(null);
       closeModal(userMenuModal);
+      showToast("Signed out successfully");
     });
 
     // Upload handlers
     uploadIconBtn.addEventListener("click", () => {
+      openModal(uploadModal);
+    });
+    
+    emptyUploadBtn.addEventListener("click", () => {
       openModal(uploadModal);
     });
     
@@ -466,14 +937,25 @@
     fileInput.addEventListener("change", () => {
       if (fileInput.files.length > 0) {
         browseFilesBtn.textContent = "File Selected";
-        browseFilesBtn.classList.add("bg-ios-green");
+        browseFilesBtn.classList.add("bg-green-500");
+        // Auto-generate title from filename
+        const fileName = fileInput.files[0].name.replace(/\.[^/.]+$/, ""); // Remove extension
+        wallpaperTitle.value = fileName.charAt(0).toUpperCase() + fileName.slice(1);
       }
     });
     
     confirmUploadBtn.addEventListener("click", async () => {
       const file = fileInput.files[0];
+      const title = wallpaperTitle.value;
+      const category = wallpaperCategory.value;
+      
       if (!file) {
         showToast("Please select a wallpaper first!");
+        return;
+      }
+      
+      if (!title) {
+        showToast("Please enter a title for your wallpaper");
         return;
       }
 
@@ -482,83 +964,301 @@
       uploadSpinner.classList.remove("hidden");
       confirmUploadBtn.disabled = true;
 
-      const compressed = await compressImage(file, 0.7);
-      const filename = `${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage.from("wallpapers").upload(filename, compressed);
+      try {
+        // Optimize for Supabase free tier (5MB file limit)
+        const compressed = await compressImage(file, 0.6);
+        const filename = `${Date.now()}_${file.name}`;
+        
+        // Check file size (Supabase free tier has 5MB limit)
+        if (compressed.size > 5 * 1024 * 1024) {
+          throw new Error("File size too large. Please use a smaller image (max 5MB).");
+        }
+        
+        // Upload to storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("wallpapers")
+          .upload(filename, compressed);
 
-      if (uploadError) {
-        showToast(uploadError.message);
+        if (uploadError) throw uploadError;
+
+        // Get public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from("wallpapers")
+          .getPublicUrl(filename);
+
+        // Insert into database
+        const { error: dbError } = await supabase
+          .from("wallpapers")
+          .insert({ 
+            title: title,
+            category: category,
+            image_url: publicUrl,
+            user_id: currentUser.id,
+            user_email: currentUser.email,
+            user_name: userProfile.displayName,
+            user_avatar: userProfile.avatarUrl
+          });
+
+        if (dbError) throw dbError;
+
+        // Reset form
+        fileInput.value = "";
+        browseFilesBtn.textContent = "Browse Files";
+        browseFilesBtn.classList.remove("bg-green-500");
+        wallpaperTitle.value = "";
+        
         uploadText.textContent = "Upload";
         uploadSpinner.classList.add("hidden");
         confirmUploadBtn.disabled = false;
-        return;
+        
+        closeModal(uploadModal);
+        loadWallpapers();
+        showToast("Wallpaper uploaded successfully!");
+      } catch (error) {
+        console.error("Upload error:", error);
+        showToast("Upload failed: " + error.message);
+        uploadText.textContent = "Upload";
+        uploadSpinner.classList.add("hidden");
+        confirmUploadBtn.disabled = false;
       }
-
-      const { data: publicUrl } = supabase.storage.from("wallpapers").getPublicUrl(filename);
-      await supabase.from("wallpapers").insert({ image_url: publicUrl.publicUrl });
-
-      fileInput.value = "";
-      browseFilesBtn.textContent = "Browse Files";
-      browseFilesBtn.classList.remove("bg-ios-green");
-      
-      uploadText.textContent = "Upload";
-      uploadSpinner.classList.add("hidden");
-      confirmUploadBtn.disabled = false;
-      
-      closeModal(uploadModal);
-      loadWallpapers();
-      showToast("Wallpaper uploaded successfully!");
     });
 
     // Load wallpapers
-    async function loadWallpapers() {
-      const { data, error } = await supabase
-        .from("wallpapers")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(20);
+    async function loadWallpapers(category = 'all') {
+      try {
+        // Show loading state
+        gallery.innerHTML = Array.from({length: 6}, () => `
+          <div class="card animate-pulse">
+            <div class="w-full h-48 image-loading rounded-card"></div>
+            <div class="p-4">
+              <div class="h-4 image-loading rounded mb-2"></div>
+              <div class="flex justify-between">
+                <div class="h-3 image-loading rounded w-16"></div>
+                <div class="h-3 image-loading rounded w-20"></div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        
+        let wallpapers = [];
+        
+        if (category === 'favorites') {
+          // Load favorites from localStorage
+          wallpapers = JSON.parse(localStorage.getItem('favorites') || '[]');
+        } else {
+          // Load from Supabase
+          let query = supabase
+            .from("wallpapers")
+            .select("*")
+            .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error(error);
-        return;
+          if (category !== 'all') {
+            query = query.eq('category', category);
+          }
+
+          const { data, error } = await query;
+          if (error) throw error;
+          wallpapers = data || [];
+        }
+
+        currentWallpapers = wallpapers;
+        renderWallpapers(currentWallpapers, category);
+        
+        // Show empty state if no wallpapers
+        if (currentWallpapers.length === 0) {
+          gallery.classList.add('hidden');
+          emptyState.classList.remove('hidden');
+        } else {
+          gallery.classList.remove('hidden');
+          emptyState.classList.add('hidden');
+        }
+      } catch (error) {
+        console.error("Error loading wallpapers:", error);
+        showToast("Failed to load wallpapers");
       }
+    }
 
-      gallery.innerHTML = data
+    // Render wallpapers to the gallery
+    function renderWallpapers(wallpapers, category) {
+      gallery.innerHTML = wallpapers
         .map(w => `
-          <div class="wallpaper-card animate-scale-in" data-url="${w.image_url}">
-            <img src="${w.image_url}" class="w-full h-48 object-cover rounded-xl" loading="lazy" />
+          <div class="card animate-scale-in cursor-pointer" data-id="${w.id}">
+            <div class="relative">
+              <img src="${w.image_url}" class="w-full h-48 object-cover" loading="lazy" />
+              <div class="card-overlay">
+                <h3 class="font-medium text-white truncate">${w.title}</h3>
+                <div class="flex justify-between items-center mt-2">
+                  <div class="user-attribution">
+                    ${w.user_avatar ? 
+                      `<img src="${w.user_avatar}" class="user-avatar">` : 
+                      `<i class="fas fa-user"></i>`
+                    }
+                    <span>${w.user_name || 'User'}</span>
+                  </div>
+                  <div class="flex space-x-1">
+                    <button class="wallpaper-like w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm transition-all hover:bg-white/30 ${isFavorited(w.id) ? 'text-red-500' : 'text-white'}">
+                      <i class="fas fa-heart text-xs"></i>
+                    </button>
+                    <button class="wallpaper-download w-8 h-8 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm transition-all hover:bg-white/30 text-white">
+                      <i class="fas fa-download text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         `)
         .join("");
         
-      // Add click event to wallpaper cards
-      document.querySelectorAll('.wallpaper-card').forEach(card => {
-        card.addEventListener('click', () => {
-          const imageUrl = card.getAttribute('data-url');
-          openWallpaperDetail(imageUrl);
+      // Add event listeners to wallpaper cards
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (!e.target.closest('.wallpaper-like') && !e.target.closest('.wallpaper-download')) {
+            const wallpaperId = card.getAttribute('data-id');
+            const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
+            if (wallpaper) {
+              openWallpaperDetail(wallpaper);
+            }
+          }
+        });
+      });
+      
+      // Add event listeners to like buttons
+      document.querySelectorAll('.wallpaper-like').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const card = e.target.closest('.card');
+          const wallpaperId = card.getAttribute('data-id');
+          await toggleFavorite(wallpaperId, button);
+        });
+      });
+      
+      // Add event listeners to download buttons
+      document.querySelectorAll('.wallpaper-download').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const card = e.target.closest('.card');
+          const wallpaperId = card.getAttribute('data-id');
+          const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
+          if (wallpaper) {
+            downloadWallpaper(wallpaper);
+          }
         });
       });
     }
 
-    // Open wallpaper detail view
-    function openWallpaperDetail(imageUrl) {
-      detailImage.src = imageUrl;
-      openModal(detailModal);
-      
-      // Set download functionality
-      downloadWallpaperBtn.onclick = () => {
+    // Check if wallpaper is favorited
+    function isFavorited(wallpaperId) {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      return favorites.some(w => w.id === wallpaperId);
+    }
+
+    // Toggle favorite on a wallpaper
+    async function toggleFavorite(wallpaperId, button) {
+      try {
+        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const existingIndex = favorites.findIndex(w => w.id === wallpaperId);
+        
+        if (existingIndex !== -1) {
+          // Remove from favorites
+          favorites.splice(existingIndex, 1);
+          button.classList.remove('text-red-500');
+          button.querySelector('i').classList.remove('text-red-500');
+          showToast("Removed from favorites");
+        } else {
+          // Add to favorites
+          const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
+          if (wallpaper) {
+            favorites.push(wallpaper);
+            button.classList.add('text-red-500');
+            button.querySelector('i').classList.add('text-red-500');
+            button.querySelector('i').classList.add('heart-animation');
+            showToast("Added to favorites");
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+              button.querySelector('i').classList.remove('heart-animation');
+            }, 600);
+          }
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        
+        // If we're on the favorites tab, reload
+        if (currentCategory === 'favorites') {
+          loadWallpapers('favorites');
+        }
+      } catch (error) {
+        console.error("Error toggling favorite:", error);
+        showToast("Failed to update favorites");
+      }
+    }
+
+    // Download wallpaper
+    async function downloadWallpaper(wallpaper) {
+      try {
+        // Increment download count in database if it's not a local wallpaper
+        if (wallpaper.id && !wallpaper.id.startsWith('local-')) {
+          await supabase.rpc('increment_downloads', { wallpaper_id: wallpaper.id });
+        }
+        
+        // Create download link
         const a = document.createElement('a');
-        a.href = imageUrl;
-        a.download = 'wallpaper.jpg';
+        a.href = wallpaper.image_url;
+        a.download = `splitshare-wallpaper-${wallpaper.id || Date.now()}.jpg`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
+        
         showToast("Wallpaper downloaded!");
+        
+        // Reload to update download count if needed
+        loadWallpapers(currentCategory);
+      } catch (error) {
+        console.error("Error downloading wallpaper:", error);
+        showToast("Failed to download wallpaper");
+      }
+    }
+
+    // Open wallpaper detail view
+    function openWallpaperDetail(wallpaper) {
+      detailImage.src = wallpaper.image_url;
+      detailTitle.textContent = wallpaper.title;
+      detailCategory.textContent = `#${wallpaper.category}`;
+      
+      // Set user info
+      if (wallpaper.user_avatar) {
+        detailUserAvatar.src = wallpaper.user_avatar;
+        detailUserAvatar.classList.remove('hidden');
+        detailUserFallback.classList.add('hidden');
+      } else {
+        detailUserAvatar.classList.add('hidden');
+        detailUserFallback.classList.remove('hidden');
+      }
+      detailUserName.textContent = wallpaper.user_name || 'User';
+      
+      // Set like button state
+      if (isFavorited(wallpaper.id)) {
+        likeDetailBtn.innerHTML = '<i class="fas fa-heart text-red-500"></i>';
+      } else {
+        likeDetailBtn.innerHTML = '<i class="fas fa-heart text-white"></i>';
+      }
+      
+      openModal(detailModal);
+      
+      // Set download functionality
+      downloadDetailBtn.onclick = () => {
+        downloadWallpaper(wallpaper);
+      };
+      
+      // Set like functionality
+      likeDetailBtn.onclick = () => {
+        toggleFavorite(wallpaper.id, likeDetailBtn);
       };
     }
 
-    // Compress image before upload
-    function compressImage(file, quality = 0.7) {
+    // Compress image before upload (optimized for Supabase free tier)
+    function compressImage(file, quality = 0.6) {
       return new Promise(resolve => {
         const img = new Image();
         const reader = new FileReader();
@@ -567,11 +1267,20 @@
           img.onload = () => {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            const maxWidth = 1080;
-            const scale = Math.min(1, maxWidth / img.width);
-            canvas.width = img.width * scale;
-            canvas.height = img.height * scale;
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const maxWidth = 1600;
+            const maxHeight = 1600;
+            let { width, height } = img;
+            
+            // Calculate new dimensions while maintaining aspect ratio
+            if (width > maxWidth || height > maxHeight) {
+              const ratio = Math.min(maxWidth / width, maxHeight / height);
+              width *= ratio;
+              height *= ratio;
+            }
+            
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob(
               blob => resolve(new File([blob], file.name, { type: "image/jpeg" })),
               "image/jpeg",
@@ -586,10 +1295,12 @@
     // Modal functions
     function openModal(modal) {
       modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     }
     
     function closeModal(modal) {
       modal.classList.add('hidden');
+      document.body.style.overflow = '';
     }
     
     // Close modals when clicking on overlay or close buttons
@@ -603,6 +1314,56 @@
     userMenuOverlay.addEventListener('click', () => closeModal(userMenuModal));
     userMenuBtn.addEventListener('click', () => openModal(userMenuModal));
     
+    editProfileOverlay.addEventListener('click', () => closeModal(editProfileModal));
+    closeEditProfileModal.addEventListener('click', () => closeModal(editProfileModal));
+    cancelEditProfileBtn.addEventListener('click', () => closeModal(editProfileModal));
+    editProfileBtn.addEventListener('click', () => {
+      closeModal(userMenuModal);
+      openModal(editProfileModal);
+    });
+    
+    // Avatar upload handlers
+    avatarUpload.addEventListener('change', handleAvatarUpload);
+    editAvatarUpload.addEventListener('change', handleAvatarUpload);
+    changePhotoBtn.addEventListener('click', () => {
+      editAvatarUpload.click();
+    });
+    
+    function handleAvatarUpload(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const avatarUrl = event.target.result;
+          userProfile.avatarUrl = avatarUrl;
+          updateAvatarElements(avatarUrl);
+          saveUserProfile();
+          showToast("Profile picture updated!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    
+    // Dark mode toggle
+    darkModeToggle.addEventListener('click', () => {
+      toggleDarkMode();
+    });
+    
+    // Save profile
+    saveProfileBtn.addEventListener('click', () => {
+      userProfile.displayName = displayNameInput.value;
+      userProfile.bio = bioInput.value;
+      saveUserProfile();
+      closeModal(editProfileModal);
+      showToast("Profile updated successfully");
+    });
+    
+    // Settings button
+    settingsBtn.addEventListener('click', () => {
+      closeModal(userMenuModal);
+      showToast("Settings will be available soon");
+    });
+
     // Tab functionality
     document.querySelectorAll('.tab-button').forEach(button => {
       button.addEventListener('click', () => {
@@ -618,33 +1379,46 @@
         button.classList.add('border-white');
         button.classList.remove('border-transparent');
         
-        // In a real app, you would filter wallpapers by category here
-        showToast(`Showing ${button.textContent} wallpapers`);
+        const category = button.getAttribute('data-category');
+        currentCategory = category;
+        loadWallpapers(category);
       });
     });
     
     // Tab bar functionality
     document.querySelectorAll('.tab-item').forEach(tab => {
       tab.addEventListener('click', () => {
-        if (tab.textContent.includes('Upload')) {
+        const tabName = tab.getAttribute('data-tab');
+        
+        if (tabName === 'upload') {
           openModal(uploadModal);
           return;
         }
         
         document.querySelectorAll('.tab-item').forEach(t => {
-          t.classList.remove('active', 'text-ios-primary');
-          t.classList.add('text-ios-gray');
+          t.classList.remove('active', 'text-accent-start');
+          t.classList.add('text-text-secondary');
         });
         
-        tab.classList.add('active', 'text-ios-primary');
-        tab.classList.remove('text-ios-gray');
+        tab.classList.add('active', 'text-accent-start');
+        tab.classList.remove('text-text-secondary');
         
-        showToast(`Switched to ${tab.textContent} tab`);
+        if (tabName === 'profile') {
+          openModal(userMenuModal);
+        } else if (tabName === 'favorites') {
+          currentCategory = 'favorites';
+          loadWallpapers('favorites');
+        } else {
+          showToast(`Switched to ${tabName} tab`);
+        }
       });
     });
 
     // Toast notification
     function showToast(message) {
+      // Remove existing toasts
+      document.querySelectorAll('.toast').forEach(toast => toast.remove());
+      
       const toast = document.createElement('div');
       toast.className = 'toast';
       toast.textContent = message;
