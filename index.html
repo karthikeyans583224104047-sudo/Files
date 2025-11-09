@@ -32,6 +32,8 @@
             'bounce-in': 'bounceIn 0.5s ease-out',
             'slide-down': 'slideDown 0.3s ease-out',
             'pulse-subtle': 'pulseSubtle 2s infinite',
+            'float': 'float 3s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
           },
           keyframes: {
             fadeIn: {
@@ -59,6 +61,14 @@
             pulseSubtle: {
               '0%, 100%': { opacity: '1' },
               '50%': { opacity: '0.8' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' }
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(0, 122, 255, 0.3)' },
+              '100%': { boxShadow: '0 0 30px rgba(0, 122, 255, 0.6)' }
             }
           }
         }
@@ -79,42 +89,72 @@
       color: #FFFFFF;
     }
     
+    /* Parallax Scrolling Styles */
+    #image-track {
+      display: flex;
+      gap: 4vmin;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(0%, -50%); 
+      user-select: none;
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    
+    #image-track > .wallpaper-parallax {
+      width: 40vmin;
+      height: 56vmin;
+      object-fit: cover;
+      object-position: 100% center;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    #image-track > .wallpaper-parallax:hover {
+      transform: scale(1.05);
+    }
+    
     .ios-card {
       background: #FFFFFF;
-      border-radius: 14px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
+      backdrop-filter: blur(20px);
     }
     
     .dark .ios-card {
-      background: #1C1C1E;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      background: rgba(28, 28, 30, 0.9);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
     
     .ios-button {
       background: #007AFF;
-      border-radius: 10px;
+      border-radius: 14px;
       color: white;
       font-weight: 600;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 16px rgba(0, 122, 255, 0.3);
     }
     
     .ios-button:hover {
       background: #0056CC;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
     }
     
     .ios-button:active {
       transform: scale(0.98);
-      opacity: 0.8;
     }
     
     .ios-input {
       background: #F2F2F7;
-      border-radius: 10px;
-      padding: 14px 16px;
+      border-radius: 14px;
+      padding: 16px 18px;
       border: none;
       font-size: 16px;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
     }
     
     .dark .ios-input {
@@ -125,6 +165,7 @@
     .ios-input:focus {
       outline: none;
       background: #E5E5EA;
+      box-shadow: 0 0 0 2px #007AFF;
     }
     
     .dark .ios-input:focus {
@@ -144,27 +185,40 @@
     }
     
     .tab-item {
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      position: relative;
     }
     
     .tab-item.active {
       color: #007AFF;
     }
     
+    .tab-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: #007AFF;
+      border-radius: 50%;
+    }
+    
     .wallpaper-card {
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
-      border-radius: 12px;
+      border-radius: 16px;
       cursor: pointer;
     }
     
     .wallpaper-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
     
     .dark .wallpaper-card:hover {
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
     
     .wallpaper-card:active {
@@ -172,8 +226,8 @@
     }
     
     .modal-overlay {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
     
@@ -198,17 +252,18 @@
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 12px 20px;
-      border-radius: 10px;
+      padding: 14px 24px;
+      border-radius: 14px;
       z-index: 1000;
       animation: slideUp 0.3s ease-out;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
     
     .action-sheet {
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(20px);
-      border-radius: 14px 14px 0 0;
+      border-radius: 20px 20px 0 0;
       transition: all 0.3s ease;
     }
     
@@ -217,7 +272,7 @@
     }
     
     .action-sheet-item {
-      padding: 16px;
+      padding: 18px;
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       transition: background 0.2s;
     }
@@ -245,7 +300,7 @@
     
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-      width: 4px;
+      width: 6px;
     }
     
     ::-webkit-scrollbar-track {
@@ -273,7 +328,7 @@
     
     /* Gradient text */
     .gradient-text {
-      background: linear-gradient(135deg, #007AFF 0%, #0A84FF 100%);
+      background: linear-gradient(135deg, #007AFF 0%, #0A84FF 50%, #AF52DE 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -310,11 +365,12 @@
     
     /* Category badges */
     .category-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
+      padding: 6px 12px;
+      border-radius: 16px;
       font-size: 12px;
       font-weight: 600;
       text-transform: capitalize;
+      backdrop-filter: blur(10px);
     }
     
     .category-nature {
@@ -354,31 +410,78 @@
       right: 0;
       background: #007AFF;
       color: white;
-      width: 24px;
-      height: 24px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 12px;
       cursor: pointer;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .profile-icon-edit:hover {
+      transform: scale(1.1);
     }
     
     /* User attribution */
     .user-attribution {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-size: 12px;
       color: #8E8E93;
     }
     
     .user-avatar {
-      width: 20px;
-      height: 20px;
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       object-fit: cover;
+    }
+    
+    /* Parallax container */
+    .parallax-container {
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .dark .parallax-container {
+      background: linear-gradient(135deg, #000000 0%, #1C1C1E 100%);
+    }
+    
+    /* Delete button */
+    .delete-btn {
+      background: rgba(255, 59, 48, 0.9);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+    
+    .delete-btn:hover {
+      background: rgba(255, 59, 48, 1);
+      transform: scale(1.05);
+    }
+    
+    /* Glass morphism effect */
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .dark .glass {
+      background: rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
   </style>
 </head>
@@ -386,29 +489,29 @@
 
   <!-- Auth Screen -->
   <div id="authScreen" class="flex flex-col justify-center items-center min-h-screen p-6 animate-fade-in">
-    <div class="ios-card p-8 w-full max-w-sm flex flex-col items-center animate-scale-in">
-      <div class="w-20 h-20 rounded-full bg-gradient-to-br from-ios-primary to-ios-accent flex items-center justify-center mb-6 shadow-lg">
-        <i class="fas fa-palette text-white text-2xl"></i>
+    <div class="ios-card p-10 w-full max-w-md flex flex-col items-center animate-scale-in glass">
+      <div class="w-24 h-24 rounded-full bg-gradient-to-br from-ios-primary to-ios-purple flex items-center justify-center mb-6 shadow-lg animate-float">
+        <i class="fas fa-palette text-white text-3xl"></i>
       </div>
-      <h1 class="text-2xl font-bold mb-2 gradient-text">SplitShare Wallpapers</h1>
-      <p class="text-ios-gray text-center mb-8">Sign in to explore and upload beautiful wallpapers</p>
+      <h1 class="text-3xl font-bold mb-3 gradient-text animate-glow">SplitShare Wallpapers</h1>
+      <p class="text-ios-gray text-center mb-8 text-lg">Discover and share stunning wallpapers</p>
       
-      <div class="w-full space-y-4">
+      <div class="w-full space-y-5">
         <input id="emailInput" type="email" placeholder="Email" class="ios-input w-full">
         <input id="passwordInput" type="password" placeholder="Password" class="ios-input w-full">
         
-        <button id="loginBtn" class="ios-button w-full py-4 flex items-center justify-center shadow-md">
+        <button id="loginBtn" class="ios-button w-full py-4 flex items-center justify-center animate-pulse-subtle">
           <span id="loginText">Sign In</span>
           <div id="loginSpinner" class="loading-spinner ml-2 hidden"></div>
         </button>
         
-        <div class="flex items-center my-4">
+        <div class="flex items-center my-6">
           <div class="flex-1 h-px bg-ios-shadow"></div>
           <span class="px-4 text-ios-gray text-sm">or</span>
           <div class="flex-1 h-px bg-ios-shadow"></div>
         </div>
         
-        <button id="signupBtn" class="w-full py-4 rounded-lg border border-ios-primary text-ios-primary font-semibold transition-all hover:bg-ios-light-blue">
+        <button id="signupBtn" class="w-full py-4 rounded-2xl border-2 border-ios-primary text-ios-primary font-semibold transition-all hover:bg-ios-light-blue hover:border-ios-accent">
           Create Account
         </button>
       </div>
@@ -421,66 +524,78 @@
 
   <!-- Main App Screen -->
   <div id="appScreen" class="hidden flex flex-col min-h-screen">
-    <!-- Header -->
-    <div class="pt-12 px-4 pb-4 bg-gradient-to-br from-ios-primary to-ios-accent text-white shadow-lg">
-      <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl font-bold">SplitShare Wallpapers</h1>
-        <div class="flex items-center space-x-4">
-          <button id="uploadIconBtn" class="p-2 rounded-full bg-white/20 backdrop-blur-sm transition-all hover:bg-white/30">
-            <i class="fas fa-plus text-sm"></i>
-          </button>
-          <button id="userMenuBtn" class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all hover:bg-white/30">
-            <img id="userAvatarImg" src="" class="w-full h-full rounded-full object-cover hidden">
-            <i id="userAvatarFallback" class="fas fa-user text-sm"></i>
-          </button>
+    <!-- Parallax Hero Section -->
+    <div id="parallaxSection" class="parallax-container relative">
+      <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+        <!-- Parallax images will be loaded here -->
+      </div>
+      
+      <!-- Header Overlay -->
+      <div class="absolute top-0 left-0 right-0 pt-12 px-4 pb-4 bg-gradient-to-b from-black/50 to-transparent">
+        <div class="flex justify-between items-center mb-4">
+          <h1 class="text-2xl font-bold text-white">SplitShare Wallpapers</h1>
+          <div class="flex items-center space-x-4">
+            <button id="uploadIconBtn" class="p-3 rounded-2xl glass text-white transition-all hover:bg-white/30 animate-bounce-in">
+              <i class="fas fa-plus"></i>
+            </button>
+            <button id="userMenuBtn" class="w-10 h-10 rounded-2xl glass flex items-center justify-center transition-all hover:bg-white/30">
+              <img id="userAvatarImg" src="" class="w-full h-full rounded-2xl object-cover hidden">
+              <i id="userAvatarFallback" class="fas fa-user text-white"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Tabs -->
+        <div class="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
+          <button class="tab-button active text-white font-medium pb-2 border-b-2 border-white whitespace-nowrap transition-all" data-category="all">All</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="nature">Nature</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="abstract">Abstract</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="dark">Dark</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="minimal">Minimal</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="favorites">Favorites</button>
+          <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="downloads">Downloads</button>
         </div>
       </div>
       
-      <!-- Tabs -->
-      <div class="flex space-x-6 overflow-x-auto pb-2 scrollbar-hide">
-        <button class="tab-button active text-white font-medium pb-2 border-b-2 border-white whitespace-nowrap transition-all" data-category="all">All</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="nature">Nature</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="abstract">Abstract</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="dark">Dark</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="minimal">Minimal</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="favorites">Favorites</button>
-        <button class="tab-button text-white/70 font-medium pb-2 border-b-2 border-transparent whitespace-nowrap transition-all hover:text-white/90" data-category="downloads">Downloads</button>
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+        <i class="fas fa-chevron-down text-2xl"></i>
       </div>
     </div>
     
     <!-- Wallpapers Grid -->
-    <div class="flex-1 p-4">
-      <div id="gallery" class="grid grid-cols-2 gap-3">
+    <div class="flex-1 p-6 bg-ios-bg-light dark:bg-black">
+      <div id="gallery" class="grid grid-cols-2 gap-4">
         <!-- Wallpaper cards will be inserted here -->
       </div>
-      <div id="emptyState" class="hidden flex flex-col items-center justify-center py-12 text-center animate-pulse-subtle">
-        <i class="fas fa-image text-6xl text-ios-gray/30 mb-4"></i>
-        <h3 class="text-xl font-semibold mb-2">No wallpapers yet</h3>
-        <p class="text-ios-gray max-w-xs">Be the first to upload a wallpaper to this category!</p>
-        <button id="emptyUploadBtn" class="ios-button mt-4 px-6 py-3">Upload Now</button>
+      <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-pulse-subtle">
+        <i class="fas fa-image text-8xl text-ios-gray/30 mb-6 animate-float"></i>
+        <h3 class="text-2xl font-semibold mb-3">No wallpapers yet</h3>
+        <p class="text-ios-gray max-w-xs text-lg">Be the first to upload a wallpaper to this category!</p>
+        <button id="emptyUploadBtn" class="ios-button mt-6 px-8 py-4 animate-glow">Upload Now</button>
       </div>
     </div>
     
     <!-- Tab Bar -->
-    <div class="tab-bar py-3 px-6 flex justify-between items-center">
-      <button class="tab-item active flex flex-col items-center text-xs text-ios-primary transition-all" data-tab="home">
-        <i class="fas fa-home text-lg mb-1"></i>
+    <div class="tab-bar py-4 px-8 flex justify-between items-center">
+      <button id="homeTab" class="tab-item active flex flex-col items-center text-xs text-ios-primary transition-all" data-tab="home">
+        <i class="fas fa-home text-xl mb-1"></i>
         <span>Home</span>
       </button>
       <button class="tab-item flex flex-col items-center text-xs text-ios-gray transition-all hover:text-ios-primary/70" data-tab="explore">
-        <i class="fas fa-search text-lg mb-1"></i>
+        <i class="fas fa-search text-xl mb-1"></i>
         <span>Explore</span>
       </button>
       <button class="tab-item flex flex-col items-center text-xs text-ios-gray transition-all hover:text-ios-primary/70" data-tab="favorites">
-        <i class="fas fa-heart text-lg mb-1"></i>
+        <i class="fas fa-heart text-xl mb-1"></i>
         <span>Favorites</span>
       </button>
       <button class="tab-item flex flex-col items-center text-xs text-ios-gray transition-all hover:text-ios-primary/70" data-tab="downloads">
-        <i class="fas fa-download text-lg mb-1"></i>
+        <i class="fas fa-download text-xl mb-1"></i>
         <span>Downloads</span>
       </button>
       <button class="tab-item flex flex-col items-center text-xs text-ios-gray transition-all hover:text-ios-primary/70" data-tab="profile">
-        <i class="fas fa-user text-lg mb-1"></i>
+        <i class="fas fa-user text-xl mb-1"></i>
         <span>Profile</span>
       </button>
     </div>
@@ -489,994 +604,17 @@
   <!-- Upload Modal -->
   <div id="uploadModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
     <div class="modal-overlay absolute inset-0" id="uploadModalOverlay"></div>
-    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
+    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up glass">
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold">Upload Wallpaper</h2>
-        <button id="closeUploadModal" class="p-2 rounded-full bg-ios-bg-light transition-all hover:bg-ios-shadow">
+        <h2 class="text-2xl font-bold">Upload Wallpaper</h2>
+        <button id="closeUploadModal" class="p-3 rounded-2xl bg-ios-bg-light transition-all hover:bg-ios-shadow">
           <i class="fas fa-times text-ios-gray"></i>
         </button>
       </div>
       
-      <div class="border-2 border-dashed border-ios-shadow rounded-xl p-8 text-center mb-6 transition-all hover:border-ios-primary/50">
-        <i class="fas fa-cloud-upload-alt text-4xl text-ios-gray/50 mb-4"></i>
-        <p class="text-ios-gray mb-2">Drag & drop your image here</p>
+      <div class="border-2 border-dashed border-ios-shadow rounded-2xl p-10 text-center mb-6 transition-all hover:border-ios-primary/50 hover:bg-ios-light-blue/30">
+        <i class="fas fa-cloud-upload-alt text-5xl text-ios-gray/50 mb-4 animate-float"></i>
+        <p class="text-ios-gray mb-2 text-lg">Drag & drop your image here</p>
         <p class="text-ios-gray text-sm">or</p>
         <input id="fileInput" type="file" accept="image/*" class="hidden" />
-        <button id="browseFilesBtn" class="ios-button mt-4 px-6 py-2 shadow-md">Browse Files</button>
-      </div>
-      
-      <div class="mb-4">
-        <label class="block text-ios-gray mb-2">Title</label>
-        <input id="wallpaperTitle" type="text" placeholder="Enter wallpaper title" class="ios-input w-full">
-      </div>
-      
-      <div class="mb-6">
-        <label class="block text-ios-gray mb-2">Category</label>
-        <select id="wallpaperCategory" class="ios-input w-full">
-          <option value="nature">Nature</option>
-          <option value="abstract">Abstract</option>
-          <option value="dark">Dark</option>
-          <option value="minimal">Minimal</option>
-          <option value="other">Other</option>
-        </select>
-      </div>
-      
-      <div class="flex space-x-3">
-        <button id="cancelUploadBtn" class="flex-1 py-3 rounded-lg border border-ios-shadow font-semibold transition-all hover:bg-ios-bg-light">Cancel</button>
-        <button id="confirmUploadBtn" class="flex-1 py-3 rounded-lg bg-ios-primary text-white font-semibold flex items-center justify-center shadow-md transition-all hover:bg-ios-accent">
-          <span id="uploadText">Upload</span>
-          <div id="uploadSpinner" class="loading-spinner ml-2 hidden"></div>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Wallpaper Detail Modal -->
-  <div id="detailModal" class="hidden fixed inset-0 z-50">
-    <div class="absolute inset-0 bg-black" id="detailModalBg"></div>
-    <div class="absolute top-0 left-0 right-0 p-4 flex justify-between items-center z-10">
-      <button id="closeDetailModal" class="w-10 h-10 rounded-full bg-black/40 flex items-center justify-center backdrop-blur-sm transition-all hover:bg-black/60">
-        <i class="fas fa-times text-white"></i>
-      </button>
-      <button id="downloadWallpaperBtn" class="px-4 py-2 rounded-full bg-black/40 text-white font-medium backdrop-blur-sm transition-all hover:bg-black/60">
-        <i class="fas fa-download mr-2"></i>Download
-      </button>
-    </div>
-    
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <img id="detailImage" src="" class="max-w-full max-h-full rounded-lg shadow-2xl" />
-    </div>
-    
-    <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white">
-      <h2 id="detailTitle" class="text-xl font-bold mb-2"></h2>
-      <div class="flex justify-between items-center">
-        <div class="user-attribution">
-          <img id="detailUserAvatar" src="" class="user-avatar hidden">
-          <i id="detailUserFallback" class="fas fa-user"></i>
-          <span id="detailUserName"></span>
-        </div>
-        <span id="detailCategory" class="category-badge"></span>
-      </div>
-    </div>
-  </div>
-
-  <!-- User Menu Modal -->
-  <div id="userMenuModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
-    <div class="modal-overlay absolute inset-0" id="userMenuOverlay"></div>
-    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-2 relative animate-slide-up">
-      <div class="p-4 border-b border-ios-bg-light flex items-center gap-3">
-        <div class="profile-icon-container">
-          <img id="menuUserAvatar" src="" class="w-12 h-12 rounded-full object-cover hidden">
-          <div id="menuUserFallback" class="w-12 h-12 rounded-full bg-gradient-to-br from-ios-primary to-ios-accent flex items-center justify-center">
-            <i class="fas fa-user text-white"></i>
-          </div>
-          <input type="file" id="avatarUpload" accept="image/*" class="hidden">
-          <label for="avatarUpload" class="profile-icon-edit">
-            <i class="fas fa-camera"></i>
-          </label>
-        </div>
-        <div>
-          <p class="font-semibold" id="userEmail">user@example.com</p>
-          <p class="text-ios-gray text-sm">Free Account</p>
-        </div>
-      </div>
-      
-      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-ios-bg-light rounded-lg" id="editProfileBtn">
-        <i class="fas fa-user-edit text-ios-gray mr-3"></i>
-        <span>Edit Profile</span>
-      </button>
-      
-      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-ios-bg-light rounded-lg" id="darkModeToggle">
-        <i class="fas fa-moon text-ios-gray mr-3"></i>
-        <span>Dark Mode</span>
-        <div class="ml-auto bg-ios-shadow w-10 h-6 rounded-full relative transition-all" id="darkModeToggleSwitch">
-          <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform duration-200"></div>
-        </div>
-      </button>
-      
-      <button class="w-full text-left p-4 flex items-center transition-all hover:bg-ios-bg-light rounded-lg" id="settingsBtn">
-        <i class="fas fa-cog text-ios-gray mr-3"></i>
-        <span>Settings</span>
-      </button>
-      
-      <div class="p-2">
-        <button id="logoutBtn" class="w-full text-left p-4 flex items-center text-ios-red rounded-lg bg-ios-bg-light transition-all hover:bg-ios-red hover:bg-opacity-10">
-          <i class="fas fa-sign-out-alt mr-3"></i>
-          <span>Sign Out</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Edit Profile Modal -->
-  <div id="editProfileModal" class="hidden fixed inset-0 z-50 flex items-end justify-center">
-    <div class="modal-overlay absolute inset-0" id="editProfileOverlay"></div>
-    <div class="ios-card w-full max-w-lg mx-4 mb-4 p-6 relative animate-slide-up">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-xl font-bold">Edit Profile</h2>
-        <button id="closeEditProfileModal" class="p-2 rounded-full bg-ios-bg-light transition-all hover:bg-ios-shadow">
-          <i class="fas fa-times text-ios-gray"></i>
-        </button>
-      </div>
-      
-      <div class="flex flex-col items-center mb-6">
-        <div class="profile-icon-container mb-4">
-          <img id="editProfileAvatar" src="" class="w-20 h-20 rounded-full object-cover hidden">
-          <div id="editProfileFallback" class="w-20 h-20 rounded-full bg-gradient-to-br from-ios-primary to-ios-accent flex items-center justify-center">
-            <i class="fas fa-user text-white text-2xl"></i>
-          </div>
-          <input type="file" id="editAvatarUpload" accept="image/*" class="hidden">
-          <label for="editAvatarUpload" class="profile-icon-edit">
-            <i class="fas fa-camera"></i>
-          </label>
-        </div>
-        <button class="text-ios-primary font-medium transition-all hover:text-ios-accent" id="changePhotoBtn">Change Photo</button>
-      </div>
-      
-      <div class="space-y-4 mb-6">
-        <div>
-          <label class="block text-ios-gray mb-2">Display Name</label>
-          <input type="text" id="displayNameInput" placeholder="Your name" class="ios-input w-full" value="User">
-        </div>
-        
-        <div>
-          <label class="block text-ios-gray mb-2">Email</label>
-          <input type="email" class="ios-input w-full bg-ios-bg-light/50" value="user@example.com" readonly>
-        </div>
-        
-        <div>
-          <label class="block text-ios-gray mb-2">Bio</label>
-          <textarea id="bioInput" class="ios-input w-full h-24" placeholder="Tell us about yourself">Wallpaper enthusiast</textarea>
-        </div>
-      </div>
-      
-      <div class="flex space-x-3">
-        <button id="cancelEditProfileBtn" class="flex-1 py-3 rounded-lg border border-ios-shadow font-semibold transition-all hover:bg-ios-bg-light">Cancel</button>
-        <button id="saveProfileBtn" class="flex-1 py-3 rounded-lg bg-ios-primary text-white font-semibold shadow-md transition-all hover:bg-ios-accent">Save</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Script -->
-  <script type="module">
-    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-    // Replace with your project credentials
-    const SUPABASE_URL = "https://ablcfxrtbhmbneucunkw.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFibGNmeHJ0YmhtYm5ldWN1bmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI1MjA0NTMsImV4cCI6MjA3ODA5NjQ1M30.9YjUJmml5L0S0N7JwcgHh0kV-WxWHqWejFsm0qcfuks";
-    
-    // Dynamic site URL detection
-    const getSiteUrl = () => {
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:3000';
-      }
-      return window.location.origin;
-    };
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-      auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
-        flowType: 'pkce',
-        redirectTo: getSiteUrl()
-      }
-    });
-
-    // Elements
-    const authScreen = document.getElementById("authScreen");
-    const appScreen = document.getElementById("appScreen");
-    const emailInput = document.getElementById("emailInput");
-    const passwordInput = document.getElementById("passwordInput");
-    const loginBtn = document.getElementById("loginBtn");
-    const loginText = document.getElementById("loginText");
-    const loginSpinner = document.getElementById("loginSpinner");
-    const signupBtn = document.getElementById("signupBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const gallery = document.getElementById("gallery");
-    const emptyState = document.getElementById("emptyState");
-    const emptyUploadBtn = document.getElementById("emptyUploadBtn");
-    const uploadIconBtn = document.getElementById("uploadIconBtn");
-    const userMenuBtn = document.getElementById("userMenuBtn");
-    const userEmail = document.getElementById("userEmail");
-    const userAvatarImg = document.getElementById("userAvatarImg");
-    const userAvatarFallback = document.getElementById("userAvatarFallback");
-    const darkModeToggle = document.getElementById("darkModeToggle");
-    const darkModeToggleSwitch = document.getElementById("darkModeToggleSwitch");
-    const avatarUpload = document.getElementById("avatarUpload");
-    const editAvatarUpload = document.getElementById("editAvatarUpload");
-    const changePhotoBtn = document.getElementById("changePhotoBtn");
-    const displayNameInput = document.getElementById("displayNameInput");
-    const bioInput = document.getElementById("bioInput");
-    
-    // Modal elements
-    const uploadModal = document.getElementById("uploadModal");
-    const uploadModalOverlay = document.getElementById("uploadModalOverlay");
-    const closeUploadModal = document.getElementById("closeUploadModal");
-    const browseFilesBtn = document.getElementById("browseFilesBtn");
-    const fileInput = document.getElementById("fileInput");
-    const wallpaperTitle = document.getElementById("wallpaperTitle");
-    const wallpaperCategory = document.getElementById("wallpaperCategory");
-    const cancelUploadBtn = document.getElementById("cancelUploadBtn");
-    const confirmUploadBtn = document.getElementById("confirmUploadBtn");
-    const uploadText = document.getElementById("uploadText");
-    const uploadSpinner = document.getElementById("uploadSpinner");
-    
-    const detailModal = document.getElementById("detailModal");
-    const detailModalBg = document.getElementById("detailModalBg");
-    const closeDetailModal = document.getElementById("closeDetailModal");
-    const detailImage = document.getElementById("detailImage");
-    const detailTitle = document.getElementById("detailTitle");
-    const detailUserAvatar = document.getElementById("detailUserAvatar");
-    const detailUserFallback = document.getElementById("detailUserFallback");
-    const detailUserName = document.getElementById("detailUserName");
-    const detailCategory = document.getElementById("detailCategory");
-    const downloadWallpaperBtn = document.getElementById("downloadWallpaperBtn");
-    
-    const userMenuModal = document.getElementById("userMenuModal");
-    const userMenuOverlay = document.getElementById("userMenuOverlay");
-    const menuUserAvatar = document.getElementById("menuUserAvatar");
-    const menuUserFallback = document.getElementById("menuUserFallback");
-    const editProfileBtn = document.getElementById("editProfileBtn");
-    const settingsBtn = document.getElementById("settingsBtn");
-    
-    const editProfileModal = document.getElementById("editProfileModal");
-    const editProfileOverlay = document.getElementById("editProfileOverlay");
-    const closeEditProfileModal = document.getElementById("closeEditProfileModal");
-    const editProfileAvatar = document.getElementById("editProfileAvatar");
-    const editProfileFallback = document.getElementById("editProfileFallback");
-    const cancelEditProfileBtn = document.getElementById("cancelEditProfileBtn");
-    const saveProfileBtn = document.getElementById("saveProfileBtn");
-
-    // Current state
-    let currentUser = null;
-    let currentCategory = 'all';
-    let currentWallpapers = [];
-    let isDarkMode = localStorage.getItem('darkMode') === 'true';
-    let userProfile = {
-      displayName: 'User',
-      bio: 'Wallpaper enthusiast',
-      avatarUrl: null
-    };
-
-    // Initialize app
-    function initApp() {
-      initDarkMode();
-      loadUserProfile();
-    }
-
-    // Initialize dark mode
-    function initDarkMode() {
-      if (isDarkMode) {
-        document.body.classList.add('dark');
-        darkModeToggleSwitch.classList.add('bg-ios-primary');
-        darkModeToggleSwitch.querySelector('div').style.transform = 'translateX(20px)';
-      } else {
-        document.body.classList.remove('dark');
-        darkModeToggleSwitch.classList.remove('bg-ios-primary');
-        darkModeToggleSwitch.querySelector('div').style.transform = 'translateX(0)';
-      }
-    }
-
-    // Load user profile from localStorage
-    function loadUserProfile() {
-      const savedProfile = localStorage.getItem('userProfile');
-      if (savedProfile) {
-        userProfile = JSON.parse(savedProfile);
-        displayNameInput.value = userProfile.displayName;
-        bioInput.value = userProfile.bio;
-        
-        // Update avatar if exists
-        if (userProfile.avatarUrl) {
-          updateAvatarElements(userProfile.avatarUrl);
-        }
-      }
-    }
-
-    // Save user profile to localStorage
-    function saveUserProfile() {
-      localStorage.setItem('userProfile', JSON.stringify(userProfile));
-    }
-
-    // Update avatar across all UI elements
-    function updateAvatarElements(avatarUrl) {
-      // Update in header
-      userAvatarImg.src = avatarUrl;
-      userAvatarImg.classList.remove('hidden');
-      userAvatarFallback.classList.add('hidden');
-      
-      // Update in user menu
-      menuUserAvatar.src = avatarUrl;
-      menuUserAvatar.classList.remove('hidden');
-      menuUserFallback.classList.add('hidden');
-      
-      // Update in edit profile
-      editProfileAvatar.src = avatarUrl;
-      editProfileAvatar.classList.remove('hidden');
-      editProfileFallback.classList.add('hidden');
-    }
-
-    // Toggle dark mode
-    function toggleDarkMode() {
-      isDarkMode = !isDarkMode;
-      localStorage.setItem('darkMode', isDarkMode);
-      initDarkMode();
-    }
-
-    // Show/Hide screens
-    function showApp(user) {
-      if (user) {
-        currentUser = user;
-        authScreen.classList.add("hidden");
-        appScreen.classList.remove("hidden");
-        userEmail.textContent = user.email;
-        loadWallpapers();
-      } else {
-        currentUser = null;
-        authScreen.classList.remove("hidden");
-        appScreen.classList.add("hidden");
-      }
-    }
-
-    // Auth state listener
-    supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN') {
-        showApp(session.user);
-      } else if (event === 'SIGNED_OUT') {
-        showApp(null);
-      }
-    });
-
-    // Manual check on load
-    document.addEventListener('DOMContentLoaded', async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      showApp(session?.user);
-      initApp();
-    });
-
-    // Login handler
-    loginBtn.addEventListener("click", async () => {
-      const email = emailInput.value;
-      const password = passwordInput.value;
-      
-      if (!email || !password) {
-        showToast("Please enter email and password");
-        return;
-      }
-      
-      // Show loading state
-      loginText.textContent = "Signing In...";
-      loginSpinner.classList.remove("hidden");
-      loginBtn.disabled = true;
-      
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      
-      if (error) {
-        showToast(error.message);
-        loginText.textContent = "Sign In";
-        loginSpinner.classList.add("hidden");
-        loginBtn.disabled = false;
-        return;
-      }
-      
-      showApp(data.user);
-      showToast("Welcome back!");
-    });
-
-    // Signup handler
-    signupBtn.addEventListener("click", async () => {
-      const email = emailInput.value;
-      const password = passwordInput.value;
-      
-      if (!email || !password) {
-        showToast("Please enter email and password");
-        return;
-      }
-      
-      if (password.length < 6) {
-        showToast("Password must be at least 6 characters");
-        return;
-      }
-      
-      // Show loading state
-      signupBtn.innerHTML = "Creating Account...";
-      signupBtn.disabled = true;
-      
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          emailRedirectTo: getSiteUrl()
-        }
-      });
-      
-      if (error) {
-        showToast(error.message);
-      } else {
-        showToast("Account created! Check your email for verification.");
-        emailInput.value = "";
-        passwordInput.value = "";
-      }
-      
-      // Reset button state
-      signupBtn.innerHTML = "Create Account";
-      signupBtn.disabled = false;
-    });
-
-    // Logout
-    logoutBtn.addEventListener("click", async () => {
-      await supabase.auth.signOut();
-      showApp(null);
-      closeModal(userMenuModal);
-      showToast("Signed out successfully");
-    });
-
-    // Upload handlers
-    uploadIconBtn.addEventListener("click", () => {
-      openModal(uploadModal);
-    });
-    
-    emptyUploadBtn.addEventListener("click", () => {
-      openModal(uploadModal);
-    });
-    
-    browseFilesBtn.addEventListener("click", () => {
-      fileInput.click();
-    });
-    
-    fileInput.addEventListener("change", () => {
-      if (fileInput.files.length > 0) {
-        browseFilesBtn.textContent = "File Selected";
-        browseFilesBtn.classList.add("bg-ios-green");
-        // Auto-generate title from filename
-        const fileName = fileInput.files[0].name.replace(/\.[^/.]+$/, ""); // Remove extension
-        wallpaperTitle.value = fileName.charAt(0).toUpperCase() + fileName.slice(1);
-      }
-    });
-    
-    confirmUploadBtn.addEventListener("click", async () => {
-      const file = fileInput.files[0];
-      const title = wallpaperTitle.value;
-      const category = wallpaperCategory.value;
-      
-      if (!file) {
-        showToast("Please select a wallpaper first!");
-        return;
-      }
-      
-      if (!title) {
-        showToast("Please enter a title for your wallpaper");
-        return;
-      }
-
-      // Show loading state
-      uploadText.textContent = "Uploading...";
-      uploadSpinner.classList.remove("hidden");
-      confirmUploadBtn.disabled = true;
-
-      try {
-        // Optimize for Supabase free tier (5MB file limit)
-        const compressed = await compressImage(file, 0.6); // Lower quality for smaller files
-        const filename = `${Date.now()}_${file.name}`;
-        
-        // Check file size (Supabase free tier has 5MB limit)
-        if (compressed.size > 5 * 1024 * 1024) {
-          throw new Error("File size too large. Please use a smaller image (max 5MB).");
-        }
-        
-        // Upload to storage
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("wallpapers")
-          .upload(filename, compressed);
-
-        if (uploadError) throw uploadError;
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from("wallpapers")
-          .getPublicUrl(filename);
-
-        // Insert into database
-        const { error: dbError } = await supabase
-          .from("wallpapers")
-          .insert({ 
-            title: title,
-            category: category,
-            image_url: publicUrl,
-            user_id: currentUser.id,
-            user_email: currentUser.email,
-            user_name: userProfile.displayName,
-            user_avatar: userProfile.avatarUrl
-          });
-
-        if (dbError) throw dbError;
-
-        // Reset form
-        fileInput.value = "";
-        browseFilesBtn.textContent = "Browse Files";
-        browseFilesBtn.classList.remove("bg-ios-green");
-        wallpaperTitle.value = "";
-        
-        uploadText.textContent = "Upload";
-        uploadSpinner.classList.add("hidden");
-        confirmUploadBtn.disabled = false;
-        
-        closeModal(uploadModal);
-        loadWallpapers();
-        showToast("Wallpaper uploaded successfully!");
-      } catch (error) {
-        console.error("Upload error:", error);
-        showToast("Upload failed: " + error.message);
-        uploadText.textContent = "Upload";
-        uploadSpinner.classList.add("hidden");
-        confirmUploadBtn.disabled = false;
-      }
-    });
-
-    // Load wallpapers
-    async function loadWallpapers(category = 'all') {
-      try {
-        // Show loading state
-        gallery.innerHTML = Array.from({length: 6}, () => `
-          <div class="wallpaper-card animate-pulse">
-            <div class="w-full h-48 image-loading rounded-xl"></div>
-            <div class="p-2">
-              <div class="h-4 image-loading rounded mb-2"></div>
-              <div class="flex justify-between">
-                <div class="h-3 image-loading rounded w-16"></div>
-                <div class="h-3 image-loading rounded w-20"></div>
-              </div>
-            </div>
-          </div>
-        `).join('');
-        
-        let wallpapers = [];
-        
-        if (category === 'favorites') {
-          // Load favorites from localStorage
-          wallpapers = JSON.parse(localStorage.getItem('favorites') || '[]');
-        } else if (category === 'downloads') {
-          // Load downloads from localStorage
-          wallpapers = JSON.parse(localStorage.getItem('downloads') || '[]');
-        } else {
-          // Load from Supabase
-          let query = supabase
-            .from("wallpapers")
-            .select("*")
-            .order("created_at", { ascending: false });
-
-          if (category !== 'all') {
-            query = query.eq('category', category);
-          }
-
-          const { data, error } = await query;
-          if (error) throw error;
-          wallpapers = data || [];
-        }
-
-        currentWallpapers = wallpapers;
-        renderWallpapers(currentWallpapers, category);
-        
-        // Show empty state if no wallpapers
-        if (currentWallpapers.length === 0) {
-          gallery.classList.add('hidden');
-          emptyState.classList.remove('hidden');
-          
-          // Update empty state message based on category
-          const emptyTitle = emptyState.querySelector('h3');
-          const emptyText = emptyState.querySelector('p');
-          
-          if (category === 'favorites') {
-            emptyTitle.textContent = "No favorites yet";
-            emptyText.textContent = "Wallpapers you like will appear here";
-          } else if (category === 'downloads') {
-            emptyTitle.textContent = "No downloads yet";
-            emptyText.textContent = "Wallpapers you download will appear here";
-          } else {
-            emptyTitle.textContent = "No wallpapers yet";
-            emptyText.textContent = "Be the first to upload a wallpaper to this category!";
-          }
-        } else {
-          gallery.classList.remove('hidden');
-          emptyState.classList.add('hidden');
-        }
-      } catch (error) {
-        console.error("Error loading wallpapers:", error);
-        showToast("Failed to load wallpapers");
-      }
-    }
-
-    // Render wallpapers to the gallery
-    function renderWallpapers(wallpapers, category) {
-      gallery.innerHTML = wallpapers
-        .map(w => `
-          <div class="wallpaper-card animate-scale-in" data-id="${w.id}">
-            <div class="relative">
-              <img src="${w.image_url}" class="w-full h-48 object-cover rounded-xl" loading="lazy" />
-              <div class="absolute bottom-2 left-2 right-2 flex justify-between items-center">
-                <span class="category-badge category-${w.category}">${w.category}</span>
-                <div class="flex space-x-1">
-                  <button class="wallpaper-like bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all hover:bg-black/80 ${isFavorited(w.id) ? '!bg-ios-red' : ''}">
-                    <i class="fas fa-heart text-xs ${isFavorited(w.id) ? 'text-white' : ''}"></i>
-                  </button>
-                  <button class="wallpaper-download bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all hover:bg-black/80">
-                    <i class="fas fa-download text-xs"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="p-2">
-              <h3 class="font-medium text-sm truncate">${w.title}</h3>
-              <div class="flex justify-between items-center text-xs text-ios-gray mt-1">
-                <div class="user-attribution">
-                  ${w.user_avatar ? 
-                    `<img src="${w.user_avatar}" class="user-avatar">` : 
-                    `<i class="fas fa-user"></i>`
-                  }
-                  <span>${w.user_name || 'User'}</span>
-                </div>
-                <div class="flex space-x-2">
-                  <span><i class="fas fa-heart mr-1"></i>${w.likes || 0}</span>
-                  <span><i class="fas fa-download mr-1"></i>${w.downloads || 0}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        `)
-        .join("");
-        
-      // Add event listeners to wallpaper cards
-      document.querySelectorAll('.wallpaper-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          if (!e.target.closest('.wallpaper-like') && !e.target.closest('.wallpaper-download')) {
-            const wallpaperId = card.getAttribute('data-id');
-            const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
-            if (wallpaper) {
-              openWallpaperDetail(wallpaper);
-            }
-          }
-        });
-      });
-      
-      // Add event listeners to like buttons
-      document.querySelectorAll('.wallpaper-like').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          const card = e.target.closest('.wallpaper-card');
-          const wallpaperId = card.getAttribute('data-id');
-          await toggleFavorite(wallpaperId, button);
-        });
-      });
-      
-      // Add event listeners to download buttons
-      document.querySelectorAll('.wallpaper-download').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          e.stopPropagation();
-          const card = e.target.closest('.wallpaper-card');
-          const wallpaperId = card.getAttribute('data-id');
-          const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
-          if (wallpaper) {
-            downloadWallpaper(wallpaper);
-          }
-        });
-      });
-    }
-
-    // Check if wallpaper is favorited
-    function isFavorited(wallpaperId) {
-      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-      return favorites.some(w => w.id === wallpaperId);
-    }
-
-    // Toggle favorite on a wallpaper
-    async function toggleFavorite(wallpaperId, button) {
-      try {
-        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-        const existingIndex = favorites.findIndex(w => w.id === wallpaperId);
-        
-        if (existingIndex !== -1) {
-          // Remove from favorites
-          favorites.splice(existingIndex, 1);
-          button.classList.remove('!bg-ios-red');
-          button.querySelector('i').classList.remove('text-white');
-          showToast("Removed from favorites");
-        } else {
-          // Add to favorites
-          const wallpaper = currentWallpapers.find(w => w.id === wallpaperId);
-          if (wallpaper) {
-            favorites.push(wallpaper);
-            button.classList.add('!bg-ios-red');
-            button.querySelector('i').classList.add('text-white');
-            showToast("Added to favorites");
-          }
-        }
-        
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        
-        // If we're on the favorites tab, reload
-        if (currentCategory === 'favorites') {
-          loadWallpapers('favorites');
-        }
-      } catch (error) {
-        console.error("Error toggling favorite:", error);
-        showToast("Failed to update favorites");
-      }
-    }
-
-    // Download wallpaper
-    async function downloadWallpaper(wallpaper) {
-      try {
-        // Increment download count in database if it's not a local wallpaper
-        if (wallpaper.id && !wallpaper.id.startsWith('local-')) {
-          await supabase.rpc('increment_downloads', { wallpaper_id: wallpaper.id });
-        }
-        
-        // Create download link
-        const a = document.createElement('a');
-        a.href = wallpaper.image_url;
-        a.download = `wallpaper-${wallpaper.id || Date.now()}.jpg`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        // Save to local downloads
-        const downloads = JSON.parse(localStorage.getItem('downloads') || '[]');
-        
-        // Check if already downloaded to avoid duplicates
-        if (!downloads.some(w => w.id === wallpaper.id)) {
-          downloads.push({
-            ...wallpaper,
-            downloaded_at: new Date().toISOString()
-          });
-          localStorage.setItem('downloads', JSON.stringify(downloads));
-        }
-        
-        showToast("Wallpaper downloaded!");
-        
-        // Reload to update download count if needed
-        if (currentCategory !== 'downloads') {
-          loadWallpapers(currentCategory);
-        }
-      } catch (error) {
-        console.error("Error downloading wallpaper:", error);
-        showToast("Failed to download wallpaper");
-      }
-    }
-
-    // Open wallpaper detail view
-    function openWallpaperDetail(wallpaper) {
-      detailImage.src = wallpaper.image_url;
-      detailTitle.textContent = wallpaper.title;
-      detailCategory.textContent = wallpaper.category;
-      detailCategory.className = `category-badge category-${wallpaper.category}`;
-      
-      // Set user info
-      if (wallpaper.user_avatar) {
-        detailUserAvatar.src = wallpaper.user_avatar;
-        detailUserAvatar.classList.remove('hidden');
-        detailUserFallback.classList.add('hidden');
-      } else {
-        detailUserAvatar.classList.add('hidden');
-        detailUserFallback.classList.remove('hidden');
-      }
-      detailUserName.textContent = wallpaper.user_name || 'User';
-      
-      openModal(detailModal);
-      
-      // Set download functionality
-      downloadWallpaperBtn.onclick = () => {
-        downloadWallpaper(wallpaper);
-      };
-    }
-
-    // Compress image before upload (optimized for Supabase free tier)
-    function compressImage(file, quality = 0.6) {
-      return new Promise(resolve => {
-        const img = new Image();
-        const reader = new FileReader();
-        reader.onload = e => {
-          img.src = e.target.result;
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const maxWidth = 1600; // Lower resolution for free tier optimization
-            const maxHeight = 1600;
-            let { width, height } = img;
-            
-            // Calculate new dimensions while maintaining aspect ratio
-            if (width > maxWidth || height > maxHeight) {
-              const ratio = Math.min(maxWidth / width, maxHeight / height);
-              width *= ratio;
-              height *= ratio;
-            }
-            
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img, 0, 0, width, height);
-            canvas.toBlob(
-              blob => resolve(new File([blob], file.name, { type: "image/jpeg" })),
-              "image/jpeg",
-              quality
-            );
-          };
-        };
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // Format date for display
-    function formatDate(dateString) {
-      const date = new Date(dateString);
-      const now = new Date();
-      const diffTime = Math.abs(now - date);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays === 1) return 'Today';
-      if (diffDays === 2) return 'Yesterday';
-      if (diffDays < 7) return `${diffDays-1}d ago`;
-      if (diffDays < 30) return `${Math.floor(diffDays/7)}w ago`;
-      return date.toLocaleDateString();
-    }
-
-    // Modal functions
-    function openModal(modal) {
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
-    }
-    
-    function closeModal(modal) {
-      modal.classList.add('hidden');
-      document.body.style.overflow = ''; // Restore scrolling
-    }
-    
-    // Close modals when clicking on overlay or close buttons
-    uploadModalOverlay.addEventListener('click', () => closeModal(uploadModal));
-    closeUploadModal.addEventListener('click', () => closeModal(uploadModal));
-    cancelUploadBtn.addEventListener('click', () => closeModal(uploadModal));
-    
-    detailModalBg.addEventListener('click', () => closeModal(detailModal));
-    closeDetailModal.addEventListener('click', () => closeModal(detailModal));
-    
-    userMenuOverlay.addEventListener('click', () => closeModal(userMenuModal));
-    userMenuBtn.addEventListener('click', () => openModal(userMenuModal));
-    
-    editProfileOverlay.addEventListener('click', () => closeModal(editProfileModal));
-    closeEditProfileModal.addEventListener('click', () => closeModal(editProfileModal));
-    cancelEditProfileBtn.addEventListener('click', () => closeModal(editProfileModal));
-    editProfileBtn.addEventListener('click', () => {
-      closeModal(userMenuModal);
-      openModal(editProfileModal);
-    });
-    
-    // Avatar upload handlers
-    avatarUpload.addEventListener('change', handleAvatarUpload);
-    editAvatarUpload.addEventListener('change', handleAvatarUpload);
-    changePhotoBtn.addEventListener('click', () => {
-      editAvatarUpload.click();
-    });
-    
-    function handleAvatarUpload(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const avatarUrl = event.target.result;
-          userProfile.avatarUrl = avatarUrl;
-          updateAvatarElements(avatarUrl);
-          saveUserProfile();
-          showToast("Profile picture updated!");
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-    
-    // Dark mode toggle
-    darkModeToggle.addEventListener('click', () => {
-      toggleDarkMode();
-    });
-    
-    // Save profile
-    saveProfileBtn.addEventListener('click', () => {
-      userProfile.displayName = displayNameInput.value;
-      userProfile.bio = bioInput.value;
-      saveUserProfile();
-      closeModal(editProfileModal);
-      showToast("Profile updated successfully");
-    });
-    
-    // Settings button
-    settingsBtn.addEventListener('click', () => {
-      closeModal(userMenuModal);
-      showToast("Settings will be available soon");
-    });
-
-    // Tab functionality
-    document.querySelectorAll('.tab-button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.tab-button').forEach(btn => {
-          btn.classList.remove('active', 'text-white');
-          btn.classList.add('text-white/70');
-          btn.classList.remove('border-white');
-          btn.classList.add('border-transparent');
-        });
-        
-        button.classList.add('active', 'text-white');
-        button.classList.remove('text-white/70');
-        button.classList.add('border-white');
-        button.classList.remove('border-transparent');
-        
-        const category = button.getAttribute('data-category');
-        currentCategory = category;
-        loadWallpapers(category);
-      });
-    });
-    
-    // Tab bar functionality
-    document.querySelectorAll('.tab-item').forEach(tab => {
-      tab.addEventListener('click', () => {
-        const tabName = tab.getAttribute('data-tab');
-        
-        if (tabName === 'upload') {
-          openModal(uploadModal);
-          return;
-        }
-        
-        document.querySelectorAll('.tab-item').forEach(t => {
-          t.classList.remove('active', 'text-ios-primary');
-          t.classList.add('text-ios-gray');
-        });
-        
-        tab.classList.add('active', 'text-ios-primary');
-        tab.classList.remove('text-ios-gray');
-        
-        if (tabName === 'profile') {
-          openModal(userMenuModal);
-        } else if (tabName === 'favorites') {
-          currentCategory = 'favorites';
-          loadWallpapers('favorites');
-        } else if (tabName === 'downloads') {
-          currentCategory = 'downloads';
-          loadWallpapers('downloads');
-        } else {
-          showToast(`Switched to ${tabName} tab`);
-        }
-      });
-    });
-
-    // Toast notification
-    function showToast(message) {
-      // Remove existing toasts
-      document.querySelectorAll('.toast').forEach(toast => toast.remove());
-      
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.remove();
-      }, 3000);
-    }
-  </script>
-</body>
-</html>
+        <button id=
