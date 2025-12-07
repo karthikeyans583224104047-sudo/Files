@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Merry Christmas - Interactive Gift</title>
+    <title>Merry Christmas - Personalized Santa Gift</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <style>
         * {
             margin: 0;
@@ -77,7 +78,7 @@
             border-radius: 15px;
             padding: 30px;
             margin: 30px auto;
-            max-width: 600px;
+            max-width: 800px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             border: 2px solid var(--christmas-gold);
             position: relative;
@@ -150,18 +151,152 @@
             margin-right: 10px;
         }
 
+        .btn-secondary {
+            background: linear-gradient(to bottom, var(--christmas-green), #1a5a1a);
+            box-shadow: 0 5px 0 #0f3f0f;
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 0 #0f3f0f;
+        }
+
+        .btn-secondary:active {
+            box-shadow: 0 3px 0 #0f3f0f;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: rgba(26, 90, 26, 0.6);
+            border-radius: 10px;
+            border: 2px dashed var(--christmas-gold);
+        }
+
+        .upload-section h3 {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 1.8rem;
+            color: var(--christmas-gold);
+            margin-bottom: 15px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--christmas-red);
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: rgba(201, 44, 44, 0.1);
+        }
+
+        .upload-area:hover {
+            background-color: rgba(201, 44, 44, 0.2);
+            border-color: var(--christmas-gold);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--christmas-gold);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-area p {
+            color: var(--snow-white);
+            margin-bottom: 10px;
+        }
+
+        .upload-area span {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Cropper Modal */
+        .cropper-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .cropper-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 80%;
+            width: 800px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cropper-container h3 {
+            color: var(--dark-green);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background-color: #f0f0f0;
+        }
+
+        .cropper-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .cropper-controls button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .crop-btn {
+            background-color: var(--christmas-green);
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #999;
+            color: white;
+        }
+
         /* Gift Box Section */
         .gift-section {
             margin: 50px auto;
             position: relative;
-            max-width: 800px;
+            max-width: 1000px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
         }
 
         .gift-container {
             position: relative;
             width: 300px;
             height: 300px;
-            margin: 0 auto;
             perspective: 1000px;
         }
 
@@ -307,6 +442,207 @@
             font-family: 'Mountains of Christmas', cursive;
         }
 
+        /* Santa Section */
+        .santa-section {
+            width: 300px;
+            position: relative;
+        }
+
+        .santa-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .santa-body {
+            width: 250px;
+            height: 350px;
+            background-color: var(--christmas-red);
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .santa-face-area {
+            position: absolute;
+            width: 160px;
+            height: 180px;
+            background-color: #f5d6b5;
+            border-radius: 40%;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            overflow: hidden;
+            border: 5px solid #e6c29f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .santa-face-area img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .santa-face-placeholder {
+            font-size: 0.9rem;
+            color: #999;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .santa-beard {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            background-color: white;
+            border-radius: 50%;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .santa-hat {
+            position: absolute;
+            width: 200px;
+            height: 120px;
+            background-color: var(--christmas-red);
+            border-radius: 50% 50% 0 0;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+        }
+
+        .santa-hat::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: white;
+            border-radius: 50%;
+            top: -20px;
+            right: 20px;
+        }
+
+        .santa-hat::before {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: white;
+            border-radius: 50%;
+            top: -15px;
+            right: 40px;
+        }
+
+        .santa-belt {
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background-color: black;
+            bottom: 120px;
+            left: 0;
+            z-index: 3;
+        }
+
+        .santa-belt-buckle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: var(--christmas-gold);
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .santa-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .santa-btn {
+            padding: 8px 15px;
+            background-color: var(--christmas-green);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .santa-btn:hover {
+            background-color: var(--dark-green);
+            transform: translateY(-2px);
+        }
+
+        /* Santa Animation Controls */
+        .animation-controls {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .animation-btn {
+            padding: 10px 15px;
+            background-color: var(--christmas-gold);
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .animation-btn:hover {
+            background-color: #d4a20f;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes santa-wave {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(15deg); }
+            75% { transform: translateX(-50%) rotate(-15deg); }
+        }
+
+        @keyframes santa-jump {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-30px); }
+        }
+
+        @keyframes santa-shake {
+            0%, 100% { transform: translateX(-50%) translateX(0); }
+            25% { transform: translateX(-50%) translateX(-10px); }
+            75% { transform: translateX(-50%) translateX(10px); }
+        }
+
+        .santa-wave {
+            animation: santa-wave 1.5s infinite;
+        }
+
+        .santa-jump {
+            animation: santa-jump 1s infinite;
+        }
+
+        .santa-shake {
+            animation: santa-shake 0.5s infinite;
+        }
+
+        /* Snowflakes */
         .snowflakes {
             position: fixed;
             top: 0;
@@ -336,12 +672,13 @@
             }
         }
 
+        /* Share Section */
         .share-section {
             margin-top: 30px;
             padding: 20px;
             background-color: rgba(42, 122, 42, 0.7);
             border-radius: 10px;
-            max-width: 600px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
             display: none;
@@ -469,21 +806,57 @@
     <div class="holly holly-3"></div>
     <div class="holly holly-4"></div>
 
+    <!-- Cropper Modal -->
+    <div class="cropper-modal" id="cropperModal">
+        <div class="cropper-container">
+            <h3>Crop Your Friend's Face for Santa</h3>
+            <p style="color: #666; text-align: center; margin-bottom: 15px;">Drag to position and adjust the size to fit Santa's face</p>
+            <div class="image-container">
+                <img id="imageToCrop" src="" alt="Image to crop" style="max-width: 100%;">
+            </div>
+            <div class="cropper-controls">
+                <button class="crop-btn" id="applyCrop">
+                    <i class="fas fa-check"></i> Apply to Santa
+                </button>
+                <button class="cancel-btn" id="cancelCrop">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1>Merry Christmas!</h1>
-            <p class="subtitle">Create a personalized Christmas gift for your friends and family. Enter their name below to generate a special interactive Christmas greeting they can open!</p>
+            <p class="subtitle">Create a personalized Christmas gift with Santa! Upload your friend's photo to put their face on Santa, then share the animated gift with them.</p>
         </header>
 
         <main>
             <section class="input-section">
-                <h2><i class="fas fa-gift"></i> Create Your Christmas Gift</h2>
+                <h2><i class="fas fa-gift"></i> Create Your Personalized Santa Gift</h2>
                 <div class="form-group">
                     <label for="friendName">Enter your friend's name:</label>
                     <input type="text" id="friendName" placeholder="e.g. Sarah, John, Alex..." maxlength="30">
                 </div>
+
+                <div class="upload-section">
+                    <h3><i class="fas fa-camera"></i> Add Your Friend's Face to Santa (Optional)</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click here or drag & drop a photo of your friend</p>
+                        <span>Supported formats: JPG, PNG, GIF (Max 5MB)</span>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*">
+                    <button id="uploadBtn" class="btn btn-secondary">
+                        <i class="fas fa-upload"></i> Upload Photo
+                    </button>
+                    <button id="removePhotoBtn" class="btn" style="display: none; margin-left: 10px;">
+                        <i class="fas fa-trash"></i> Remove Photo
+                    </button>
+                </div>
+
                 <button id="createGiftBtn" class="btn">
-                    <i class="fas fa-magic"></i> Create Personalized Gift
+                    <i class="fas fa-magic"></i> Create Personalized Santa Gift
                 </button>
                 <p class="instructions">Click the button above to generate a gift, then click on the gift box to open it!</p>
             </section>
@@ -505,11 +878,48 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="santa-section">
+                    <div class="santa-container">
+                        <div class="santa-body" id="santaBody">
+                            <div class="santa-face-area" id="santaFaceArea">
+                                <img id="santaFaceImage" src="" alt="Friend's face">
+                                <div class="santa-face-placeholder" id="facePlaceholder">Your friend's face will appear here</div>
+                            </div>
+                            <div class="santa-beard"></div>
+                            <div class="santa-hat"></div>
+                            <div class="santa-belt">
+                                <div class="santa-belt-buckle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="santa-buttons">
+                        <button class="santa-btn" id="changeFaceBtn">
+                            <i class="fas fa-user-edit"></i> Change Face
+                        </button>
+                    </div>
+
+                    <div class="animation-controls">
+                        <button class="animation-btn" id="waveBtn">
+                            <i class="fas fa-hand-paper"></i> Make Santa Wave
+                        </button>
+                        <button class="animation-btn" id="jumpBtn">
+                            <i class="fas fa-arrow-up"></i> Make Santa Jump
+                        </button>
+                        <button class="animation-btn" id="shakeBtn">
+                            <i class="fas fa-exchange-alt"></i> Make Santa Shake
+                        </button>
+                        <button class="animation-btn" id="stopAnimationBtn">
+                            <i class="fas fa-stop"></i> Stop Animation
+                        </button>
+                    </div>
+                </div>
             </section>
 
             <section class="share-section" id="shareSection">
-                <h3>Share this Christmas gift with your friend!</h3>
-                <div class="share-link" id="shareLink">https://christmasgift.com/?name=Friend</div>
+                <h3>Share this personalized Santa gift with your friend!</h3>
+                <div class="share-link" id="shareLink">https://christmassanta.com/?name=Friend</div>
                 <div class="share-buttons">
                     <button class="share-btn whatsapp" id="whatsappShare">
                         <i class="fab fa-whatsapp"></i> WhatsApp
@@ -521,7 +931,7 @@
                         <i class="fas fa-copy"></i> Copy Link
                     </button>
                 </div>
-                <p class="instructions">Send this link to your friend so they can open their personalized Christmas gift!</p>
+                <p class="instructions">Send this link to your friend so they can see their personalized Santa!</p>
             </section>
         </main>
 
@@ -530,6 +940,7 @@
         </footer>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script>
         // Create snowflakes
         function createSnowflakes() {
@@ -559,7 +970,7 @@
             }
         }
 
-        // Gift box interaction
+        // DOM Elements
         const giftBox = document.getElementById('giftBox');
         const friendNameInput = document.getElementById('friendName');
         const displayName = document.getElementById('displayName');
@@ -569,8 +980,27 @@
         const whatsappShare = document.getElementById('whatsappShare');
         const facebookShare = document.getElementById('facebookShare');
         const copyLink = document.getElementById('copyLink');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const removePhotoBtn = document.getElementById('removePhotoBtn');
+        const changeFaceBtn = document.getElementById('changeFaceBtn');
+        const santaFaceArea = document.getElementById('santaFaceArea');
+        const santaFaceImage = document.getElementById('santaFaceImage');
+        const facePlaceholder = document.getElementById('facePlaceholder');
+        const santaBody = document.getElementById('santaBody');
+        const cropperModal = document.getElementById('cropperModal');
+        const imageToCrop = document.getElementById('imageToCrop');
+        const applyCrop = document.getElementById('applyCrop');
+        const cancelCrop = document.getElementById('cancelCrop');
+        const waveBtn = document.getElementById('waveBtn');
+        const jumpBtn = document.getElementById('jumpBtn');
+        const shakeBtn = document.getElementById('shakeBtn');
+        const stopAnimationBtn = document.getElementById('stopAnimationBtn');
         
         let currentName = "Friend";
+        let cropper = null;
+        let currentImageData = null;
         
         // Create personalized gift
         createGiftBtn.addEventListener('click', function() {
@@ -587,7 +1017,13 @@
             
             // Generate shareable link
             const baseUrl = window.location.origin + window.location.pathname;
-            const giftUrl = `${baseUrl}?name=${encodeURIComponent(name)}`;
+            let giftUrl = `${baseUrl}?name=${encodeURIComponent(name)}`;
+            
+            // Add image data to URL if available
+            if (currentImageData) {
+                giftUrl += `&image=${encodeURIComponent(currentImageData)}`;
+            }
+            
             shareLink.textContent = giftUrl;
             
             // Show share section with animation
@@ -626,9 +1062,157 @@
             }
         });
         
+        // Upload area click event
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        uploadBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = 'rgba(201, 44, 44, 0.3)';
+            uploadArea.style.borderColor = 'var(--christmas-gold)';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = 'rgba(201, 44, 44, 0.1)';
+            uploadArea.style.borderColor = 'var(--christmas-red)';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = 'rgba(201, 44, 44, 0.1)';
+            uploadArea.style.borderColor = 'var(--christmas-red)';
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleImageUpload(e.dataTransfer.files[0]);
+            }
+        });
+        
+        // File input change event
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+        
+        // Handle image upload
+        function handleImageUpload(file) {
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File is too large! Please select an image smaller than 5MB.");
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.match('image.*')) {
+                alert("Please select an image file (JPG, PNG, GIF).");
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Show cropper modal
+                imageToCrop.src = e.target.result;
+                cropperModal.style.display = 'flex';
+                
+                // Initialize cropper
+                if (cropper) {
+                    cropper.destroy();
+                }
+                
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 0.8,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Apply crop to Santa
+        applyCrop.addEventListener('click', () => {
+            if (cropper) {
+                const croppedCanvas = cropper.getCroppedCanvas({
+                    width: 300,
+                    height: 300,
+                });
+                
+                // Convert to data URL and apply to Santa
+                currentImageData = croppedCanvas.toDataURL('image/jpeg', 0.8);
+                santaFaceImage.src = currentImageData;
+                santaFaceImage.style.display = 'block';
+                facePlaceholder.style.display = 'none';
+                
+                // Show remove button
+                removePhotoBtn.style.display = 'inline-block';
+                
+                // Close cropper modal
+                cropperModal.style.display = 'none';
+                
+                // Add some animation to Santa
+                santaBody.classList.add('santa-wave');
+                setTimeout(() => {
+                    santaBody.classList.remove('santa-wave');
+                }, 2000);
+            }
+        });
+        
+        // Cancel cropping
+        cancelCrop.addEventListener('click', () => {
+            cropperModal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        });
+        
+        // Remove photo
+        removePhotoBtn.addEventListener('click', () => {
+            santaFaceImage.src = '';
+            santaFaceImage.style.display = 'none';
+            facePlaceholder.style.display = 'block';
+            removePhotoBtn.style.display = 'none';
+            currentImageData = null;
+        });
+        
+        // Change face button
+        changeFaceBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // Santa animation controls
+        waveBtn.addEventListener('click', () => {
+            santaBody.classList.remove('santa-jump', 'santa-shake');
+            santaBody.classList.add('santa-wave');
+        });
+        
+        jumpBtn.addEventListener('click', () => {
+            santaBody.classList.remove('santa-wave', 'santa-shake');
+            santaBody.classList.add('santa-jump');
+        });
+        
+        shakeBtn.addEventListener('click', () => {
+            santaBody.classList.remove('santa-wave', 'santa-jump');
+            santaBody.classList.add('santa-shake');
+        });
+        
+        stopAnimationBtn.addEventListener('click', () => {
+            santaBody.classList.remove('santa-wave', 'santa-jump', 'santa-shake');
+        });
+        
         // Share functionality
         whatsappShare.addEventListener('click', function() {
-            const text = `Merry Christmas! I've created a personalized Christmas gift for you. Open it here: ${shareLink.textContent}`;
+            const text = `Merry Christmas! I've created a personalized Santa gift for you. Open it here: ${shareLink.textContent}`;
             const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
             window.open(whatsappUrl, '_blank');
         });
@@ -648,10 +1232,11 @@
             });
         });
         
-        // Check if name is passed in URL parameters
-        function checkUrlForName() {
+        // Check if name and image are passed in URL parameters
+        function checkUrlForNameAndImage() {
             const urlParams = new URLSearchParams(window.location.search);
             const nameFromUrl = urlParams.get('name');
+            const imageFromUrl = urlParams.get('image');
             
             if (nameFromUrl) {
                 currentName = decodeURIComponent(nameFromUrl);
@@ -663,6 +1248,22 @@
                 setTimeout(() => {
                     createConfetti();
                 }, 500);
+            }
+            
+            if (imageFromUrl) {
+                currentImageData = decodeURIComponent(imageFromUrl);
+                santaFaceImage.src = currentImageData;
+                santaFaceImage.style.display = 'block';
+                facePlaceholder.style.display = 'none';
+                removePhotoBtn.style.display = 'inline-block';
+                
+                // Make Santa wave when image is loaded from URL
+                setTimeout(() => {
+                    santaBody.classList.add('santa-wave');
+                    setTimeout(() => {
+                        santaBody.classList.remove('santa-wave');
+                    }, 2000);
+                }, 1000);
             }
         }
         
@@ -727,7 +1328,7 @@
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             createSnowflakes();
-            checkUrlForName();
+            checkUrlForNameAndImage();
             
             // Add CSS for shake animation
             const style = document.createElement('style');
