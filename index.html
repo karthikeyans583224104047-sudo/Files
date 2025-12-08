@@ -23,8 +23,6 @@
             height: 100vh;
             position: fixed;
             width: 100%;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         /* App Container */
@@ -91,7 +89,6 @@
             transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 1000;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
 
         .sidebar.active {
@@ -436,6 +433,7 @@
             background: #2C2C2E;
             border-radius: 16px;
             overflow: hidden;
+            position: relative;
         }
 
         .file-preview {
@@ -444,23 +442,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
 
         .file-preview-icon {
             font-size: 40px;
             color: #8E8E93;
-        }
-
-        .file-preview-overlay {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
         }
 
         .file-info {
@@ -481,86 +467,6 @@
             font-size: 12px;
             display: flex;
             justify-content: space-between;
-        }
-
-        /* Files - List View */
-        .files-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .file-list-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px;
-            background: #2C2C2E;
-            border-radius: 16px;
-        }
-
-        .list-file-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: #1C1C1E;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .file-list-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .list-file-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .list-file-meta {
-            color: #8E8E93;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .file-menu {
-            background: none;
-            border: none;
-            color: #8E8E93;
-            font-size: 18px;
-            padding: 8px;
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-
-        .view-toggle-btn {
-            flex: 1;
-            background: #2C2C2E;
-            border: none;
-            color: #8E8E93;
-            padding: 10px;
-            border-radius: 12px;
-            font-size: 14px;
-        }
-
-        .view-toggle-btn.active {
-            background: #FF3B30;
-            color: white;
         }
 
         /* Chat */
@@ -634,17 +540,6 @@
             border-bottom-left-radius: 6px;
         }
 
-        .message-time {
-            font-size: 11px;
-            color: #8E8E93;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .message.received .message-time {
-            text-align: left;
-        }
-
         .message-input-container {
             padding: 16px;
             border-top: 1px solid #3A3A3C;
@@ -675,189 +570,6 @@
             justify-content: center;
             color: white;
             flex-shrink: 0;
-        }
-
-        /* Schedule */
-        .schedule-content {
-            padding: 20px 16px 100px;
-        }
-
-        .schedule-day {
-            margin-bottom: 24px;
-        }
-
-        .day-header {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #FF3B30;
-            padding-bottom: 6px;
-            border-bottom: 2px solid #FF3B30;
-        }
-
-        .schedule-item {
-            background: #2C2C2E;
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 10px;
-        }
-
-        .schedule-time {
-            color: #FF3B30;
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 14px;
-        }
-
-        .schedule-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 16px;
-        }
-
-        .schedule-location {
-            color: #8E8E93;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Progress */
-        .progress-content {
-            padding: 20px 16px 100px;
-        }
-
-        .progress-card {
-            background: #2C2C2E;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .progress-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .progress-percentage {
-            color: #FF3B30;
-            font-weight: 700;
-            font-size: 20px;
-        }
-
-        .progress-bar-container {
-            height: 6px;
-            background: #1C1C1E;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #FF3B30;
-            border-radius: 3px;
-        }
-
-        .progress-details {
-            color: #8E8E93;
-            font-size: 13px;
-        }
-
-        /* Profile Setup */
-        .profile-content {
-            padding: 20px 16px 100px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .setup-title {
-            font-size: 28px;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .avatar-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 40px;
-        }
-
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF3B30, #FF9500);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            overflow: hidden;
-            border: 4px solid #000000;
-        }
-
-        .avatar-edit {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 40px;
-            height: 40px;
-            background: #FF3B30;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid #000000;
-        }
-
-        .select-wrapper {
-            position: relative;
-        }
-
-        .select-wrapper i {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8E8E93;
-            pointer-events: none;
-        }
-
-        .select-field {
-            appearance: none;
-            padding-right: 50px;
-        }
-
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px;
-            background: #2C2C2E;
-            border-radius: 14px;
-        }
-
-        .radio-option input {
-            width: 20px;
-            height: 20px;
-            accent-color: #FF3B30;
         }
 
         /* Empty States */
@@ -901,21 +613,6 @@
         .hidden {
             display: none !important;
         }
-
-        /* Safe Area for Notch Phones */
-        @supports (padding: max(0px)) {
-            .screen {
-                padding-bottom: max(80px, env(safe-area-inset-bottom) + 80px);
-            }
-            
-            .bottom-nav {
-                padding-bottom: max(12px, env(safe-area-inset-bottom) + 12px);
-            }
-            
-            .top-nav {
-                padding-top: max(12px, env(safe-area-inset-top) + 12px);
-            }
-        }
     </style>
 </head>
 <body>
@@ -931,8 +628,8 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-info">
-                        <h3 id="sidebar-name">Student</h3>
-                        <p id="sidebar-grade">Freshman</p>
+                        <h3 id="sidebar-name">Loading...</h3>
+                        <p id="sidebar-grade">Student</p>
                     </div>
                 </div>
             </div>
@@ -948,14 +645,6 @@
                 <a href="#" class="menu-item" onclick="showScreen('chat'); toggleSidebar(); return false;">
                     <i class="fas fa-comments"></i>
                     <span>Class Chat</span>
-                </a>
-                <a href="#" class="menu-item" onclick="showScreen('schedule'); toggleSidebar(); return false;">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Schedule</span>
-                </a>
-                <a href="#" class="menu-item" onclick="showScreen('progress'); toggleSidebar(); return false;">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Progress</span>
                 </a>
                 <a href="#" class="menu-item" onclick="showScreen('profile'); toggleSidebar(); return false;">
                     <i class="fas fa-user-cog"></i>
@@ -978,21 +667,18 @@
                     <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
                 </div>
                 
-                <input type="email" class="input-field" id="auth-email" placeholder="Email">
-                <input type="password" class="input-field" id="auth-password" placeholder="Password">
+                <input type="email" class="input-field" id="auth-email" placeholder="Email" value="test@example.com">
+                <input type="password" class="input-field" id="auth-password" placeholder="Password" value="password123">
                 
                 <div id="signup-fields" class="hidden">
                     <input type="text" class="input-field" id="auth-nickname" placeholder="Nickname">
-                    <div class="select-wrapper">
-                        <select class="input-field select-field" id="auth-grade">
-                            <option value="">Select Grade</option>
-                            <option value="Freshman">Freshman</option>
-                            <option value="Sophomore">Sophomore</option>
-                            <option value="Junior">Junior</option>
-                            <option value="Senior">Senior</option>
-                        </select>
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
+                    <select class="input-field" id="auth-grade">
+                        <option value="">Select Grade</option>
+                        <option value="Freshman">Freshman</option>
+                        <option value="Sophomore">Sophomore</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Senior">Senior</option>
+                    </select>
                 </div>
                 
                 <div id="auth-error" class="hidden" style="color: #FF3B30; margin-bottom: 16px;"></div>
@@ -1000,6 +686,10 @@
                 <button class="btn-primary" onclick="handleAuth()" id="auth-button">
                     Login
                 </button>
+                
+                <div style="text-align: center; color: #8E8E93; font-size: 14px; margin-top: 20px;">
+                    <p>Test credentials: test@example.com / password123</p>
+                </div>
             </div>
         </div>
 
@@ -1011,7 +701,7 @@
                 </button>
                 <div class="page-title">Dashboard</div>
                 <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="showNotifications()">
+                    <button class="nav-action-btn" onclick="showToast('No new notifications')">
                         <i class="fas fa-bell"></i>
                     </button>
                 </div>
@@ -1020,7 +710,7 @@
             <div class="dashboard-content">
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="input-field search-input" placeholder="Search">
+                    <input type="text" class="input-field search-input" placeholder="Search" id="search-input">
                 </div>
                 
                 <div class="quick-actions">
@@ -1036,6 +726,10 @@
                         <i class="fas fa-comments"></i>
                         <span>Chat</span>
                     </button>
+                    <button class="quick-action-btn" onclick="createTestData()">
+                        <i class="fas fa-plus"></i>
+                        <span>Test Data</span>
+                    </button>
                 </div>
                 
                 <div class="stats-grid">
@@ -1046,6 +740,14 @@
                     <div class="stat-card">
                         <div class="stat-value" id="shared-count">0</div>
                         <div class="stat-label">Shared</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="message-count">0</div>
+                        <div class="stat-label">Messages</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">5.0GB</div>
+                        <div class="stat-label">Storage</div>
                     </div>
                 </div>
                 
@@ -1094,27 +796,17 @@
             </div>
             
             <div class="dashboard-content">
-                <div class="view-toggle">
-                    <button class="view-toggle-btn active" onclick="setFileView('grid')">
-                        <i class="fas fa-th"></i> Grid
-                    </button>
-                    <button class="view-toggle-btn" onclick="setFileView('list')">
-                        <i class="fas fa-list"></i> List
-                    </button>
+                <div id="files-grid" class="files-grid">
+                    <!-- Files grid view -->
                 </div>
                 
-                <div class="files-grid" id="files-grid">
-                    <!-- Grid view -->
-                </div>
-                
-                <div class="files-list hidden" id="files-list">
-                    <!-- List view -->
-                </div>
-                
-                <div id="no-files" class="empty-state hidden">
+                <div id="no-files" class="empty-state">
                     <i class="fas fa-folder-open"></i>
                     <h3>No files yet</h3>
                     <p>Upload your first file to get started</p>
+                    <button class="btn-primary" onclick="uploadFile()" style="margin-top: 20px;">
+                        <i class="fas fa-upload"></i> Upload File
+                    </button>
                 </div>
             </div>
             
@@ -1146,7 +838,7 @@
                 </button>
                 <div class="page-title">Class Chat</div>
                 <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="showChatMembers()">
+                    <button class="nav-action-btn" onclick="showToast('24 classmates online')">
                         <i class="fas fa-users"></i>
                     </button>
                 </div>
@@ -1158,47 +850,12 @@
                 </div>
                 
                 <div class="message-input-container">
-                    <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
+                    <input type="text" class="message-input" id="message-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
                     <button class="send-btn" onclick="sendMessage()">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
             </div>
-        </div>
-
-        <!-- Schedule Screen -->
-        <div id="schedule" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Schedule</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="addSchedule()">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="schedule-content">
-                <div class="schedule-day">
-                    <div class="day-header">Monday</div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">9:00 AM - 10:30 AM</div>
-                        <div class="schedule-title">Calculus 101</div>
-                        <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Room 301
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">11:00 AM - 12:30 PM</div>
-                        <div class="schedule-title">Computer Science</div>
-                        <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Lab 205
-                        </div>
-                    </div>
-                </div>
-            </div>
             
             <div class="bottom-nav">
                 <a href="#" class="nav-item" onclick="showScreen('dashboard')">
@@ -1209,69 +866,7 @@
                     <i class="fas fa-folder"></i>
                     <span>Files</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat')">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile')">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Progress Screen -->
-        <div id="progress" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Progress</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="refreshProgress()">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="progress-content">
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title">Overall GPA</div>
-                        <div class="progress-percentage">3.75</div>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 85%"></div>
-                    </div>
-                    <div class="progress-details">
-                        Target: 3.8 • Last semester: 3.72
-                    </div>
-                </div>
-                
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title">Calculus 101</div>
-                        <div class="progress-percentage">92%</div>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 92%"></div>
-                    </div>
-                    <div class="progress-details">
-                        Assignments: 95% • Midterm: 88%
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('files')">
-                    <i class="fas fa-folder"></i>
-                    <span>Files</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat')">
+                <a href="#" class="nav-item active" onclick="showScreen('chat')">
                     <i class="fas fa-comments"></i>
                     <span>Chat</span>
                 </a>
@@ -1292,45 +887,43 @@
                 <div class="top-nav-actions"></div>
             </div>
             
-            <div class="profile-content">
-                <div class="avatar-container">
-                    <div class="avatar" id="profile-avatar">
+            <div class="dashboard-content">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div class="user-avatar" style="margin: 0 auto 20px;">
                         <i class="fas fa-user"></i>
                     </div>
-                    <div class="avatar-edit" onclick="changeAvatar()">
-                        <i class="fas fa-camera"></i>
+                    <h2 id="profile-name-display" style="margin-bottom: 8px;">Loading...</h2>
+                    <p id="profile-grade-display" style="color: #8E8E93;">Student</p>
+                </div>
+                
+                <input type="text" class="input-field" id="profile-nickname" placeholder="Nickname">
+                <select class="input-field" id="profile-grade">
+                    <option value="">Select Grade</option>
+                    <option value="Freshman">Freshman</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                </select>
+                
+                <div style="margin-bottom: 20px;">
+                    <div style="color: #8E8E93; margin-bottom: 8px;">Privacy Settings</div>
+                    <div style="display: flex; gap: 16px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="privacy" value="classmates" checked>
+                            <span>Classmates</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="radio" name="privacy" value="private">
+                            <span>Private</span>
+                        </label>
                     </div>
                 </div>
                 
-                <input type="text" class="input-field" id="profile-name" placeholder="Name" value="John Doe">
-                <input type="email" class="input-field" id="profile-email" placeholder="Email" value="john@student.edu">
-                
-                <div class="select-wrapper">
-                    <select class="input-field select-field" id="profile-grade">
-                        <option value="Freshman">Freshman</option>
-                        <option value="Sophomore">Sophomore</option>
-                        <option value="Junior">Junior</option>
-                        <option value="Senior">Senior</option>
-                    </select>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="privacy" checked>
-                        <span>Classmates Only</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="privacy">
-                        <span>Private</span>
-                    </label>
-                </div>
-                
-                <button class="btn-primary" onclick="saveProfile()">
-                    Save Changes
+                <button class="btn-primary" onclick="updateProfile()">
+                    Update Profile
                 </button>
                 
-                <button class="btn-primary" onclick="logout()" style="background: transparent; border: 1px solid #FF3B30; color: #FF3B30;">
+                <button class="btn-primary" onclick="logout()" style="background: transparent; border: 1px solid #FF3B30; color: #FF3B30; margin-top: 10px;">
                     Log Out
                 </button>
             </div>
@@ -1354,22 +947,33 @@
         // App State
         let currentUser = null;
         let authMode = 'login';
-        let fileView = 'grid';
-        let chatSubscription = null;
 
         // Initialize App
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('App initializing...');
+            
             // Check for existing session
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+            
+            if (sessionError) {
+                console.error('Session error:', sessionError);
+                return;
+            }
             
             if (session) {
+                console.log('Found existing session:', session.user.email);
                 currentUser = session.user;
                 await loadUserData();
                 showScreen('dashboard');
+            } else {
+                console.log('No session found, showing auth screen');
+                showScreen('auth');
             }
             
             // Listen for auth changes
             supabase.auth.onAuthStateChange(async (event, session) => {
+                console.log('Auth state changed:', event);
+                
                 if (event === 'SIGNED_IN' && session) {
                     currentUser = session.user;
                     await loadUserData();
@@ -1423,6 +1027,7 @@
                         return;
                     }
                     
+                    console.log('Signing up:', email);
                     const { data, error } = await supabase.auth.signUp({
                         email,
                         password,
@@ -1433,10 +1038,11 @@
                     
                     if (error) throw error;
                     
-                    if (data.user) {
-                        showToast('Account created! Please check your email.');
-                    }
+                    console.log('Signup successful:', data);
+                    showToast('Account created! Please check your email.');
+                    
                 } else {
+                    console.log('Logging in:', email);
                     const { data, error } = await supabase.auth.signInWithPassword({
                         email,
                         password
@@ -1444,9 +1050,11 @@
                     
                     if (error) throw error;
                     
+                    console.log('Login successful:', data);
                     showToast('Welcome back!');
                 }
             } catch (error) {
+                console.error('Auth error:', error);
                 showError(error.message);
             }
         }
@@ -1461,27 +1069,106 @@
         async function loadUserData() {
             if (!currentUser) return;
             
-            // Load profile
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', currentUser.id)
-                .single();
+            console.log('Loading user data for:', currentUser.email);
+            
+            try {
+                // Load or create profile
+                let { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (error && error.code === 'PGRST116') {
+                    // Profile doesn't exist, create one
+                    console.log('Creating new profile...');
+                    const { data: newProfile, error: createError } = await supabase
+                        .from('profiles')
+                        .insert([{
+                            id: currentUser.id,
+                            nickname: currentUser.user_metadata?.nickname || 'Student',
+                            grade: currentUser.user_metadata?.grade || 'Freshman',
+                            privacy: 'classmates'
+                        }])
+                        .select()
+                        .single();
+                    
+                    if (createError) throw createError;
+                    profile = newProfile;
+                } else if (error) {
+                    throw error;
+                }
+                
+                console.log('Profile loaded:', profile);
+                
+                // Update UI
+                updateProfileUI(profile);
+                
+                // Load files and chat
+                await Promise.all([loadFiles(), loadChat()]);
+                
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showToast('Error loading data: ' + error.message);
+            }
+        }
+
+        function updateProfileUI(profile) {
+            document.getElementById('sidebar-name').textContent = profile?.nickname || 'Student';
+            document.getElementById('sidebar-grade').textContent = profile?.grade || 'Freshman';
+            
+            document.getElementById('profile-name-display').textContent = profile?.nickname || 'Student';
+            document.getElementById('profile-grade-display').textContent = profile?.grade || 'Freshman';
             
             if (profile) {
-                document.getElementById('sidebar-name').textContent = profile.nickname || 'Student';
-                document.getElementById('sidebar-grade').textContent = profile.grade || 'Freshman';
+                document.getElementById('profile-nickname').value = profile.nickname || '';
+                document.getElementById('profile-grade').value = profile.grade || '';
+                
+                const privacyRadio = document.querySelector(`input[name="privacy"][value="${profile.privacy || 'classmates'}"]`);
+                if (privacyRadio) privacyRadio.checked = true;
+            }
+        }
+
+        async function updateProfile() {
+            if (!currentUser) return;
+            
+            const nickname = document.getElementById('profile-nickname').value;
+            const grade = document.getElementById('profile-grade').value;
+            const privacy = document.querySelector('input[name="privacy"]:checked')?.value || 'classmates';
+            
+            if (!nickname || !grade) {
+                showToast('Please fill in all fields');
+                return;
             }
             
-            // Load files
-            loadFiles();
-            
-            // Load chat
-            loadChat();
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({
+                        nickname,
+                        grade,
+                        privacy,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', currentUser.id);
+                
+                if (error) throw error;
+                
+                showToast('Profile updated!');
+                updateProfileUI({ nickname, grade, privacy });
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showToast('Error updating profile: ' + error.message);
+            }
         }
 
         // Files Functions
         async function loadFiles() {
+            if (!currentUser) return;
+            
+            console.log('Loading files...');
+            
             try {
                 const { data: files, error } = await supabase
                     .from('files')
@@ -1494,117 +1181,93 @@
                     return;
                 }
                 
+                console.log('Files loaded:', files);
+                
                 if (!files || files.length === 0) {
                     showNoFiles();
                     return;
                 }
                 
-                // Update stats
-                document.getElementById('file-count').textContent = files.length;
-                document.getElementById('shared-count').textContent = files.filter(f => f.is_shared).length;
-                
-                // Render files
                 renderFiles(files);
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error in loadFiles:', error);
                 showNoFiles();
             }
         }
 
         function renderFiles(files) {
-            const gridContainer = document.getElementById('files-grid');
-            const listContainer = document.getElementById('files-list');
-            const dashboardContainer = document.getElementById('dashboard-files');
-            
-            gridContainer.innerHTML = '';
-            listContainer.innerHTML = '';
-            dashboardContainer.innerHTML = '';
+            // Update stats
+            const sharedCount = files.filter(f => f.is_shared).length;
+            document.getElementById('file-count').textContent = files.length;
+            document.getElementById('shared-count').textContent = sharedCount;
             
             // Dashboard files (first 4)
-            const dashboardFiles = files.slice(0, 4);
-            dashboardFiles.forEach(file => {
-                const fileCard = createFileCard(file, true);
-                dashboardContainer.appendChild(fileCard);
-            });
+            const dashboardContainer = document.getElementById('dashboard-files');
+            const filesContainer = document.getElementById('files-grid');
+            const noFilesElement = document.getElementById('no-files');
             
-            // All files
-            files.forEach(file => {
-                const gridCard = createFileCard(file, false);
-                const listItem = createFileListItem(file);
-                
-                gridContainer.appendChild(gridCard);
-                listContainer.appendChild(listItem);
-            });
+            dashboardContainer.innerHTML = '';
+            filesContainer.innerHTML = '';
             
             // Hide no files message
-            document.getElementById('no-files').classList.add('hidden');
+            noFilesElement.classList.add('hidden');
+            
+            // All files for files page
+            files.forEach(file => {
+                filesContainer.appendChild(createFileCard(file));
+            });
+            
+            // First 4 files for dashboard
+            files.slice(0, 4).forEach(file => {
+                dashboardContainer.appendChild(createFileCard(file));
+            });
         }
 
-        function createFileCard(file, isDashboard) {
+        function createFileCard(file) {
             const div = document.createElement('div');
             div.className = 'file-card';
             div.onclick = () => openFile(file);
             
             const icon = getFileIcon(file.type);
-            const fileName = isDashboard ? truncate(file.name, 15) : truncate(file.name, 20);
+            const fileName = truncate(file.name, 20);
             
             div.innerHTML = `
                 <div class="file-preview" style="color: ${icon.color}">
                     <i class="${icon.class} file-preview-icon"></i>
-                    <div class="file-preview-overlay">${file.type.toUpperCase()}</div>
                 </div>
                 <div class="file-info">
                     <div class="file-name">${fileName}</div>
                     <div class="file-meta">
                         <span>${file.size}</span>
-                        <span>${formatTime(file.created_at)}</span>
+                        <span>${formatTimeAgo(file.created_at)}</span>
                     </div>
                 </div>
-            `;
-            
-            return div;
-        }
-
-        function createFileListItem(file) {
-            const div = document.createElement('div');
-            div.className = 'file-list-item';
-            div.onclick = () => openFile(file);
-            
-            const icon = getFileIcon(file.type);
-            
-            div.innerHTML = `
-                <div class="list-file-icon" style="color: ${icon.color}">
-                    <i class="${icon.class}"></i>
-                </div>
-                <div class="file-list-info">
-                    <div class="list-file-name">${file.name}</div>
-                    <div class="list-file-meta">
-                        <span>${file.size}</span>
-                        <span>•</span>
-                        <span>${formatTime(file.created_at)}</span>
-                    </div>
-                </div>
-                <button class="file-menu" onclick="event.stopPropagation(); showFileMenu('${file.id}')">
-                    <i class="fas fa-ellipsis-v"></i>
-                </button>
             `;
             
             return div;
         }
 
         function showNoFiles() {
-            document.getElementById('no-files').classList.remove('hidden');
             document.getElementById('dashboard-files').innerHTML = `
-                <div class="empty-state" style="grid-column: 1 / -1;">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No files yet</h3>
-                    <p>Upload your first file to get started</p>
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #8E8E93;">
+                    <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                    <p>No files yet</p>
                 </div>
             `;
+            
+            document.getElementById('no-files').classList.remove('hidden');
+            document.getElementById('file-count').textContent = '0';
+            document.getElementById('shared-count').textContent = '0';
         }
 
         async function uploadFile() {
+            if (!currentUser) {
+                showToast('Please login first');
+                return;
+            }
+            
+            // Create file input
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = '*/*';
@@ -1617,38 +1280,58 @@
                     showToast('Uploading...');
                     
                     const fileExt = file.name.split('.').pop().toLowerCase();
-                    const fileName = `${Date.now()}_${file.name}`;
+                    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+                    
+                    console.log('Uploading file:', fileName);
                     
                     // Upload to storage
-                    const { data, error } = await supabase.storage
+                    const { data: uploadData, error: uploadError } = await supabase.storage
                         .from('resources')
-                        .upload(fileName, file);
+                        .upload(fileName, file, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
                     
-                    if (error) throw error;
+                    if (uploadError) {
+                        console.error('Upload error:', uploadError);
+                        throw uploadError;
+                    }
+                    
+                    console.log('Upload successful:', uploadData);
                     
                     // Get public URL
                     const { data: { publicUrl } } = supabase.storage
                         .from('resources')
                         .getPublicUrl(fileName);
                     
+                    console.log('Public URL:', publicUrl);
+                    
                     // Save to database
+                    const fileSize = formatFileSize(file.size);
                     const { error: dbError } = await supabase
                         .from('files')
                         .insert([{
                             name: file.name,
                             type: fileExt,
-                            size: formatFileSize(file.size),
+                            size: fileSize,
                             url: publicUrl,
                             owner_id: currentUser.id,
                             is_shared: true
                         }]);
                     
-                    if (dbError) throw dbError;
+                    if (dbError) {
+                        console.error('Database error:', dbError);
+                        throw dbError;
+                    }
                     
-                    showToast('File uploaded!');
-                    loadFiles();
+                    console.log('File saved to database');
+                    showToast('File uploaded successfully!');
+                    
+                    // Reload files
+                    await loadFiles();
                     
                 } catch (error) {
+                    console.error('Upload failed:', error);
                     showToast('Upload failed: ' + error.message);
                 }
             };
@@ -1658,22 +1341,44 @@
 
         // Chat Functions
         async function loadChat() {
+            if (!currentUser) return;
+            
+            console.log('Loading chat...');
+            
             try {
+                // First get all messages
                 const { data: messages, error } = await supabase
                     .from('messages')
-                    .select(`
-                        *,
-                        profiles (
-                            nickname,
-                            avatar_url
-                        )
-                    `)
+                    .select('*')
                     .order('created_at', { ascending: true })
                     .limit(50);
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error loading messages:', error);
+                    return;
+                }
                 
-                renderMessages(messages);
+                console.log('Messages loaded:', messages?.length);
+                
+                // Get profiles for messages
+                const messagesWithProfiles = await Promise.all(
+                    (messages || []).map(async (msg) => {
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('nickname')
+                            .eq('id', msg.sender_id)
+                            .single();
+                        
+                        return {
+                            ...msg,
+                            profile: profile || { nickname: 'Classmate' }
+                        };
+                    })
+                );
+                
+                renderMessages(messagesWithProfiles);
+                
+                // Setup real-time subscription
                 setupChatSubscription();
                 
             } catch (error) {
@@ -1687,21 +1392,24 @@
             
             if (!messages || messages.length === 0) {
                 container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-comments"></i>
-                        <h3>No messages yet</h3>
-                        <p>Start the conversation!</p>
+                    <div style="text-align: center; padding: 40px; color: #8E8E93;">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p>No messages yet. Start the conversation!</p>
                     </div>
                 `;
+                document.getElementById('message-count').textContent = '0';
                 return;
             }
             
+            // Update message count
+            document.getElementById('message-count').textContent = messages.length;
+            
             messages.forEach(msg => {
-                const isMe = msg.sender_id === currentUser?.id;
+                const isMe = msg.sender_id === currentUser.id;
                 const div = document.createElement('div');
                 div.className = `message ${isMe ? 'sent' : 'received'}`;
                 
-                const nickname = msg.profiles?.nickname || 'Classmate';
+                const nickname = msg.profile?.nickname || 'Classmate';
                 const avatarLetter = nickname.charAt(0).toUpperCase();
                 
                 if (isMe) {
@@ -1710,7 +1418,7 @@
                             ${msg.content}
                             <div class="message-time">${formatTime(msg.created_at)}</div>
                         </div>
-                        <div class="message-avatar">You</div>
+                        <div class="message-avatar">${avatarLetter}</div>
                     `;
                 } else {
                     div.innerHTML = `
@@ -1726,78 +1434,68 @@
             });
             
             // Scroll to bottom
-            container.scrollTop = container.scrollHeight;
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 100);
         }
 
         function setupChatSubscription() {
-            if (chatSubscription) {
-                supabase.removeChannel(chatSubscription);
-            }
+            console.log('Setting up chat subscription...');
             
-            chatSubscription = supabase
+            // Remove existing subscription
+            supabase.removeAllChannels();
+            
+            // Create new subscription
+            const channel = supabase
                 .channel('public:messages')
                 .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'messages' }, 
+                    { 
+                        event: 'INSERT', 
+                        schema: 'public', 
+                        table: 'messages' 
+                    }, 
                     async (payload) => {
+                        console.log('New message received:', payload);
+                        
                         // Get the new message with profile
                         const { data: message, error } = await supabase
                             .from('messages')
-                            .select(`
-                                *,
-                                profiles (
-                                    nickname,
-                                    avatar_url
-                                )
-                            `)
+                            .select('*')
                             .eq('id', payload.new.id)
                             .single();
                         
                         if (!error && message) {
-                            // Add message to UI
-                            const container = document.getElementById('messages-container');
-                            const emptyState = container.querySelector('.empty-state');
-                            if (emptyState) emptyState.remove();
+                            // Get profile for the message
+                            const { data: profile } = await supabase
+                                .from('profiles')
+                                .select('nickname')
+                                .eq('id', message.sender_id)
+                                .single();
                             
-                            const isMe = message.sender_id === currentUser?.id;
-                            const div = document.createElement('div');
-                            div.className = `message ${isMe ? 'sent' : 'received'}`;
-                            
-                            const nickname = message.profiles?.nickname || 'Classmate';
-                            const avatarLetter = nickname.charAt(0).toUpperCase();
-                            
-                            if (isMe) {
-                                div.innerHTML = `
-                                    <div class="message-bubble">
-                                        ${message.content}
-                                        <div class="message-time">${formatTime(message.created_at)}</div>
-                                    </div>
-                                    <div class="message-avatar">You</div>
-                                `;
-                            } else {
-                                div.innerHTML = `
-                                    <div class="message-avatar">${avatarLetter}</div>
-                                    <div class="message-bubble">
-                                        ${message.content}
-                                        <div class="message-time">${formatTime(message.created_at)} • ${nickname}</div>
-                                    </div>
-                                `;
-                            }
-                            
-                            container.appendChild(div);
-                            container.scrollTop = container.scrollHeight;
+                            // Reload all messages to keep order
+                            loadChat();
                         }
                     }
                 )
-                .subscribe();
+                .subscribe((status) => {
+                    console.log('Chat subscription status:', status);
+                });
         }
 
         async function sendMessage() {
+            if (!currentUser) {
+                showToast('Please login first');
+                return;
+            }
+            
             const input = document.getElementById('message-input');
             const content = input.value.trim();
             
             if (!content) return;
             
             try {
+                console.log('Sending message:', content);
+                
                 const { error } = await supabase
                     .from('messages')
                     .insert([{
@@ -1806,11 +1504,16 @@
                         class_id: 'default_class'
                     }]);
                 
-                if (error) throw error;
+                if (error) {
+                    console.error('Error sending message:', error);
+                    throw error;
+                }
                 
+                console.log('Message sent successfully');
                 input.value = '';
                 
             } catch (error) {
+                console.error('Send message error:', error);
                 showToast('Failed to send: ' + error.message);
             }
         }
@@ -1820,31 +1523,40 @@
             const typeLower = type.toLowerCase();
             if (typeLower === 'pdf') return { class: 'fas fa-file-pdf', color: '#FF3B30' };
             if (['doc', 'docx'].includes(typeLower)) return { class: 'fas fa-file-word', color: '#2B579A' };
-            if (['jpg', 'jpeg', 'png', 'gif'].includes(typeLower)) return { class: 'fas fa-file-image', color: '#4CD964' };
-            if (['mp4', 'mov', 'avi'].includes(typeLower)) return { class: 'fas fa-file-video', color: '#FF2D55' };
-            if (['mp3', 'wav'].includes(typeLower)) return { class: 'fas fa-file-audio', color: '#5856D6' };
+            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(typeLower)) return { class: 'fas fa-file-image', color: '#4CD964' };
+            if (['mp4', 'mov', 'avi', 'mkv'].includes(typeLower)) return { class: 'fas fa-file-video', color: '#FF2D55' };
+            if (['mp3', 'wav', 'aac'].includes(typeLower)) return { class: 'fas fa-file-audio', color: '#5856D6' };
+            if (['zip', 'rar', '7z'].includes(typeLower)) return { class: 'fas fa-file-archive', color: '#FF9500' };
             return { class: 'fas fa-file', color: '#8E8E93' };
         }
 
         function formatTime(dateString) {
             const date = new Date(dateString);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
             const now = new Date();
-            const diff = now - date;
-            const diffHours = diff / (1000 * 60 * 60);
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / (1000 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
             
-            if (diffHours < 24) {
-                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            } else if (diffHours < 48) {
-                return 'Yesterday';
-            } else {
-                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-            }
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays === 1) return 'Yesterday';
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
         }
 
         function formatFileSize(bytes) {
             if (bytes < 1024) return bytes + ' B';
             if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
         }
 
         function truncate(str, n) {
@@ -1853,6 +1565,87 @@
 
         function openFile(file) {
             window.open(file.url, '_blank');
+        }
+
+        async function createTestData() {
+            if (!currentUser) {
+                showToast('Please login first');
+                return;
+            }
+            
+            try {
+                showToast('Creating test data...');
+                
+                // Create test files
+                const testFiles = [
+                    {
+                        name: 'Math_Notes.pdf',
+                        type: 'pdf',
+                        size: '2.4 MB',
+                        url: 'https://example.com/math_notes.pdf',
+                        owner_id: currentUser.id,
+                        is_shared: true
+                    },
+                    {
+                        name: 'Chemistry_Lab.docx',
+                        type: 'docx',
+                        size: '3.1 MB',
+                        url: 'https://example.com/chemistry_lab.docx',
+                        owner_id: currentUser.id,
+                        is_shared: true
+                    },
+                    {
+                        name: 'Physics_Formula_Sheet.jpg',
+                        type: 'jpg',
+                        size: '1.8 MB',
+                        url: 'https://example.com/physics_formulas.jpg',
+                        owner_id: currentUser.id,
+                        is_shared: false
+                    }
+                ];
+                
+                // Insert test files
+                const { error: filesError } = await supabase
+                    .from('files')
+                    .insert(testFiles);
+                
+                if (filesError) throw filesError;
+                
+                // Create test messages
+                const testMessages = [
+                    {
+                        content: 'Welcome to StudySync! How is everyone doing?',
+                        sender_id: currentUser.id,
+                        class_id: 'default_class'
+                    },
+                    {
+                        content: 'Has anyone completed the math assignment yet?',
+                        sender_id: currentUser.id,
+                        class_id: 'default_class'
+                    },
+                    {
+                        content: 'I just uploaded the notes to the resources section',
+                        sender_id: currentUser.id,
+                        class_id: 'default_class'
+                    }
+                ];
+                
+                // Insert test messages
+                const { error: messagesError } = await supabase
+                    .from('messages')
+                    .insert(testMessages);
+                
+                if (messagesError) throw messagesError;
+                
+                showToast('Test data created!');
+                
+                // Reload data
+                await Promise.all([loadFiles(), loadChat()]);
+                
+            } catch (error) {
+                console.error('Error creating test data:', error);
+                showToast('Error creating test data: ' + error.message);
+            }
         }
 
         // UI Functions
@@ -1900,30 +1693,25 @@
             }
         }
 
-        function setFileView(view) {
-            fileView = view;
-            const gridBtn = document.querySelector('.view-toggle-btn:nth-child(1)');
-            const listBtn = document.querySelector('.view-toggle-btn:nth-child(2)');
-            
-            gridBtn.classList.toggle('active', view === 'grid');
-            listBtn.classList.toggle('active', view === 'list');
-            
-            document.getElementById('files-grid').classList.toggle('hidden', view !== 'grid');
-            document.getElementById('files-list').classList.toggle('hidden', view !== 'list');
-        }
-
         // Toast Notification
         function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
+            // Create toast
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
             
+            // Animate in
             setTimeout(() => {
                 toast.style.transform = 'translateX(-50%) translateY(0)';
                 toast.style.opacity = '1';
             }, 10);
             
+            // Remove after delay
             setTimeout(() => {
                 toast.style.transform = 'translateX(-50%) translateY(20px)';
                 toast.style.opacity = '0';
@@ -1931,45 +1719,23 @@
             }, 3000);
         }
 
-        // Other Functions
-        function showNotifications() {
-            showToast('No new notifications');
-        }
-
-        function showChatMembers() {
-            showToast('24 classmates online');
-        }
-
-        function addSchedule() {
-            showToast('Add schedule feature');
-        }
-
-        function refreshProgress() {
-            showToast('Progress refreshed');
-        }
-
-        function changeAvatar() {
-            showToast('Change avatar feature');
-        }
-
-        function saveProfile() {
-            showToast('Profile saved');
-        }
-
         async function logout() {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) throw error;
+                
+                showToast('Logged out successfully');
+                showScreen('auth');
+                
+            } catch (error) {
+                console.error('Logout error:', error);
                 showToast('Error logging out');
             }
         }
 
-        // Prevent body scroll when sidebar is open
-        document.addEventListener('touchmove', function(e) {
-            const sidebar = document.querySelector('.sidebar');
-            if (sidebar.classList.contains('active')) {
-                e.preventDefault();
-            }
-        }, { passive: false });
+        // Open console for debugging
+        console.log('StudySync App Loaded');
+        console.log('Supabase URL:', SUPABASE_URL);
     </script>
 </body>
 </html>
