@@ -2,65 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>StudySync - Student Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
-        /* Fonts & Base Styles */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        :root {
-            --dark-bg: #000000;
-            --dark-surface: #1C1C1E;
-            --dark-card: #2C2C2E;
-            --coral-red: #FF3B30;
-            --coral-red-hover: #FF2D20;
-            --coral-red-light: rgba(255, 59, 48, 0.1);
-            --text-primary: #FFFFFF;
-            --text-secondary: #8E8E93;
-            --border-color: #3A3A3C;
-            --sidebar-width: 280px;
-            --transition-speed: 0.3s;
-        }
-
+        /* Reset and Base */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #FFFFFF;
             overflow-x: hidden;
             height: 100vh;
+            position: fixed;
+            width: 100%;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* App Container */
         .app {
-            min-height: 100vh;
+            height: 100vh;
+            width: 100%;
             max-width: 500px;
             margin: 0 auto;
             position: relative;
             overflow: hidden;
+            background: #000000;
         }
 
+        /* Screens */
         .screen {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             transform: translateX(100%);
             opacity: 0;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                        opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            background: #000000;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding-bottom: 80px;
-            background: var(--dark-bg);
             z-index: 10;
         }
 
@@ -69,24 +60,18 @@
             opacity: 1;
         }
 
-        .screen.slide-out {
-            transform: translateX(-100%);
-            opacity: 0.5;
-        }
-
-        /* Sidebar Navigation */
+        /* Sidebar */
         .sidebar-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
         }
 
         .sidebar-overlay.active {
@@ -99,13 +84,14 @@
             top: 0;
             left: 0;
             bottom: 0;
-            width: var(--sidebar-width);
-            background: var(--dark-surface);
+            width: 280px;
+            max-width: 85%;
+            background: #1C1C1E;
             transform: translateX(-100%);
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            z-index: 1001;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 1000;
             overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            -webkit-overflow-scrolling: touch;
         }
 
         .sidebar.active {
@@ -113,22 +99,21 @@
         }
 
         .sidebar-header {
-            padding: 40px 24px 24px;
-            border-bottom: 1px solid var(--border-color);
+            padding: 60px 20px 20px;
+            border-bottom: 1px solid #3A3A3C;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 15px;
         }
 
         .user-avatar {
-            width: 56px;
-            height: 56px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--coral-red), #FF9500);
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -143,61 +128,33 @@
         }
 
         .user-info p {
-            color: var(--text-secondary);
+            color: #8E8E93;
             font-size: 14px;
         }
 
         .sidebar-menu {
-            padding: 24px 0;
+            padding: 20px 0;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 16px 24px;
-            color: var(--text-primary);
+            gap: 15px;
+            padding: 16px 20px;
+            color: #FFFFFF;
             text-decoration: none;
-            transition: all 0.2s ease;
             border-left: 4px solid transparent;
         }
 
-        .menu-item:hover {
-            background: var(--dark-card);
-            border-left-color: var(--coral-red);
-        }
-
         .menu-item.active {
-            background: var(--dark-card);
-            border-left-color: var(--coral-red);
-            color: var(--coral-red);
+            background: #2C2C2E;
+            border-left-color: #FF3B30;
+            color: #FF3B30;
         }
 
         .menu-item i {
             width: 24px;
-            font-size: 20px;
-        }
-
-        .menu-item span {
-            font-weight: 500;
-            font-size: 16px;
-        }
-
-        .sidebar-footer {
-            padding: 24px;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--coral-red);
-            background: none;
-            border: none;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
+            text-align: center;
         }
 
         /* Top Navigation */
@@ -205,403 +162,205 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            background: var(--dark-bg);
-            padding: 16px 20px;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--border-color);
-            backdrop-filter: blur(20px);
-            background: rgba(28, 28, 30, 0.8);
+            border-bottom: 1px solid #3A3A3C;
         }
 
         .menu-toggle {
             background: none;
             border: none;
-            color: var(--text-primary);
-            font-size: 24px;
-            cursor: pointer;
+            color: #FFFFFF;
+            font-size: 22px;
             padding: 8px;
-            border-radius: 12px;
-            transition: background 0.2s ease;
-        }
-
-        .menu-toggle:hover {
-            background: var(--dark-card);
+            border-radius: 10px;
         }
 
         .page-title {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: -0.5px;
+            flex: 1;
+            text-align: center;
+            margin: 0 10px;
         }
 
         .top-nav-actions {
             display: flex;
-            gap: 12px;
+            gap: 8px;
         }
 
         .nav-action-btn {
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: #FFFFFF;
             font-size: 20px;
-            cursor: pointer;
             padding: 8px;
-            border-radius: 12px;
-            transition: background 0.2s ease;
+            border-radius: 10px;
         }
 
-        .nav-action-btn:hover {
-            background: var(--dark-card);
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid #3A3A3C;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 99;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #8E8E93;
+            text-decoration: none;
+            font-size: 11px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: #FF3B30;
+            background: rgba(255, 59, 48, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 22px;
+            margin-bottom: 4px;
         }
 
         /* Common Components */
         .btn-primary {
-            background: var(--coral-red);
+            background: #FF3B30;
             color: white;
             border: none;
             border-radius: 999px;
-            padding: 18px 32px;
+            padding: 16px 24px;
             font-weight: 600;
-            font-size: 17px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px;
             width: 100%;
-            text-align: center;
             display: block;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary:hover {
-            background: var(--coral-red-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(255, 59, 48, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
+            margin: 20px 0;
         }
 
         .input-field {
-            background: var(--dark-card);
-            color: var(--text-primary);
-            border: 2px solid transparent;
-            border-radius: 16px;
-            padding: 18px;
+            background: #2C2C2E;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
             font-size: 16px;
             width: 100%;
-            transition: all 0.3s ease;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--coral-red);
-            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+            margin-bottom: 16px;
         }
 
         .input-field::placeholder {
-            color: var(--text-secondary);
+            color: #8E8E93;
         }
 
-        .card {
-            background: var(--dark-surface);
-            border-radius: 24px;
-            padding: 24px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Login/Signup Screen */
-        #auth {
-            padding: 0;
-        }
-
+        /* Auth Screen */
         .auth-content {
-            padding: 60px 32px 40px;
+            padding: 40px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            text-align: center;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         .auth-logo {
-            width: 100px;
-            height: 100px;
-            background: linear-gradient(135deg, var(--coral-red), #FF9500);
-            border-radius: 28px;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 40px;
-            animation: float 3s ease-in-out infinite;
-            box-shadow: 0 20px 40px rgba(255, 59, 48, 0.2);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            margin: 0 auto 30px;
         }
 
         .auth-logo i {
-            font-size: 48px;
+            font-size: 40px;
             color: white;
         }
 
         .auth-title {
-            font-size: 40px;
+            font-size: 32px;
             font-weight: 800;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 10px;
         }
 
         .auth-subtitle {
-            color: var(--text-secondary);
-            font-size: 18px;
+            color: #8E8E93;
+            text-align: center;
             margin-bottom: 40px;
-            line-height: 1.5;
+            font-size: 16px;
         }
 
         .auth-tabs {
             display: flex;
-            gap: 8px;
-            background: var(--dark-card);
-            border-radius: 16px;
-            padding: 6px;
-            margin-bottom: 32px;
-            width: 100%;
-            max-width: 400px;
+            background: #2C2C2E;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 30px;
         }
 
         .auth-tab {
             flex: 1;
-            padding: 14px;
+            padding: 12px;
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: #8E8E93;
             font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            border-radius: 10px;
         }
 
         .auth-tab.active {
-            background: var(--coral-red);
+            background: #FF3B30;
             color: white;
         }
 
-        .auth-form {
-            width: 100%;
-            max-width: 400px;
-            margin-bottom: 32px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-            animation: slideInUp 0.5s ease forwards;
-            opacity: 0;
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 14px;
-            text-align: left;
-        }
-
-        /* Profile Setup Screen */
-        #profile-setup {
-            padding: 0;
-        }
-
-        .profile-content {
-            padding: 32px;
-            max-width: 400px;
-            margin: 0 auto;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .setup-title {
-            font-size: 36px;
-            font-weight: 800;
-            margin-bottom: 40px;
-            text-align: center;
-            letter-spacing: -1px;
-        }
-
-        .avatar-container {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 48px;
-        }
-
-        .avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--coral-red), #FF9500);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 56px;
-            overflow: hidden;
-            border: 4px solid var(--dark-surface);
-            transition: transform 0.3s ease;
-        }
-
-        .avatar:hover {
-            transform: scale(1.05);
-        }
-
-        .avatar-edit {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 48px;
-            height: 48px;
-            background: var(--coral-red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: 4px solid var(--dark-surface);
-            transition: all 0.3s ease;
-        }
-
-        .avatar-edit:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
-        }
-
-        .avatar-edit i {
-            font-size: 20px;
-            color: white;
-        }
-
-        .select-wrapper {
-            position: relative;
-        }
-
-        .select-wrapper i {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            pointer-events: none;
-            transition: transform 0.3s ease;
-        }
-
-        .select-wrapper:focus-within i {
-            transform: translateY(-50%) rotate(180deg);
-        }
-
-        .select-field {
-            appearance: none;
-            cursor: pointer;
-            padding-right: 60px;
-        }
-
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-top: 12px;
-        }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--dark-card);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .radio-option:hover {
-            border-color: var(--coral-red);
-            background: var(--coral-red-light);
-        }
-
-        .radio-option input {
-            width: 20px;
-            height: 20px;
-            accent-color: var(--coral-red);
-        }
-
-        .radio-option span {
-            font-weight: 500;
-        }
-
-        /* Dashboard Screen */
+        /* Dashboard */
         .dashboard-content {
-            padding: 24px 20px 100px;
+            padding: 20px 16px 100px;
         }
 
         .search-container {
             position: relative;
-            margin: 20px 0 24px;
+            margin: 15px 0;
         }
 
         .search-icon {
             position: absolute;
-            left: 20px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
-            z-index: 1;
+            color: #8E8E93;
         }
 
         .search-input {
-            padding-left: 56px;
+            padding-left: 48px;
         }
 
         .quick-actions {
             display: flex;
             gap: 12px;
-            margin-bottom: 32px;
             overflow-x: auto;
-            scrollbar-width: none;
+            margin-bottom: 25px;
             padding-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .quick-actions::-webkit-scrollbar {
@@ -611,97 +370,86 @@
         .quick-action-btn {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--dark-card);
+            gap: 8px;
+            background: #2C2C2E;
             border: none;
             border-radius: 999px;
-            padding: 14px 24px;
-            color: var(--text-primary);
-            font-weight: 500;
+            padding: 12px 18px;
+            color: #FFFFFF;
             white-space: nowrap;
-            cursor: pointer;
-            transition: all 0.3s ease;
             flex-shrink: 0;
         }
 
-        .quick-action-btn:hover {
-            background: var(--coral-red);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 59, 48, 0.2);
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
-        .quick-action-btn i {
-            font-size: 18px;
+        .stat-card {
+            background: #2C2C2E;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #FF3B30;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #8E8E93;
+            font-size: 13px;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .section-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
         }
 
         .view-all {
-            color: var(--coral-red);
+            color: #FF3B30;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
+            font-size: 14px;
         }
 
-        /* Files Screen - NEW BEAUTIFUL DESIGN */
+        /* Files - Grid View */
         .files-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .file-card {
-            background: var(--dark-card);
-            border-radius: 20px;
+            background: #2C2C2E;
+            border-radius: 16px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .file-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--coral-red);
-            box-shadow: 0 12px 30px rgba(255, 59, 48, 0.15);
         }
 
         .file-preview {
-            height: 120px;
-            background: var(--dark-surface);
+            height: 100px;
+            background: #1C1C1E;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            overflow: hidden;
-        }
-
-        .file-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .file-card:hover .file-preview img {
-            transform: scale(1.05);
         }
 
         .file-preview-icon {
-            font-size: 48px;
-            color: var(--text-secondary);
+            font-size: 40px;
+            color: #8E8E93;
         }
 
         .file-preview-overlay {
@@ -711,103 +459,57 @@
             background: rgba(0, 0, 0, 0.7);
             padding: 4px 8px;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
 
         .file-info {
-            padding: 16px;
-            flex: 1;
+            padding: 12px;
         }
 
         .file-name {
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            font-size: 14px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-size: 15px;
         }
 
         .file-meta {
-            color: var(--text-secondary);
-            font-size: 13px;
+            color: #8E8E93;
+            font-size: 12px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
         }
 
-        .file-actions {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .file-card:hover .file-actions {
-            opacity: 1;
-        }
-
-        .file-action-btn {
-            background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-bottom: 4px;
-            transition: background 0.2s ease;
-        }
-
-        .file-action-btn:hover {
-            background: var(--coral-red);
-        }
-
-        /* List View */
+        /* Files - List View */
         .files-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .file-list-item {
             display: flex;
             align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--dark-card);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .file-list-item:hover {
-            transform: translateX(8px);
-            border-color: var(--coral-red);
-            background: var(--coral-red-light);
+            gap: 12px;
+            padding: 14px;
+            background: #2C2C2E;
+            border-radius: 16px;
         }
 
         .list-file-icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background: var(--dark-surface);
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #1C1C1E;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             flex-shrink: 0;
-            transition: transform 0.3s ease;
-        }
-
-        .file-list-item:hover .list-file-icon {
-            transform: scale(1.1);
         }
 
         .file-list-info {
@@ -817,187 +519,53 @@
 
         .list-file-name {
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            font-size: 15px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .list-file-meta {
-            color: var(--text-secondary);
-            font-size: 14px;
+            color: #8E8E93;
+            font-size: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
+        }
+
+        .file-menu {
+            background: none;
+            border: none;
+            color: #8E8E93;
+            font-size: 18px;
+            padding: 8px;
         }
 
         .view-toggle {
             display: flex;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .view-toggle-btn {
-            background: var(--dark-card);
+            flex: 1;
+            background: #2C2C2E;
             border: none;
-            color: var(--text-secondary);
-            padding: 10px 16px;
+            color: #8E8E93;
+            padding: 10px;
             border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            font-size: 14px;
         }
 
         .view-toggle-btn.active {
-            background: var(--coral-red);
+            background: #FF3B30;
             color: white;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--dark-card);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            background: var(--coral-red-light);
-        }
-
-        .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: var(--coral-red);
-        }
-
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        /* Schedule Screen */
-        .schedule-content {
-            padding: 24px 20px 100px;
-        }
-
-        .schedule-day {
-            margin-bottom: 32px;
-        }
-
-        .day-header {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: var(--coral-red);
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--coral-red);
-        }
-
-        .schedule-item {
-            background: var(--dark-card);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-        .schedule-item:hover {
-            transform: translateX(8px);
-            border-left-color: var(--coral-red);
-        }
-
-        .schedule-time {
-            color: var(--coral-red);
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 15px;
-        }
-
-        .schedule-title {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 17px;
-        }
-
-        .schedule-location {
-            color: var(--text-secondary);
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Progress Screen */
-        .progress-content {
-            padding: 24px 20px 100px;
-        }
-
-        .progress-card {
-            background: var(--dark-card);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .progress-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .progress-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .progress-percentage {
-            color: var(--coral-red);
-            font-weight: 700;
-            font-size: 24px;
-        }
-
-        .progress-bar-container {
-            height: 8px;
-            background: var(--dark-surface);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--coral-red);
-            border-radius: 4px;
-            transition: width 1s ease-in-out;
-        }
-
-        .progress-details {
-            color: var(--text-secondary);
-            font-size: 14px;
-        }
-
-        /* Chat Screen */
+        /* Chat */
         .chat-content {
-            padding: 20px 0 100px;
-            height: 100vh;
+            height: calc(100vh - 120px);
             display: flex;
             flex-direction: column;
         }
@@ -1005,31 +573,19 @@
         .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            padding: 20px 16px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .message {
             display: flex;
             max-width: 85%;
-            animation: messageIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        @keyframes messageIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            margin-bottom: 12px;
         }
 
         .message.sent {
             align-self: flex-end;
+            margin-left: auto;
             flex-direction: row-reverse;
         }
 
@@ -1038,51 +594,50 @@
         }
 
         .message-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--coral-red), #FF9500);
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             flex-shrink: 0;
             margin-top: 4px;
         }
 
         .message.sent .message-avatar {
-            margin-left: 12px;
+            margin-left: 8px;
         }
 
         .message.received .message-avatar {
-            margin-right: 12px;
+            margin-right: 8px;
         }
 
         .message-bubble {
-            padding: 16px 20px;
-            border-radius: 24px;
-            font-size: 16px;
-            line-height: 1.5;
-            position: relative;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.4;
             max-width: 100%;
             word-wrap: break-word;
         }
 
         .message.sent .message-bubble {
-            background: var(--coral-red);
-            border-bottom-right-radius: 8px;
+            background: #FF3B30;
+            border-bottom-right-radius: 6px;
         }
 
         .message.received .message-bubble {
-            background: var(--dark-card);
-            border-bottom-left-radius: 8px;
+            background: #2C2C2E;
+            border-bottom-left-radius: 6px;
         }
 
         .message-time {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 6px;
+            font-size: 11px;
+            color: #8E8E93;
+            margin-top: 4px;
             text-align: right;
         }
 
@@ -1091,189 +646,275 @@
         }
 
         .message-input-container {
-            padding: 20px;
-            border-top: 1px solid var(--border-color);
+            padding: 16px;
+            border-top: 1px solid #3A3A3C;
             display: flex;
             align-items: center;
-            gap: 16px;
-            background: var(--dark-bg);
+            gap: 12px;
+            background: #000000;
         }
 
         .message-input {
             flex: 1;
-            background: var(--dark-card);
-            border: 2px solid transparent;
+            background: #2C2C2E;
+            border: none;
             border-radius: 999px;
-            padding: 16px 24px;
-            color: var(--text-primary);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .message-input:focus {
-            outline: none;
-            border-color: var(--coral-red);
-            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+            padding: 14px 20px;
+            color: #FFFFFF;
+            font-size: 15px;
         }
 
         .send-btn {
-            background: var(--coral-red);
+            background: #FF3B30;
             border: none;
             border-radius: 50%;
-            width: 52px;
-            height: 52px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            cursor: pointer;
             flex-shrink: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .send-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(255, 59, 48, 0.3);
+        /* Schedule */
+        .schedule-content {
+            padding: 20px 16px 100px;
         }
 
-        .send-btn i {
-            font-size: 22px;
+        .schedule-day {
+            margin-bottom: 24px;
         }
 
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--dark-surface);
-            border-top: 1px solid var(--border-color);
+        .day-header {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #FF3B30;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #FF3B30;
+        }
+
+        .schedule-item {
+            background: #2C2C2E;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+
+        .schedule-time {
+            color: #FF3B30;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .schedule-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .schedule-location {
+            color: #8E8E93;
+            font-size: 13px;
             display: flex;
-            justify-content: space-around;
-            padding: 16px 0;
-            max-width: 500px;
-            margin: 0 auto;
-            z-index: 99;
-            backdrop-filter: blur(20px);
-            background: rgba(28, 28, 30, 0.9);
+            align-items: center;
+            gap: 6px;
         }
 
-        .nav-item {
+        /* Progress */
+        .progress-content {
+            padding: 20px 16px 100px;
+        }
+
+        .progress-card {
+            background: #2C2C2E;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .progress-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .progress-percentage {
+            color: #FF3B30;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .progress-bar-container {
+            height: 6px;
+            background: #1C1C1E;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #FF3B30;
+            border-radius: 3px;
+        }
+
+        .progress-details {
+            color: #8E8E93;
+            font-size: 13px;
+        }
+
+        /* Profile Setup */
+        .profile-content {
+            padding: 20px 16px 100px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .setup-title {
+            font-size: 28px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 40px;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF3B30, #FF9500);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            overflow: hidden;
+            border: 4px solid #000000;
+        }
+
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 40px;
+            height: 40px;
+            background: #FF3B30;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #000000;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8E8E93;
+            pointer-events: none;
+        }
+
+        .select-field {
+            appearance: none;
+            padding-right: 50px;
+        }
+
+        .radio-group {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
             align-items: center;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 12px;
-            gap: 6px;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 8px;
-            border-radius: 16px;
+            gap: 12px;
+            padding: 14px;
+            background: #2C2C2E;
+            border-radius: 14px;
         }
 
-        .nav-item.active {
-            color: var(--coral-red);
-            background: var(--coral-red-light);
+        .radio-option input {
+            width: 20px;
+            height: 20px;
+            accent-color: #FF3B30;
         }
 
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            top: -8px;
-            width: 30px;
-            height: 3px;
-            background: var(--coral-red);
-            border-radius: 999px;
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8E8E93;
         }
 
-        .nav-item i {
-            font-size: 24px;
-            transition: transform 0.3s ease;
+        .empty-state i {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.5;
         }
 
-        .nav-item.active i {
-            transform: translateY(-4px);
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            color: #FFFFFF;
         }
 
-        .nav-label {
-            font-weight: 500;
-            letter-spacing: -0.3px;
-        }
-
-        /* Utility Classes */
-        .hidden {
-            display: none !important;
-        }
-
-        .gradient-text {
-            background: linear-gradient(135deg, var(--coral-red), #FF9500);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .shake {
-            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-        }
-
-        @keyframes shake {
-            10%, 90% { transform: translateX(-1px); }
-            20%, 80% { transform: translateX(2px); }
-            30%, 50%, 70% { transform: translateX(-3px); }
-            40%, 60% { transform: translateX(3px); }
-        }
-
-        .continue-btn-container {
-            position: sticky;
-            bottom: 0;
-            padding: 24px;
-            background: linear-gradient(to top, var(--dark-bg) 70%, transparent);
-        }
-
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 100px;
             left: 50%;
             transform: translateX(-50%) translateY(20px);
-            background: var(--dark-surface);
+            background: #2C2C2E;
             color: white;
-            padding: 14px 24px;
-            border-radius: 16px;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-weight: 500;
             z-index: 10000;
             opacity: 0;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            max-width: 80%;
+            max-width: 90%;
             text-align: center;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-secondary);
+        /* Utility */
+        .hidden {
+            display: none !important;
         }
 
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 20px;
-            margin-bottom: 12px;
-            color: var(--text-primary);
+        /* Safe Area for Notch Phones */
+        @supports (padding: max(0px)) {
+            .screen {
+                padding-bottom: max(80px, env(safe-area-inset-bottom) + 80px);
+            }
+            
+            .bottom-nav {
+                padding-bottom: max(12px, env(safe-area-inset-bottom) + 12px);
+            }
+            
+            .top-nav {
+                padding-top: max(12px, env(safe-area-inset-top) + 12px);
+            }
         }
     </style>
 </head>
@@ -1282,7 +923,7 @@
         <!-- Sidebar Overlay -->
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <!-- Sidebar Navigation -->
+        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="user-profile">
@@ -1290,12 +931,11 @@
                         <i class="fas fa-user"></i>
                     </div>
                     <div class="user-info">
-                        <h3 id="sidebar-name">Guest Student</h3>
+                        <h3 id="sidebar-name">Student</h3>
                         <p id="sidebar-grade">Freshman</p>
                     </div>
                 </div>
             </div>
-
             <div class="sidebar-menu">
                 <a href="#" class="menu-item" onclick="showScreen('dashboard'); toggleSidebar(); return false;">
                     <i class="fas fa-home"></i>
@@ -1317,17 +957,10 @@
                     <i class="fas fa-chart-line"></i>
                     <span>Progress</span>
                 </a>
-                <a href="#" class="menu-item" onclick="showScreen('profile-setup'); toggleSidebar(); return false;">
+                <a href="#" class="menu-item" onclick="showScreen('profile'); toggleSidebar(); return false;">
                     <i class="fas fa-user-cog"></i>
-                    <span>Profile Settings</span>
+                    <span>Profile</span>
                 </a>
-            </div>
-
-            <div class="sidebar-footer">
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Log Out</span>
-                </button>
             </div>
         </div>
 
@@ -1337,7 +970,6 @@
                 <div class="auth-logo">
                     <i class="fas fa-graduation-cap"></i>
                 </div>
-                
                 <h1 class="auth-title">StudySync</h1>
                 <p class="auth-subtitle">Your academic companion</p>
                 
@@ -1346,118 +978,32 @@
                     <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
                 </div>
                 
-                <div class="auth-form">
-                    <div class="form-group" style="opacity: 1;">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="input-field" id="auth-email" placeholder="student@university.edu">
-                    </div>
-                    
-                    <div class="form-group" style="opacity: 1;">
-                        <label class="form-label">Password</label>
-                        <input type="password" class="input-field" id="auth-password" placeholder="••••••••">
-                    </div>
-                    
-                    <div id="signup-fields" class="hidden">
-                        <div class="form-group" style="opacity: 1;">
-                            <label class="form-label">Nickname</label>
-                            <input type="text" class="input-field" id="auth-nickname" placeholder="Your display name">
-                        </div>
-                        
-                        <div class="form-group" style="opacity: 1;">
-                            <label class="form-label">Grade</label>
-                            <div class="select-wrapper">
-                                <select class="input-field select-field" id="auth-grade">
-                                    <option value="">Select your grade</option>
-                                    <option value="Freshman">Freshman</option>
-                                    <option value="Sophomore">Sophomore</option>
-                                    <option value="Junior">Junior</option>
-                                    <option value="Senior">Senior</option>
-                                    <option value="Graduate">Graduate</option>
-                                </select>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <input type="email" class="input-field" id="auth-email" placeholder="Email">
+                <input type="password" class="input-field" id="auth-password" placeholder="Password">
                 
-                <div id="auth-error" class="hidden" style="color: var(--coral-red); margin-bottom: 20px;"></div>
-                
-                <button class="btn-primary" onclick="handleAuth()" id="auth-button">
-                    Login to StudySync
-                </button>
-                
-                <p style="color: var(--text-secondary); margin-top: 20px; font-size: 14px;">
-                    By continuing, you agree to our Terms & Privacy Policy
-                </p>
-            </div>
-        </div>
-
-        <!-- Profile Setup Screen -->
-        <div id="profile-setup" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Complete Profile</div>
-                <div class="top-nav-actions"></div>
-            </div>
-            
-            <div class="profile-content">
-                <h1 class="setup-title">Welcome!</h1>
-                
-                <div class="avatar-container">
-                    <div class="avatar" id="avatar-preview">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="avatar-edit" onclick="document.getElementById('avatar-input').click()">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <input type="file" id="avatar-input" accept="image/*" class="hidden" onchange="previewAvatar(event)">
-                </div>
-                
-                <div class="form-group" style="opacity: 1;">
-                    <label class="form-label">Display Name</label>
-                    <input type="text" class="input-field" id="nickname-input" placeholder="Enter your nickname">
-                </div>
-                
-                <div class="form-group" style="opacity: 1;">
-                    <label class="form-label">Academic Year</label>
+                <div id="signup-fields" class="hidden">
+                    <input type="text" class="input-field" id="auth-nickname" placeholder="Nickname">
                     <div class="select-wrapper">
-                        <select class="input-field select-field" id="grade-select">
-                            <option value="">Select your grade</option>
+                        <select class="input-field select-field" id="auth-grade">
+                            <option value="">Select Grade</option>
                             <option value="Freshman">Freshman</option>
                             <option value="Sophomore">Sophomore</option>
                             <option value="Junior">Junior</option>
                             <option value="Senior">Senior</option>
-                            <option value="Graduate">Graduate</option>
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
                 
-                <div class="form-group" style="opacity: 1;">
-                    <label class="form-label">Privacy Settings</label>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="privacy" value="classmates" checked>
-                            <span>Classmates Only</span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="privacy" value="private">
-                            <span>Private</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="continue-btn-container">
-                <button class="btn-primary" onclick="completeProfile()" id="profile-continue-btn">
-                    Complete Setup
+                <div id="auth-error" class="hidden" style="color: #FF3B30; margin-bottom: 16px;"></div>
+                
+                <button class="btn-primary" onclick="handleAuth()" id="auth-button">
+                    Login
                 </button>
             </div>
         </div>
 
-        <!-- Dashboard Screen -->
+        <!-- Dashboard -->
         <div id="dashboard" class="screen">
             <div class="top-nav">
                 <button class="menu-toggle" onclick="toggleSidebar()">
@@ -1474,21 +1020,21 @@
             <div class="dashboard-content">
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="input-field search-input" placeholder="Search files, notes, assignments..." id="search-input">
+                    <input type="text" class="input-field search-input" placeholder="Search">
                 </div>
                 
                 <div class="quick-actions">
                     <button class="quick-action-btn" onclick="uploadFile()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Upload File</span>
+                        <i class="fas fa-upload"></i>
+                        <span>Upload</span>
                     </button>
-                    <button class="quick-action-btn" onclick="showScreen('files');">
+                    <button class="quick-action-btn" onclick="showScreen('files')">
                         <i class="fas fa-folder"></i>
-                        <span>Browse Files</span>
+                        <span>Files</span>
                     </button>
-                    <button class="quick-action-btn" onclick="showScreen('chat');">
+                    <button class="quick-action-btn" onclick="showScreen('chat')">
                         <i class="fas fa-comments"></i>
-                        <span>Go to Chat</span>
+                        <span>Chat</span>
                     </button>
                 </div>
                 
@@ -1501,47 +1047,39 @@
                         <div class="stat-value" id="shared-count">0</div>
                         <div class="stat-label">Shared</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value">5.0GB</div>
-                        <div class="stat-label">Storage</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="message-count">0</div>
-                        <div class="stat-label">Messages</div>
-                    </div>
                 </div>
                 
                 <div class="section-header">
                     <div class="section-title">Recent Files</div>
-                    <a href="#" class="view-all" onclick="showScreen('files'); return false;">View All</a>
+                    <a href="#" class="view-all" onclick="showScreen('files')">View All</a>
                 </div>
                 
                 <div class="files-grid" id="dashboard-files">
-                    <!-- Files loaded dynamically -->
+                    <!-- Files will load here -->
                 </div>
             </div>
             
             <div class="bottom-nav">
-                <a href="#" class="nav-item active" onclick="showScreen('dashboard'); return false;">
+                <a href="#" class="nav-item active" onclick="showScreen('dashboard')">
                     <i class="fas fa-home"></i>
-                    <span class="nav-label">Home</span>
+                    <span>Home</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('files'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('files')">
                     <i class="fas fa-folder"></i>
-                    <span class="nav-label">Files</span>
+                    <span>Files</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('chat')">
                     <i class="fas fa-comments"></i>
-                    <span class="nav-label">Chat</span>
+                    <span>Chat</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile-setup'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('profile')">
                     <i class="fas fa-user"></i>
-                    <span class="nav-label">Profile</span>
+                    <span>Profile</span>
                 </a>
             </div>
         </div>
 
-        <!-- Files Screen (NEW) -->
+        <!-- Files Screen -->
         <div id="files" class="screen">
             <div class="top-nav">
                 <button class="menu-toggle" onclick="toggleSidebar()">
@@ -1550,10 +1088,7 @@
                 <div class="page-title">Resources</div>
                 <div class="top-nav-actions">
                     <button class="nav-action-btn" onclick="uploadFile()">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </button>
-                    <button class="nav-action-btn" onclick="toggleFileView()">
-                        <i class="fas fa-th"></i>
+                        <i class="fas fa-upload"></i>
                     </button>
                 </div>
             </div>
@@ -1568,43 +1103,66 @@
                     </button>
                 </div>
                 
-                <div class="files-grid" id="files-grid-view">
-                    <!-- Grid view files -->
+                <div class="files-grid" id="files-grid">
+                    <!-- Grid view -->
                 </div>
                 
-                <div class="files-list hidden" id="files-list-view">
-                    <!-- List view files -->
+                <div class="files-list hidden" id="files-list">
+                    <!-- List view -->
                 </div>
                 
-                <div id="files-empty-state" class="hidden">
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open"></i>
-                        <h3>No files yet</h3>
-                        <p>Upload your first file to get started</p>
-                        <button class="btn-primary" onclick="uploadFile()" style="margin-top: 20px; max-width: 200px;">
-                            <i class="fas fa-upload"></i> Upload File
-                        </button>
-                    </div>
+                <div id="no-files" class="empty-state hidden">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No files yet</h3>
+                    <p>Upload your first file to get started</p>
                 </div>
             </div>
             
             <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
                     <i class="fas fa-home"></i>
-                    <span class="nav-label">Home</span>
+                    <span>Home</span>
                 </a>
-                <a href="#" class="nav-item active" onclick="showScreen('files'); return false;">
+                <a href="#" class="nav-item active" onclick="showScreen('files')">
                     <i class="fas fa-folder"></i>
-                    <span class="nav-label">Files</span>
+                    <span>Files</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('chat')">
                     <i class="fas fa-comments"></i>
-                    <span class="nav-label">Chat</span>
+                    <span>Chat</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile-setup'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('profile')">
                     <i class="fas fa-user"></i>
-                    <span class="nav-label">Profile</span>
+                    <span>Profile</span>
                 </a>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat" class="screen">
+            <div class="top-nav">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="page-title">Class Chat</div>
+                <div class="top-nav-actions">
+                    <button class="nav-action-btn" onclick="showChatMembers()">
+                        <i class="fas fa-users"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="chat-content">
+                <div class="messages-container" id="messages-container">
+                    <!-- Messages load here -->
+                </div>
+                
+                <div class="message-input-container">
+                    <input type="text" class="message-input" id="message-input" placeholder="Type a message...">
+                    <button class="send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1616,7 +1174,7 @@
                 </button>
                 <div class="page-title">Schedule</div>
                 <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="addScheduleItem()">
+                    <button class="nav-action-btn" onclick="addSchedule()">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
@@ -1626,67 +1184,38 @@
                 <div class="schedule-day">
                     <div class="day-header">Monday</div>
                     <div class="schedule-item">
-                        <div class="schedule-time">09:00 AM - 10:30 AM</div>
+                        <div class="schedule-time">9:00 AM - 10:30 AM</div>
                         <div class="schedule-title">Calculus 101</div>
                         <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Room 301, Math Building
+                            <i class="fas fa-map-marker-alt"></i> Room 301
                         </div>
                     </div>
                     <div class="schedule-item">
                         <div class="schedule-time">11:00 AM - 12:30 PM</div>
                         <div class="schedule-title">Computer Science</div>
                         <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Lab 205, CS Department
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="schedule-day">
-                    <div class="day-header">Tuesday</div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">10:00 AM - 11:30 AM</div>
-                        <div class="schedule-title">Physics Lab</div>
-                        <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Physics Building, Lab 3
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">02:00 PM - 03:30 PM</div>
-                        <div class="schedule-title">Study Group</div>
-                        <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Library, Room B
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="schedule-day">
-                    <div class="day-header">Wednesday</div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">09:00 AM - 10:30 AM</div>
-                        <div class="schedule-title">Calculus 101</div>
-                        <div class="schedule-location">
-                            <i class="fas fa-map-marker-alt"></i> Room 301, Math Building
+                            <i class="fas fa-map-marker-alt"></i> Lab 205
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
                     <i class="fas fa-home"></i>
-                    <span class="nav-label">Home</span>
+                    <span>Home</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('files'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('files')">
                     <i class="fas fa-folder"></i>
-                    <span class="nav-label">Files</span>
+                    <span>Files</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('chat')">
                     <i class="fas fa-comments"></i>
-                    <span class="nav-label">Chat</span>
+                    <span>Chat</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile-setup'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('profile')">
                     <i class="fas fa-user"></i>
-                    <span class="nav-label">Profile</span>
+                    <span>Profile</span>
                 </a>
             </div>
         </div>
@@ -1728,101 +1257,82 @@
                         <div class="progress-bar" style="width: 92%"></div>
                     </div>
                     <div class="progress-details">
-                        Assignments: 95% • Midterm: 88% • Final: 92%
-                    </div>
-                </div>
-                
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title">Computer Science</div>
-                        <div class="progress-percentage">87%</div>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 87%"></div>
-                    </div>
-                    <div class="progress-details">
-                        Projects: 90% • Quizzes: 85% • Lab work: 86%
-                    </div>
-                </div>
-                
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-title">Physics</div>
-                        <div class="progress-percentage">78%</div>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: 78%"></div>
-                    </div>
-                    <div class="progress-details">
-                        Need improvement: Focus on lab reports and problem sets
+                        Assignments: 95% • Midterm: 88%
                     </div>
                 </div>
             </div>
             
             <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
                     <i class="fas fa-home"></i>
-                    <span class="nav-label">Home</span>
+                    <span>Home</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('files'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('files')">
                     <i class="fas fa-folder"></i>
-                    <span class="nav-label">Files</span>
+                    <span>Files</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('chat')">
                     <i class="fas fa-comments"></i>
-                    <span class="nav-label">Chat</span>
+                    <span>Chat</span>
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile-setup'); return false;">
+                <a href="#" class="nav-item" onclick="showScreen('profile')">
                     <i class="fas fa-user"></i>
-                    <span class="nav-label">Profile</span>
+                    <span>Profile</span>
                 </a>
             </div>
         </div>
 
-        <!-- Chat Screen -->
-        <div id="chat" class="screen">
+        <!-- Profile Screen -->
+        <div id="profile" class="screen">
             <div class="top-nav">
                 <button class="menu-toggle" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <div class="page-title">Class Chat</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="showChatMembers()">
-                        <i class="fas fa-users"></i>
-                    </button>
-                </div>
+                <div class="page-title">Profile</div>
+                <div class="top-nav-actions"></div>
             </div>
             
-            <div class="chat-content">
-                <div class="messages-container" id="messages-container">
-                    <!-- Messages loaded dynamically -->
+            <div class="profile-content">
+                <div class="avatar-container">
+                    <div class="avatar" id="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="avatar-edit" onclick="changeAvatar()">
+                        <i class="fas fa-camera"></i>
+                    </div>
                 </div>
                 
-                <div class="message-input-container">
-                    <input type="text" class="message-input" id="message-input" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-                    <button class="send-btn" onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                <input type="text" class="input-field" id="profile-name" placeholder="Name" value="John Doe">
+                <input type="email" class="input-field" id="profile-email" placeholder="Email" value="john@student.edu">
+                
+                <div class="select-wrapper">
+                    <select class="input-field select-field" id="profile-grade">
+                        <option value="Freshman">Freshman</option>
+                        <option value="Sophomore">Sophomore</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Senior">Senior</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
                 </div>
-            </div>
-            
-            <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard'); return false;">
-                    <i class="fas fa-home"></i>
-                    <span class="nav-label">Home</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('files'); return false;">
-                    <i class="fas fa-folder"></i>
-                    <span class="nav-label">Files</span>
-                </a>
-                <a href="#" class="nav-item active" onclick="showScreen('chat'); return false;">
-                    <i class="fas fa-comments"></i>
-                    <span class="nav-label">Chat</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile-setup'); return false;">
-                    <i class="fas fa-user"></i>
-                    <span class="nav-label">Profile</span>
-                </a>
+                
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="privacy" checked>
+                        <span>Classmates Only</span>
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="privacy">
+                        <span>Private</span>
+                    </label>
+                </div>
+                
+                <button class="btn-primary" onclick="saveProfile()">
+                    Save Changes
+                </button>
+                
+                <button class="btn-primary" onclick="logout()" style="background: transparent; border: 1px solid #FF3B30; color: #FF3B30;">
+                    Log Out
+                </button>
             </div>
         </div>
     </div>
@@ -1838,49 +1348,38 @@
                 autoRefreshToken: true,
                 persistSession: true,
                 detectSessionInUrl: true
-            },
-            realtime: {
-                params: {
-                    eventsPerSecond: 10
-                }
             }
         });
 
         // App State
         let currentUser = null;
         let authMode = 'login';
+        let fileView = 'grid';
         let chatSubscription = null;
-        let fileView = 'grid'; // 'grid' or 'list'
 
         // Initialize App
-        async function initApp() {
+        document.addEventListener('DOMContentLoaded', async function() {
             // Check for existing session
             const { data: { session } } = await supabase.auth.getSession();
             
             if (session) {
                 currentUser = session.user;
-                await loadUserProfile();
+                await loadUserData();
                 showScreen('dashboard');
-            } else {
-                showScreen('auth');
             }
             
             // Listen for auth changes
             supabase.auth.onAuthStateChange(async (event, session) => {
                 if (event === 'SIGNED_IN' && session) {
                     currentUser = session.user;
-                    await loadUserProfile();
+                    await loadUserData();
                     showScreen('dashboard');
                 } else if (event === 'SIGNED_OUT') {
                     currentUser = null;
                     showScreen('auth');
-                    if (chatSubscription) {
-                        supabase.removeChannel(chatSubscription);
-                        chatSubscription = null;
-                    }
                 }
             });
-        }
+        });
 
         // Auth Functions
         function switchAuthTab(mode) {
@@ -1890,25 +1389,24 @@
             
             const signupFields = document.getElementById('signup-fields');
             const authButton = document.getElementById('auth-button');
-            const authError = document.getElementById('auth-error');
             
             if (mode === 'signup') {
                 signupFields.classList.remove('hidden');
-                authButton.textContent = 'Create Account';
+                authButton.textContent = 'Sign Up';
             } else {
                 signupFields.classList.add('hidden');
-                authButton.textContent = 'Login to StudySync';
+                authButton.textContent = 'Login';
             }
             
-            authError.classList.add('hidden');
+            document.getElementById('auth-error').classList.add('hidden');
         }
 
         async function handleAuth() {
-            const email = document.getElementById('auth-email').value.trim();
+            const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
-            const authError = document.getElementById('auth-error');
+            const errorDiv = document.getElementById('auth-error');
             
-            authError.classList.add('hidden');
+            errorDiv.classList.add('hidden');
             
             if (!email || !password) {
                 showError('Please fill in all fields');
@@ -1917,11 +1415,11 @@
             
             try {
                 if (authMode === 'signup') {
-                    const nickname = document.getElementById('auth-nickname').value.trim();
+                    const nickname = document.getElementById('auth-nickname').value;
                     const grade = document.getElementById('auth-grade').value;
                     
                     if (!nickname || !grade) {
-                        showError('Please fill in all signup fields');
+                        showError('Please fill in all fields');
                         return;
                     }
                     
@@ -1929,17 +1427,14 @@
                         email,
                         password,
                         options: {
-                            data: {
-                                nickname,
-                                grade
-                            }
+                            data: { nickname, grade }
                         }
                     });
                     
                     if (error) throw error;
                     
                     if (data.user) {
-                        showToast('Account created! Please check your email for confirmation.');
+                        showToast('Account created! Please check your email.');
                     }
                 } else {
                     const { data, error } = await supabase.auth.signInWithPassword({
@@ -1949,9 +1444,7 @@
                     
                     if (error) throw error;
                     
-                    if (data.user) {
-                        showToast('Welcome back!');
-                    }
+                    showToast('Welcome back!');
                 }
             } catch (error) {
                 showError(error.message);
@@ -1959,75 +1452,35 @@
         }
 
         function showError(message) {
-            const authError = document.getElementById('auth-error');
-            authError.textContent = message;
-            authError.classList.remove('hidden');
-            authError.classList.add('shake');
-            setTimeout(() => authError.classList.remove('shake'), 500);
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
         }
 
-        // Profile Functions
-        async function loadUserProfile() {
+        // User Data
+        async function loadUserData() {
             if (!currentUser) return;
             
-            const { data, error } = await supabase
+            // Load profile
+            const { data: profile } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', currentUser.id)
                 .single();
             
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error loading profile:', error);
-                return;
+            if (profile) {
+                document.getElementById('sidebar-name').textContent = profile.nickname || 'Student';
+                document.getElementById('sidebar-grade').textContent = profile.grade || 'Freshman';
             }
             
-            if (data) {
-                // Update sidebar
-                document.getElementById('sidebar-name').textContent = data.nickname || 'Student';
-                document.getElementById('sidebar-grade').textContent = data.grade || 'Freshman';
-                
-                // Update profile screen if user hasn't completed profile
-                if (!data.nickname || data.nickname === 'New User') {
-                    showScreen('profile-setup');
-                }
-            }
+            // Load files
+            loadFiles();
+            
+            // Load chat
+            loadChat();
         }
 
-        async function completeProfile() {
-            const nickname = document.getElementById('nickname-input').value.trim();
-            const grade = document.getElementById('grade-select').value;
-            const privacy = document.querySelector('input[name="privacy"]:checked').value;
-            
-            if (!nickname || !grade) {
-                showToast('Please fill in all fields');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        nickname,
-                        grade,
-                        privacy,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', currentUser.id);
-                
-                if (error) throw error;
-                
-                // Update sidebar
-                document.getElementById('sidebar-name').textContent = nickname;
-                document.getElementById('sidebar-grade').textContent = grade;
-                
-                showToast('Profile updated successfully!');
-                setTimeout(() => showScreen('dashboard'), 1000);
-            } catch (error) {
-                showToast('Error updating profile: ' + error.message);
-            }
-        }
-
-        // File Functions - FIXED AND BEAUTIFUL
+        // Files Functions
         async function loadFiles() {
             try {
                 const { data: files, error } = await supabase
@@ -2037,153 +1490,118 @@
                 
                 if (error) {
                     console.error('Error loading files:', error);
-                    showFilesEmptyState();
+                    showNoFiles();
                     return;
                 }
                 
                 if (!files || files.length === 0) {
-                    showFilesEmptyState();
+                    showNoFiles();
                     return;
                 }
                 
                 // Update stats
-                const sharedCount = files.filter(f => f.is_shared).length;
                 document.getElementById('file-count').textContent = files.length;
-                document.getElementById('shared-count').textContent = sharedCount;
+                document.getElementById('shared-count').textContent = files.filter(f => f.is_shared).length;
                 
-                // Load dashboard files (limited)
-                loadDashboardFiles(files.slice(0, 4));
-                
-                // Load full files page
-                loadFilesPage(files);
+                // Render files
+                renderFiles(files);
                 
             } catch (error) {
-                console.error('Error in loadFiles:', error);
-                showFilesEmptyState();
+                console.error('Error:', error);
+                showNoFiles();
             }
         }
 
-        function loadDashboardFiles(files) {
-            const dashboardFiles = document.getElementById('dashboard-files');
-            dashboardFiles.innerHTML = '';
+        function renderFiles(files) {
+            const gridContainer = document.getElementById('files-grid');
+            const listContainer = document.getElementById('files-list');
+            const dashboardContainer = document.getElementById('dashboard-files');
             
-            files.forEach(file => {
-                const icon = getFileIcon(file.type);
-                const fileCard = document.createElement('div');
-                fileCard.className = 'file-card';
-                fileCard.onclick = () => openFile(file);
-                
-                fileCard.innerHTML = `
-                    <div class="file-preview">
-                        ${getFilePreview(file)}
-                        <div class="file-preview-overlay">${file.type.toUpperCase()}</div>
-                    </div>
-                    <div class="file-info">
-                        <div class="file-name">${truncateFileName(file.name, 20)}</div>
-                        <div class="file-meta">
-                            <span>${file.size}</span>
-                            <span>${formatTimeAgo(file.created_at)}</span>
-                        </div>
-                    </div>
-                `;
-                dashboardFiles.appendChild(fileCard);
-            });
-        }
-
-        function loadFilesPage(files) {
-            const gridView = document.getElementById('files-grid-view');
-            const listView = document.getElementById('files-list-view');
+            gridContainer.innerHTML = '';
+            listContainer.innerHTML = '';
+            dashboardContainer.innerHTML = '';
             
-            gridView.innerHTML = '';
-            listView.innerHTML = '';
-            
-            files.forEach(file => {
-                const icon = getFileIcon(file.type);
-                
-                // Grid View
-                const gridCard = document.createElement('div');
-                gridCard.className = 'file-card';
-                gridCard.onclick = () => openFile(file);
-                
-                gridCard.innerHTML = `
-                    <div class="file-actions">
-                        <button class="file-action-btn" onclick="event.stopPropagation(); downloadFile('${file.id}')">
-                            <i class="fas fa-download"></i>
-                        </button>
-                        <button class="file-action-btn" onclick="event.stopPropagation(); shareFile('${file.id}')">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
-                    </div>
-                    <div class="file-preview">
-                        ${getFilePreview(file)}
-                        <div class="file-preview-overlay">${file.type.toUpperCase()}</div>
-                    </div>
-                    <div class="file-info">
-                        <div class="file-name">${truncateFileName(file.name, 25)}</div>
-                        <div class="file-meta">
-                            <span>${file.size}</span>
-                            <span>${formatTimeAgo(file.created_at)}</span>
-                        </div>
-                    </div>
-                `;
-                gridView.appendChild(gridCard);
-                
-                // List View
-                const listItem = document.createElement('div');
-                listItem.className = 'file-list-item';
-                listItem.onclick = () => openFile(file);
-                
-                listItem.innerHTML = `
-                    <div class="list-file-icon" style="color: ${icon.color}">
-                        <i class="${icon.class}"></i>
-                    </div>
-                    <div class="file-list-info">
-                        <div class="list-file-name">${file.name}</div>
-                        <div class="list-file-meta">
-                            <span><i class="fas fa-hdd"></i> ${file.size}</span>
-                            <span><i class="fas fa-clock"></i> ${formatTimeAgo(file.created_at)}</span>
-                            ${file.is_shared ? '<span><i class="fas fa-share-alt"></i> Shared</span>' : ''}
-                        </div>
-                    </div>
-                    <button class="file-menu" onclick="event.stopPropagation(); showFileMenu('${file.id}')">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                `;
-                listView.appendChild(listItem);
+            // Dashboard files (first 4)
+            const dashboardFiles = files.slice(0, 4);
+            dashboardFiles.forEach(file => {
+                const fileCard = createFileCard(file, true);
+                dashboardContainer.appendChild(fileCard);
             });
             
-            // Hide empty state
-            document.getElementById('files-empty-state').classList.add('hidden');
+            // All files
+            files.forEach(file => {
+                const gridCard = createFileCard(file, false);
+                const listItem = createFileListItem(file);
+                
+                gridContainer.appendChild(gridCard);
+                listContainer.appendChild(listItem);
+            });
+            
+            // Hide no files message
+            document.getElementById('no-files').classList.add('hidden');
         }
 
-        function showFilesEmptyState() {
-            document.getElementById('files-empty-state').classList.remove('hidden');
-            document.getElementById('files-grid-view').innerHTML = '';
-            document.getElementById('files-list-view').innerHTML = '';
+        function createFileCard(file, isDashboard) {
+            const div = document.createElement('div');
+            div.className = 'file-card';
+            div.onclick = () => openFile(file);
+            
+            const icon = getFileIcon(file.type);
+            const fileName = isDashboard ? truncate(file.name, 15) : truncate(file.name, 20);
+            
+            div.innerHTML = `
+                <div class="file-preview" style="color: ${icon.color}">
+                    <i class="${icon.class} file-preview-icon"></i>
+                    <div class="file-preview-overlay">${file.type.toUpperCase()}</div>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">${fileName}</div>
+                    <div class="file-meta">
+                        <span>${file.size}</span>
+                        <span>${formatTime(file.created_at)}</span>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+
+        function createFileListItem(file) {
+            const div = document.createElement('div');
+            div.className = 'file-list-item';
+            div.onclick = () => openFile(file);
+            
+            const icon = getFileIcon(file.type);
+            
+            div.innerHTML = `
+                <div class="list-file-icon" style="color: ${icon.color}">
+                    <i class="${icon.class}"></i>
+                </div>
+                <div class="file-list-info">
+                    <div class="list-file-name">${file.name}</div>
+                    <div class="list-file-meta">
+                        <span>${file.size}</span>
+                        <span>•</span>
+                        <span>${formatTime(file.created_at)}</span>
+                    </div>
+                </div>
+                <button class="file-menu" onclick="event.stopPropagation(); showFileMenu('${file.id}')">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            `;
+            
+            return div;
+        }
+
+        function showNoFiles() {
+            document.getElementById('no-files').classList.remove('hidden');
             document.getElementById('dashboard-files').innerHTML = `
-                <div class="empty-state">
+                <div class="empty-state" style="grid-column: 1 / -1;">
                     <i class="fas fa-folder-open"></i>
                     <h3>No files yet</h3>
                     <p>Upload your first file to get started</p>
                 </div>
             `;
-        }
-
-        function getFilePreview(file) {
-            const type = file.type.toLowerCase();
-            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(type)) {
-                return `<img src="${file.url}" alt="${file.name}" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-file-image file-preview-icon\\'></i>'">`;
-            } else if (type === 'pdf') {
-                return '<i class="fas fa-file-pdf file-preview-icon"></i>';
-            } else if (['doc', 'docx'].includes(type)) {
-                return '<i class="fas fa-file-word file-preview-icon"></i>';
-            } else if (type === 'mp4' || type === 'avi' || type === 'mov') {
-                return '<i class="fas fa-file-video file-preview-icon"></i>';
-            } else if (['mp3', 'wav', 'aac'].includes(type)) {
-                return '<i class="fas fa-file-audio file-preview-icon"></i>';
-            } else {
-                return '<i class="fas fa-file file-preview-icon"></i>';
-            }
         }
 
         async function uploadFile() {
@@ -2196,17 +1614,17 @@
                 if (!file) return;
                 
                 try {
-                    showToast('Uploading file...');
+                    showToast('Uploading...');
                     
                     const fileExt = file.name.split('.').pop().toLowerCase();
-                    const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+                    const fileName = `${Date.now()}_${file.name}`;
                     
                     // Upload to storage
-                    const { data: uploadData, error: uploadError } = await supabase.storage
+                    const { data, error } = await supabase.storage
                         .from('resources')
                         .upload(fileName, file);
                     
-                    if (uploadError) throw uploadError;
+                    if (error) throw error;
                     
                     // Get public URL
                     const { data: { publicUrl } } = supabase.storage
@@ -2219,7 +1637,7 @@
                         .insert([{
                             name: file.name,
                             type: fileExt,
-                            size: `${(file.size / 1024 / 1024).toFixed(1)} MB`,
+                            size: formatFileSize(file.size),
                             url: publicUrl,
                             owner_id: currentUser.id,
                             is_shared: true
@@ -2227,7 +1645,7 @@
                     
                     if (dbError) throw dbError;
                     
-                    showToast(`"${file.name}" uploaded successfully!`);
+                    showToast('File uploaded!');
                     loadFiles();
                     
                 } catch (error) {
@@ -2238,106 +1656,64 @@
             input.click();
         }
 
-        function openFile(file) {
-            window.open(file.url, '_blank');
-        }
-
-        async function downloadFile(fileId) {
-            try {
-                const { data: file, error } = await supabase
-                    .from('files')
-                    .select('*')
-                    .eq('id', fileId)
-                    .single();
-                
-                if (error) throw error;
-                
-                const link = document.createElement('a');
-                link.href = file.url;
-                link.download = file.name;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                showToast('Download started');
-            } catch (error) {
-                showToast('Download failed: ' + error.message);
-            }
-        }
-
-        function shareFile(fileId) {
-            navigator.clipboard.writeText(window.location.origin + '/share/' + fileId)
-                .then(() => showToast('Share link copied to clipboard!'))
-                .catch(() => showToast('Failed to copy link'));
-        }
-
-        // Chat Functions - FIXED REAL-TIME
+        // Chat Functions
         async function loadChat() {
             try {
-                // First, get messages with user profiles
                 const { data: messages, error } = await supabase
                     .from('messages')
                     .select(`
                         *,
-                        profiles:nickname,
-                        profiles:avatar_url,
-                        profiles:grade
+                        profiles (
+                            nickname,
+                            avatar_url
+                        )
                     `)
                     .order('created_at', { ascending: true })
                     .limit(50);
                 
-                if (error) {
-                    console.error('Error loading messages:', error);
-                    return;
-                }
+                if (error) throw error;
                 
-                updateChatUI(messages);
-                
-                // Subscribe to real-time updates
-                setupRealtimeChat();
+                renderMessages(messages);
+                setupChatSubscription();
                 
             } catch (error) {
-                console.error('Error in loadChat:', error);
+                console.error('Error loading chat:', error);
             }
         }
 
-        function updateChatUI(messages) {
+        function renderMessages(messages) {
             const container = document.getElementById('messages-container');
             container.innerHTML = '';
             
             if (!messages || messages.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align: center; color: var(--text-secondary); padding: 40px;">
-                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 20px; opacity: 0.5;"></i>
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
                         <h3>No messages yet</h3>
                         <p>Start the conversation!</p>
                     </div>
                 `;
-                document.getElementById('message-count').textContent = '0';
                 return;
             }
             
-            // Update message count
-            document.getElementById('message-count').textContent = messages.length;
-            
             messages.forEach(msg => {
-                const isCurrentUser = msg.sender_id === currentUser?.id;
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isCurrentUser ? 'sent' : 'received'}`;
+                const isMe = msg.sender_id === currentUser?.id;
+                const div = document.createElement('div');
+                div.className = `message ${isMe ? 'sent' : 'received'}`;
                 
                 const nickname = msg.profiles?.nickname || 'Classmate';
                 const avatarLetter = nickname.charAt(0).toUpperCase();
                 
-                if (isCurrentUser) {
-                    messageDiv.innerHTML = `
+                if (isMe) {
+                    div.innerHTML = `
                         <div class="message-bubble">
                             ${msg.content}
                             <div class="message-time">${formatTime(msg.created_at)}</div>
                         </div>
-                        <div class="message-avatar">${avatarLetter}</div>
+                        <div class="message-avatar">You</div>
                     `;
                 } else {
-                    messageDiv.innerHTML = `
+                    div.innerHTML = `
                         <div class="message-avatar">${avatarLetter}</div>
                         <div class="message-bubble">
                             ${msg.content}
@@ -2346,14 +1722,14 @@
                     `;
                 }
                 
-                container.appendChild(messageDiv);
+                container.appendChild(div);
             });
             
             // Scroll to bottom
             container.scrollTop = container.scrollHeight;
         }
 
-        function setupRealtimeChat() {
+        function setupChatSubscription() {
             if (chatSubscription) {
                 supabase.removeChannel(chatSubscription);
             }
@@ -2361,35 +1737,58 @@
             chatSubscription = supabase
                 .channel('public:messages')
                 .on('postgres_changes', 
-                    { 
-                        event: 'INSERT', 
-                        schema: 'public', 
-                        table: 'messages' 
-                    }, 
+                    { event: 'INSERT', schema: 'public', table: 'messages' }, 
                     async (payload) => {
-                        // Get the new message with user profile
-                        const { data: newMessage, error } = await supabase
+                        // Get the new message with profile
+                        const { data: message, error } = await supabase
                             .from('messages')
                             .select(`
                                 *,
-                                profiles:nickname,
-                                profiles:avatar_url,
-                                profiles:grade
+                                profiles (
+                                    nickname,
+                                    avatar_url
+                                )
                             `)
                             .eq('id', payload.new.id)
                             .single();
                         
-                        if (!error && newMessage) {
-                            // Reload all messages to keep them in order
-                            loadChat();
+                        if (!error && message) {
+                            // Add message to UI
+                            const container = document.getElementById('messages-container');
+                            const emptyState = container.querySelector('.empty-state');
+                            if (emptyState) emptyState.remove();
+                            
+                            const isMe = message.sender_id === currentUser?.id;
+                            const div = document.createElement('div');
+                            div.className = `message ${isMe ? 'sent' : 'received'}`;
+                            
+                            const nickname = message.profiles?.nickname || 'Classmate';
+                            const avatarLetter = nickname.charAt(0).toUpperCase();
+                            
+                            if (isMe) {
+                                div.innerHTML = `
+                                    <div class="message-bubble">
+                                        ${message.content}
+                                        <div class="message-time">${formatTime(message.created_at)}</div>
+                                    </div>
+                                    <div class="message-avatar">You</div>
+                                `;
+                            } else {
+                                div.innerHTML = `
+                                    <div class="message-avatar">${avatarLetter}</div>
+                                    <div class="message-bubble">
+                                        ${message.content}
+                                        <div class="message-time">${formatTime(message.created_at)} • ${nickname}</div>
+                                    </div>
+                                `;
+                            }
+                            
+                            container.appendChild(div);
+                            container.scrollTop = container.scrollHeight;
                         }
                     }
                 )
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('✅ Real-time chat subscribed');
-                    }
-                });
+                .subscribe();
         }
 
         async function sendMessage() {
@@ -2412,21 +1811,95 @@
                 input.value = '';
                 
             } catch (error) {
-                showToast('Failed to send message: ' + error.message);
+                showToast('Failed to send: ' + error.message);
             }
         }
 
-        // Schedule Functions
-        function addScheduleItem() {
-            showToast('Schedule item creation would open here');
+        // Utility Functions
+        function getFileIcon(type) {
+            const typeLower = type.toLowerCase();
+            if (typeLower === 'pdf') return { class: 'fas fa-file-pdf', color: '#FF3B30' };
+            if (['doc', 'docx'].includes(typeLower)) return { class: 'fas fa-file-word', color: '#2B579A' };
+            if (['jpg', 'jpeg', 'png', 'gif'].includes(typeLower)) return { class: 'fas fa-file-image', color: '#4CD964' };
+            if (['mp4', 'mov', 'avi'].includes(typeLower)) return { class: 'fas fa-file-video', color: '#FF2D55' };
+            if (['mp3', 'wav'].includes(typeLower)) return { class: 'fas fa-file-audio', color: '#5856D6' };
+            return { class: 'fas fa-file', color: '#8E8E93' };
         }
 
-        function refreshProgress() {
-            showToast('Progress refreshed');
-            // In a real app, this would fetch updated progress data
+        function formatTime(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            const diffHours = diff / (1000 * 60 * 60);
+            
+            if (diffHours < 24) {
+                return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else if (diffHours < 48) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
         }
 
-        // File View Toggle
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function truncate(str, n) {
+            return str.length > n ? str.substr(0, n-1) + '...' : str;
+        }
+
+        function openFile(file) {
+            window.open(file.url, '_blank');
+        }
+
+        // UI Functions
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update bottom nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Update based on screen
+            if (screenId === 'dashboard') {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (screenId === 'files') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                loadFiles();
+            } else if (screenId === 'chat') {
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+                loadChat();
+            } else if (screenId === 'profile') {
+                document.querySelectorAll('.nav-item')[3].classList.add('active');
+            }
+            
+            // Close sidebar if open
+            toggleSidebar(false);
+        }
+
+        function toggleSidebar(forceClose) {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            if (forceClose === false) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
+        }
+
         function setFileView(view) {
             fileView = view;
             const gridBtn = document.querySelector('.view-toggle-btn:nth-child(1)');
@@ -2435,76 +1908,22 @@
             gridBtn.classList.toggle('active', view === 'grid');
             listBtn.classList.toggle('active', view === 'list');
             
-            document.getElementById('files-grid-view').classList.toggle('hidden', view !== 'grid');
-            document.getElementById('files-list-view').classList.toggle('hidden', view !== 'list');
+            document.getElementById('files-grid').classList.toggle('hidden', view !== 'grid');
+            document.getElementById('files-list').classList.toggle('hidden', view !== 'list');
         }
 
-        function toggleFileView() {
-            setFileView(fileView === 'grid' ? 'list' : 'grid');
-        }
-
-        // Utility Functions
-        function getFileIcon(type) {
-            const typeLower = type.toLowerCase();
-            if (['pdf'].includes(typeLower)) return { class: 'fas fa-file-pdf', color: '#FF3B30' };
-            if (['doc', 'docx'].includes(typeLower)) return { class: 'fas fa-file-word', color: '#2B579A' };
-            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(typeLower)) return { class: 'fas fa-file-image', color: '#4CD964' };
-            if (['ppt', 'pptx'].includes(typeLower)) return { class: 'fas fa-file-powerpoint', color: '#D24625' };
-            if (['zip', 'rar', '7z', 'tar', 'gz'].includes(typeLower)) return { class: 'fas fa-file-archive', color: '#FF9500' };
-            if (['mp3', 'wav', 'aac', 'flac'].includes(typeLower)) return { class: 'fas fa-file-audio', color: '#5856D6' };
-            if (['mp4', 'avi', 'mov', 'mkv'].includes(typeLower)) return { class: 'fas fa-file-video', color: '#FF2D55' };
-            return { class: 'fas fa-file', color: '#8E8E93' };
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-
-        function formatTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function formatTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / (1000 * 60));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays}d ago`;
-            return formatDate(dateString);
-        }
-
-        function truncateFileName(name, length) {
-            if (name.length <= length) return name;
-            return name.substring(0, length) + '...';
-        }
-
+        // Toast Notification
         function showToast(message) {
-            // Remove existing toast
-            const existingToast = document.querySelector('.toast');
-            if (existingToast) existingToast.remove();
-            
-            // Create toast
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
             
-            // Animate in
             setTimeout(() => {
                 toast.style.transform = 'translateX(-50%) translateY(0)';
                 toast.style.opacity = '1';
             }, 10);
             
-            // Remove after delay
             setTimeout(() => {
                 toast.style.transform = 'translateX(-50%) translateY(20px)';
                 toast.style.opacity = '0';
@@ -2512,135 +1931,45 @@
             }, 3000);
         }
 
-        async function logout() {
-            const { error } = await supabase.auth.signOut();
-            if (error) {
-                showToast('Error logging out: ' + error.message);
-            }
-        }
-
-        // Screen Management
-        function showScreen(screenId) {
-            const currentScreen = document.querySelector('.screen.active');
-            if (currentScreen) {
-                currentScreen.classList.add('slide-out');
-                setTimeout(() => {
-                    currentScreen.classList.remove('active', 'slide-out');
-                    
-                    const newScreen = document.getElementById(screenId);
-                    newScreen.classList.add('active');
-                    
-                    // Update navigation
-                    updateNavigation(screenId);
-                    
-                    // Load screen-specific content
-                    if (screenId === 'dashboard' || screenId === 'files') {
-                        loadFiles();
-                    } else if (screenId === 'chat') {
-                        loadChat();
-                    }
-                }, 300);
-            }
-        }
-
-        function updateNavigation(screenId) {
-            // Update bottom nav
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Update sidebar
-            document.querySelectorAll('.menu-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Activate corresponding nav items
-            const screens = {
-                'dashboard': 0,
-                'files': 1,
-                'chat': 2,
-                'schedule': 3,
-                'progress': 4,
-                'profile-setup': 5
-            };
-            
-            if (screens[screenId] !== undefined) {
-                document.querySelectorAll('.nav-item')[screens[screenId]].classList.add('active');
-                document.querySelectorAll('.menu-item')[screens[screenId]].classList.add('active');
-            }
-        }
-
-        // Sidebar Functions
-        function toggleSidebar() {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            
-            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-        }
-
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initApp);
-
-        // Helper functions for UI
-        function previewAvatar(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const avatarPreview = document.getElementById('avatar-preview');
-                    avatarPreview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
-                    
-                    // Update sidebar avatar
-                    const sidebarAvatar = document.getElementById('sidebar-avatar');
-                    sidebarAvatar.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
+        // Other Functions
         function showNotifications() {
-            showToast('You have no new notifications');
+            showToast('No new notifications');
         }
 
         function showChatMembers() {
             showToast('24 classmates online');
         }
 
-        function showFileMenu(fileId) {
-            showToast('File options menu simulated');
+        function addSchedule() {
+            showToast('Add schedule feature');
         }
 
-        // Add touch gestures for mobile
-        let touchStartX = 0;
-        let touchEndX = 0;
+        function refreshProgress() {
+            showToast('Progress refreshed');
+        }
 
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
+        function changeAvatar() {
+            showToast('Change avatar feature');
+        }
 
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
+        function saveProfile() {
+            showToast('Profile saved');
+        }
 
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            const swipeDistance = touchEndX - touchStartX;
-            
-            if (Math.abs(swipeDistance) > swipeThreshold) {
-                if (swipeDistance > 0 && touchStartX < 50) {
-                    toggleSidebar();
-                } else if (swipeDistance < 0) {
-                    const sidebar = document.querySelector('.sidebar');
-                    if (sidebar.classList.contains('active')) {
-                        toggleSidebar();
-                    }
-                }
+        async function logout() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                showToast('Error logging out');
             }
         }
+
+        // Prevent body scroll when sidebar is open
+        document.addEventListener('touchmove', function(e) {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar.classList.contains('active')) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     </script>
 </body>
 </html>
