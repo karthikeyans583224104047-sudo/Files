@@ -2,1740 +2,660 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>StudySync - Student Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIAMOND & LION | No-Equipment Fitness Madurai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Premium Motion Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Icon Library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
-        /* Reset and Base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
+
+        :root {
+            --pink: #FF1493;
+            --yellow: #FFD700;
+            --bg: #050505;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #000000;
-            color: #FFFFFF;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
             overflow-x: hidden;
-            height: 100vh;
+        }
+
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            color: transparent;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Floating Action Buttons */
+        .fab-container {
             position: fixed;
-            width: 100%;
-        }
-
-        /* App Container */
-        .app {
-            height: 100vh;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            background: #000000;
-        }
-
-        /* Screens */
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            transform: translateX(100%);
-            opacity: 0;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            background: #000000;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 80px;
-            z-index: 10;
-        }
-
-        .screen.active {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        /* Sidebar */
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s;
-        }
-
-        .sidebar-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 280px;
-            max-width: 85%;
-            background: #1C1C1E;
-            transform: translateX(-100%);
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .sidebar.active {
-            transform: translateX(0);
-        }
-
-        .sidebar-header {
-            padding: 60px 20px 20px;
-            border-bottom: 1px solid #3A3A3C;
-        }
-
-        .user-profile {
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
             display: flex;
-            align-items: center;
+            flex-direction: column;
             gap: 15px;
         }
 
-        .user-avatar {
+        .fab {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #FF3B30, #FF9500);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: 600;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
-        .user-info h3 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
+        .fab-whatsapp { background: #25D366; color: white; }
+        .fab-call { background: var(--pink); color: white; }
+        .fab:hover { transform: scale(1.15) translateY(-8px); }
 
-        .user-info p {
-            color: #8E8E93;
-            font-size: 14px;
-        }
-
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 16px 20px;
-            color: #FFFFFF;
-            text-decoration: none;
-            border-left: 4px solid transparent;
-        }
-
-        .menu-item.active {
-            background: #2C2C2E;
-            border-left-color: #FF3B30;
-            color: #FF3B30;
-        }
-
-        .menu-item i {
-            width: 24px;
-            text-align: center;
-        }
-
-        /* Top Navigation */
-        .top-nav {
-            position: sticky;
+        /* Video Background */
+        #hero-video-bg {
+            position: fixed;
             top: 0;
-            z-index: 100;
-            background: rgba(28, 28, 30, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #3A3A3C;
-        }
-
-        .menu-toggle {
-            background: none;
-            border: none;
-            color: #FFFFFF;
-            font-size: 22px;
-            padding: 8px;
-            border-radius: 10px;
-        }
-
-        .page-title {
-            font-size: 20px;
-            font-weight: 700;
-            flex: 1;
-            text-align: center;
-            margin: 0 10px;
-        }
-
-        .top-nav-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .nav-action-btn {
-            background: none;
-            border: none;
-            color: #FFFFFF;
-            font-size: 20px;
-            padding: 8px;
-            border-radius: 10px;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
             left: 0;
-            right: 0;
-            background: rgba(28, 28, 30, 0.95);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid #3A3A3C;
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            z-index: 99;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #8E8E93;
-            text-decoration: none;
-            font-size: 11px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            min-width: 60px;
-        }
-
-        .nav-item.active {
-            color: #FF3B30;
-            background: rgba(255, 59, 48, 0.1);
-        }
-
-        .nav-item i {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        /* Common Components */
-        .btn-primary {
-            background: #FF3B30;
-            color: white;
-            border: none;
-            border-radius: 999px;
-            padding: 16px 24px;
-            font-weight: 600;
-            font-size: 16px;
             width: 100%;
-            display: block;
-            margin: 20px 0;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.35) contrast(1.1);
         }
 
-        .input-field {
-            background: #2C2C2E;
-            color: #FFFFFF;
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 16px;
-            width: 100%;
-            margin-bottom: 16px;
-        }
-
-        .input-field::placeholder {
-            color: #8E8E93;
-        }
-
-        /* Auth Screen */
-        .auth-content {
-            padding: 40px 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .auth-logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #FF3B30, #FF9500);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-        }
-
-        .auth-logo i {
-            font-size: 40px;
-            color: white;
-        }
-
-        .auth-title {
-            font-size: 32px;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .auth-subtitle {
-            color: #8E8E93;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 16px;
-        }
-
-        .auth-tabs {
-            display: flex;
-            background: #2C2C2E;
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 30px;
-        }
-
-        .auth-tab {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: #8E8E93;
-            font-weight: 600;
-            border-radius: 10px;
-        }
-
-        .auth-tab.active {
-            background: #FF3B30;
-            color: white;
-        }
-
-        /* Dashboard */
-        .dashboard-content {
-            padding: 20px 16px 100px;
-        }
-
-        .search-container {
+        .scroll-section {
             position: relative;
-            margin: 15px 0;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8E8E93;
-        }
-
-        .search-input {
-            padding-left: 48px;
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            margin-bottom: 25px;
-            padding-bottom: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .quick-actions::-webkit-scrollbar {
-            display: none;
-        }
-
-        .quick-action-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #2C2C2E;
-            border: none;
-            border-radius: 999px;
-            padding: 12px 18px;
-            color: #FFFFFF;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: #2C2C2E;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 800;
-            color: #FF3B30;
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            color: #8E8E93;
-            font-size: 13px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .view-all {
-            color: #FF3B30;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        /* Files - Grid View */
-        .files-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .file-card {
-            background: #2C2C2E;
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .file-preview {
-            height: 100px;
-            background: #1C1C1E;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0 8%;
         }
 
-        .file-preview-icon {
-            font-size: 40px;
-            color: #8E8E93;
-        }
-
-        .file-info {
-            padding: 12px;
-        }
-
-        .file-name {
-            font-weight: 600;
-            margin-bottom: 4px;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .file-meta {
-            color: #8E8E93;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Chat */
-        .chat-content {
-            height: calc(100vh - 120px);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 16px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .message {
-            display: flex;
-            max-width: 85%;
-            margin-bottom: 12px;
-        }
-
-        .message.sent {
-            align-self: flex-end;
-            margin-left: auto;
-            flex-direction: row-reverse;
-        }
-
-        .message.received {
-            align-self: flex-start;
-        }
-
-        .message-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #FF3B30, #FF9500);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            flex-shrink: 0;
-            margin-top: 4px;
-        }
-
-        .message.sent .message-avatar {
-            margin-left: 8px;
-        }
-
-        .message.received .message-avatar {
-            margin-right: 8px;
-        }
-
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 20px;
-            font-size: 15px;
-            line-height: 1.4;
-            max-width: 100%;
-            word-wrap: break-word;
-        }
-
-        .message.sent .message-bubble {
-            background: #FF3B30;
-            border-bottom-right-radius: 6px;
-        }
-
-        .message.received .message-bubble {
-            background: #2C2C2E;
-            border-bottom-left-radius: 6px;
-        }
-
-        .message-input-container {
-            padding: 16px;
-            border-top: 1px solid #3A3A3C;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #000000;
-        }
-
-        .message-input {
-            flex: 1;
-            background: #2C2C2E;
-            border: none;
-            border-radius: 999px;
-            padding: 14px 20px;
-            color: #FFFFFF;
-            font-size: 15px;
-        }
-
-        .send-btn {
-            background: #FF3B30;
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        /* Empty States */
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8E8E93;
-        }
-
-        .empty-state i {
-            font-size: 56px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-            color: #FFFFFF;
-        }
-
-        /* Toast */
-        .toast {
+        /* Modals */
+        .modal-overlay {
             position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #2C2C2E;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 500;
-            z-index: 10000;
-            opacity: 0;
-            transition: all 0.3s ease;
-            max-width: 90%;
-            text-align: center;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+
+        /* Before/After Custom Handle */
+        .ba-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+        .ba-after {
+            position: absolute;
+            top: 0; left: 0; width: 50%; height: 100%;
+            overflow: hidden;
+            border-right: 3px solid var(--pink);
+        }
+        .ba-handle {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 54px; height: 54px;
+            background: white;
+            color: black;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: col-resize;
+            z-index: 10;
+            box-shadow: 0 0 20px var(--pink);
         }
 
-        /* Utility */
-        .hidden {
-            display: none !important;
+        .nav-gradient {
+            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%);
+        }
+
+        /* Gallery Horizontal Scroll */
+        .gallery-container {
+            display: flex;
+            gap: 2rem;
+            padding: 2rem 5%;
+            width: max-content;
+        }
+        .gallery-item {
+            width: clamp(300px, 80vw, 400px);
+            height: clamp(450px, 70vh, 550px);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        /* Mobile Menu */
+        #mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            transform: translateY(-100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+        #mobile-menu-overlay.active {
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
-    <div class="app">
-        <!-- Sidebar Overlay -->
-        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <div class="user-profile">
-                    <div class="user-avatar" id="sidebar-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-info">
-                        <h3 id="sidebar-name">Loading...</h3>
-                        <p id="sidebar-grade">Student</p>
-                    </div>
+    <!-- Appointment Modal -->
+    <div id="appointment-modal" class="modal-overlay">
+        <div class="glass max-w-lg w-full p-10 rounded-2xl relative">
+            <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white"><i data-lucide="x"></i></button>
+            <h3 class="text-3xl font-sync font-bold uppercase italic mb-8 text-[var(--pink)]">Book Appointment</h3>
+            <form class="space-y-6" onsubmit="event.preventDefault(); alert('Request Sent! Our team will contact you shortly.'); closeModal('appointment-modal');">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50">Full Name</label>
+                    <input type="text" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white" placeholder="Enter name">
                 </div>
-            </div>
-            <div class="sidebar-menu">
-                <a href="#" class="menu-item" onclick="showScreen('dashboard'); toggleSidebar(); return false;">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#" class="menu-item" onclick="showScreen('files'); toggleSidebar(); return false;">
-                    <i class="fas fa-folder"></i>
-                    <span>Resources</span>
-                </a>
-                <a href="#" class="menu-item" onclick="showScreen('chat'); toggleSidebar(); return false;">
-                    <i class="fas fa-comments"></i>
-                    <span>Class Chat</span>
-                </a>
-                <a href="#" class="menu-item" onclick="showScreen('profile'); toggleSidebar(); return false;">
-                    <i class="fas fa-user-cog"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50">Phone Number</label>
+                    <input type="tel" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white" placeholder="+91">
+                </div>
+                <button type="submit" class="w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest hover:brightness-110 transition-all">Send Details</button>
+            </form>
         </div>
+    </div>
 
-        <!-- Auth Screen -->
-        <div id="auth" class="screen active">
-            <div class="auth-content">
-                <div class="auth-logo">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <h1 class="auth-title">StudySync</h1>
-                <p class="auth-subtitle">Your academic companion</p>
-                
-                <div class="auth-tabs">
-                    <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
-                    <button class="auth-tab" onclick="switchAuthTab('signup')">Sign Up</button>
-                </div>
-                
-                <input type="email" class="input-field" id="auth-email" placeholder="Email" value="test@example.com">
-                <input type="password" class="input-field" id="auth-password" placeholder="Password" value="password123">
-                
-                <div id="signup-fields" class="hidden">
-                    <input type="text" class="input-field" id="auth-nickname" placeholder="Nickname">
-                    <select class="input-field" id="auth-grade">
-                        <option value="">Select Grade</option>
-                        <option value="Freshman">Freshman</option>
-                        <option value="Sophomore">Sophomore</option>
-                        <option value="Junior">Junior</option>
-                        <option value="Senior">Senior</option>
-                    </select>
-                </div>
-                
-                <div id="auth-error" class="hidden" style="color: #FF3B30; margin-bottom: 16px;"></div>
-                
-                <button class="btn-primary" onclick="handleAuth()" id="auth-button">
-                    Login
-                </button>
-                
-                <div style="text-align: center; color: #8E8E93; font-size: 14px; margin-top: 20px;">
-                    <p>Test credentials: test@example.com / password123</p>
-                </div>
+    <!-- Contact Modal -->
+    <div id="contact-modal" class="modal-overlay">
+        <div class="glass max-w-lg w-full p-12 rounded-2xl text-center relative">
+            <button onclick="closeModal('contact-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white"><i data-lucide="x"></i></button>
+            <div class="mb-10 text-center">
+                <i data-lucide="shield-check" class="w-16 h-16 text-[var(--yellow)] mx-auto mb-8"></i>
+                <h3 class="text-2xl font-sync font-bold uppercase italic leading-tight mb-4">"A lion doesn't lose sleep over the opinion of sheep."</h3>
+                <p class="text-neutral-400">Madurai's Elite Studio. Master your own body.</p>
             </div>
-        </div>
-
-        <!-- Dashboard -->
-        <div id="dashboard" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Dashboard</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="showToast('No new notifications')">
-                        <i class="fas fa-bell"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="dashboard-content">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="input-field search-input" placeholder="Search" id="search-input">
-                </div>
-                
-                <div class="quick-actions">
-                    <button class="quick-action-btn" onclick="uploadFile()">
-                        <i class="fas fa-upload"></i>
-                        <span>Upload</span>
-                    </button>
-                    <button class="quick-action-btn" onclick="showScreen('files')">
-                        <i class="fas fa-folder"></i>
-                        <span>Files</span>
-                    </button>
-                    <button class="quick-action-btn" onclick="showScreen('chat')">
-                        <i class="fas fa-comments"></i>
-                        <span>Chat</span>
-                    </button>
-                    <button class="quick-action-btn" onclick="createTestData()">
-                        <i class="fas fa-plus"></i>
-                        <span>Test Data</span>
-                    </button>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="file-count">0</div>
-                        <div class="stat-label">Files</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="shared-count">0</div>
-                        <div class="stat-label">Shared</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="message-count">0</div>
-                        <div class="stat-label">Messages</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">5.0GB</div>
-                        <div class="stat-label">Storage</div>
-                    </div>
-                </div>
-                
-                <div class="section-header">
-                    <div class="section-title">Recent Files</div>
-                    <a href="#" class="view-all" onclick="showScreen('files')">View All</a>
-                </div>
-                
-                <div class="files-grid" id="dashboard-files">
-                    <!-- Files will load here -->
-                </div>
-            </div>
-            
-            <div class="bottom-nav">
-                <a href="#" class="nav-item active" onclick="showScreen('dashboard')">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
+            <div class="flex flex-col gap-4">
+                <a href="tel:+919876543210" class="bg-white text-black py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-sm hover:bg-[var(--pink)] hover:text-white transition-all">
+                    <i class="fa-solid fa-phone"></i> Call Now
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('files')">
-                    <i class="fas fa-folder"></i>
-                    <span>Files</span>
+                <a href="https://wa.me/919876543210" target="_blank" class="bg-[#25D366] text-white py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-sm hover:brightness-110 transition-all">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> Connect on WhatsApp
                 </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat')">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile')">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Files Screen -->
-        <div id="files" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Resources</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="uploadFile()">
-                        <i class="fas fa-upload"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="dashboard-content">
-                <div id="files-grid" class="files-grid">
-                    <!-- Files grid view -->
-                </div>
-                
-                <div id="no-files" class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h3>No files yet</h3>
-                    <p>Upload your first file to get started</p>
-                    <button class="btn-primary" onclick="uploadFile()" style="margin-top: 20px;">
-                        <i class="fas fa-upload"></i> Upload File
-                    </button>
-                </div>
-            </div>
-            
-            <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="nav-item active" onclick="showScreen('files')">
-                    <i class="fas fa-folder"></i>
-                    <span>Files</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('chat')">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile')">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Chat Screen -->
-        <div id="chat" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Class Chat</div>
-                <div class="top-nav-actions">
-                    <button class="nav-action-btn" onclick="showToast('24 classmates online')">
-                        <i class="fas fa-users"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="chat-content">
-                <div class="messages-container" id="messages-container">
-                    <!-- Messages load here -->
-                </div>
-                
-                <div class="message-input-container">
-                    <input type="text" class="message-input" id="message-input" placeholder="Type a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-                    <button class="send-btn" onclick="sendMessage()">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="bottom-nav">
-                <a href="#" class="nav-item" onclick="showScreen('dashboard')">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('files')">
-                    <i class="fas fa-folder"></i>
-                    <span>Files</span>
-                </a>
-                <a href="#" class="nav-item active" onclick="showScreen('chat')">
-                    <i class="fas fa-comments"></i>
-                    <span>Chat</span>
-                </a>
-                <a href="#" class="nav-item" onclick="showScreen('profile')">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Profile Screen -->
-        <div id="profile" class="screen">
-            <div class="top-nav">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="page-title">Profile</div>
-                <div class="top-nav-actions"></div>
-            </div>
-            
-            <div class="dashboard-content">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <div class="user-avatar" style="margin: 0 auto 20px;">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <h2 id="profile-name-display" style="margin-bottom: 8px;">Loading...</h2>
-                    <p id="profile-grade-display" style="color: #8E8E93;">Student</p>
-                </div>
-                
-                <input type="text" class="input-field" id="profile-nickname" placeholder="Nickname">
-                <select class="input-field" id="profile-grade">
-                    <option value="">Select Grade</option>
-                    <option value="Freshman">Freshman</option>
-                    <option value="Sophomore">Sophomore</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Senior">Senior</option>
-                </select>
-                
-                <div style="margin-bottom: 20px;">
-                    <div style="color: #8E8E93; margin-bottom: 8px;">Privacy Settings</div>
-                    <div style="display: flex; gap: 16px;">
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="radio" name="privacy" value="classmates" checked>
-                            <span>Classmates</span>
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input type="radio" name="privacy" value="private">
-                            <span>Private</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <button class="btn-primary" onclick="updateProfile()">
-                    Update Profile
-                </button>
-                
-                <button class="btn-primary" onclick="logout()" style="background: transparent; border: 1px solid #FF3B30; color: #FF3B30; margin-top: 10px;">
-                    Log Out
-                </button>
             </div>
         </div>
     </div>
 
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay">
+        <button id="close-menu" class="absolute top-10 right-10 text-white">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        <a href="#about" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Philosophy</a>
+        <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Programs</a>
+        <a href="gallery.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Gallery</a>
+        <a href="results.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Results</a>
+        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="fab-container">
+        <a href="tel:+919876543210" class="fab fab-call" title="Call Us">
+            <i class="fa-solid fa-phone"></i>
+        </a>
+        <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us">
+            <i class="fa-brands fa-whatsapp text-3xl"></i>
+        </a>
+    </div>
+
+    <!-- Background Video (Always Active) -->
+    <video autoplay muted loop playsinline id="hero-video-bg">
+        <source src="Yoga_Video_Generation.mp4" type="video/mp4">
+    </video>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-8 lg:px-12 py-8 lg:py-12 flex justify-between items-center nav-gradient">
+        <div class="text-3xl lg:text-4xl font-bold tracking-tighter uppercase font-sync italic text-white leading-none">
+            D<span class="text-[var(--pink)]">&</span>L<span class="text-[var(--pink)]">.</span>
+        </div>
+        
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex gap-14 text-sm font-bold uppercase tracking-[0.4em] text-white">
+            <a href="#about" class="hover:text-[var(--pink)] transition-colors">Philosophy</a>
+            <a href="#programs" class="hover:text-[var(--pink)] transition-colors">Programs</a>
+            <a href="gallery.html" class="hover:text-[var(--pink)] transition-colors">Gallery</a>
+            <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
+        </div>
+        
+        <div class="flex items-center gap-6">
+            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-12 py-5 text-sm font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
+                Book an Appointment
+            </button>
+            <!-- Mobile Menu Toggle -->
+            <button id="open-menu" class="md:hidden text-white">
+                <i data-lucide="menu" class="w-10 h-10"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Scroll Content Container -->
+    <div id="smooth-wrapper">
+        <div id="smooth-content">
+            
+            <!-- Hero Section Overlay -->
+            <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
+                <div class="text-center">
+                    <div class="hero-reveal inline-block px-6 py-2 glass text-[var(--pink)] text-xs font-bold uppercase tracking-[0.5em] mb-14">
+                        Madurai's First No-Equipment Studio
+                    </div>
+                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white">
+                        Move <span class="text-[var(--pink)]">Strong.</span><br>Live Powerful.
+                    </h1>
+                    <p class="hero-reveal mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed px-4">
+                        Welcome to Lion and Diamond Fitness—where fitness is built through movement, rhythm, and discipline. No machines. No excuses.
+                    </p>
+                    <div class="hero-reveal mt-14 flex flex-col md:flex-row gap-6 justify-center px-4">
+                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-12 py-6 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105">Join the Movement</button>
+                        <button onclick="openModal('appointment-modal')" class="glass text-white px-12 py-6 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book an Appointment</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section Overlay -->
+            <section class="scroll-section" id="about">
+                <div class="max-w-5xl px-4">
+                    <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">The Philosophy</span>
+                    <h2 class="text-6xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-12 text-white">
+                        Fitness Beyond<br><span class="text-[var(--pink)]">Machines.</span>
+                    </h2>
+                    <p class="text-xl md:text-2xl text-neutral-300 leading-relaxed max-w-3xl mb-14">
+                        Located in the heart of Madurai, we master your own body. Our sessions improve strength, flexibility, and mental well-being without heavy weights.
+                    </p>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                        <div class="glass p-8 text-center">
+                            <div class="text-[var(--pink)] font-bold text-3xl mb-2 font-sync">0%</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Intimidation</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-white font-bold text-3xl mb-2 font-sync">100%</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Natural Motion</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-[var(--yellow)] font-bold text-3xl mb-2 font-sync">24/7</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Expert Guidance</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-white font-bold text-3xl mb-2 font-sync">SAFE</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Environment</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Horizontal Gallery Section -->
+            <section id="gallery" class="py-32 overflow-hidden bg-white/5 relative z-10">
+                <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
+                    <div>
+                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span>
+                        <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">The Results<br>Portfolio.</h2>
+                    </div>
+                    <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">
+                        View Full Gallery <i data-lucide="arrow-right"></i>
+                    </a>
+                </div>
+                
+                <div class="gallery-wrapper">
+                    <div class="gallery-container">
+                        <div class="gallery-item group">
+                            <img src="https://images.unsplash.com/photo-1548690312-e3b507d17a47?q=80&w=1974" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Training">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
+                                <h4 class="font-sync font-bold uppercase italic text-lg">Morning Functional</h4>
+                                <p class="text-xs text-neutral-400 mt-2">K.Pudur Arena • 06:00 AM</p>
+                            </div>
+                        </div>
+                        <div class="gallery-item group">
+                            <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Atmosphere">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
+                                <h4 class="font-sync font-bold uppercase italic text-lg">Elite Zumba Flow</h4>
+                                <p class="text-xs text-neutral-400 mt-2">Anna Nagar Suite</p>
+                            </div>
+                        </div>
+                        <div class="gallery-item group">
+                            <img src="https://images.unsplash.com/photo-1599058917232-d750c82597d5?q=80&w=2072" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Community">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
+                                <h4 class="font-sync font-bold uppercase italic text-lg">Communal Synergy</h4>
+                                <p class="text-xs text-neutral-400 mt-2">Active Resistance Training</p>
+                            </div>
+                        </div>
+                        <div class="gallery-item group">
+                            <img src="https://images.unsplash.com/photo-1550345332-09e3ac987658?q=80&w=1974" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Focus">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
+                                <h4 class="font-sync font-bold uppercase italic text-lg">Zen Mastery</h4>
+                                <p class="text-xs text-neutral-400 mt-2">Yoga & Mobility Sessions</p>
+                            </div>
+                        </div>
+                        <div class="gallery-item group">
+                            <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Focus">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
+                                <h4 class="font-sync font-bold uppercase italic text-lg">Jasmine Elite Flow</h4>
+                                <p class="text-xs text-neutral-400 mt-2">Member Transformation Sessions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Transition Section: Lion & Diamond Philosophy -->
+            <section class="py-40 bg-[var(--pink)] text-black relative z-10">
+                <div class="max-w-7xl mx-auto px-8 text-center">
+                    <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-none">
+                        Train Like a <span class="bg-black text-white px-4">Lion.</span><br>Shine Like a <span class="bg-white text-black px-4">Diamond.</span>
+                    </h2>
+                    <p class="mt-12 max-w-2xl mx-auto font-bold uppercase tracking-[0.2em] text-sm opacity-80 text-black">
+                        Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Main Content Area -->
+            <main class="bg-[#050505] relative z-10 border-t border-white/5">
+                
+                <!-- Why Choose Us Marquee -->
+                <div class="bg-white py-6 overflow-hidden">
+                    <div class="flex whitespace-nowrap marquee-track font-sync text-black font-bold uppercase text-2xl italic gap-20">
+                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts</span>
+                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts</span>
+                    </div>
+                </div>
+
+                <!-- Programs Section -->
+                <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+                        <div class="max-w-xl">
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Our Activities</span>
+                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Fitness For<br>Everyone.</h2>
+                        </div>
+                        <p class="text-neutral-500 text-sm max-w-xs leading-relaxed uppercase tracking-widest">
+                            Men & Women • Working Professionals • College Students • Homemakers • Beginners
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[900px]">
+                        <div class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?q=80&w=2070" class="w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-1000" alt="Zumba">
+                            <div class="relative z-10">
+                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block">Cardio & Mood</span>
+                                <h3 class="text-5xl font-sync font-bold uppercase italic">🕺 Zumba Fitness</h3>
+                                <p class="text-neutral-400 mt-4 max-w-md">Dance your way to fat loss with high-energy music and fun choreography. Workouts that don't feel like workouts.</p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 glass p-12 flex flex-col justify-end bg-white/5">
+                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4">🧘 Yoga</h3>
+                            <p class="text-neutral-400 text-sm">Improve flexibility, posture, and inner calm through guided sessions designed for modern Madurai life.</p>
+                        </div>
+                        <div class="md:col-span-5 glass p-12 flex flex-col justify-end group relative overflow-hidden">
+                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4">🔥 Functional</h3>
+                            <p class="text-neutral-400 text-sm">Bodyweight workouts that improve strength, stamina, and coordination for daily movement performance.</p>
+                        </div>
+                        <div class="md:col-span-7 glass p-12 flex flex-col justify-end group overflow-hidden bg-[var(--yellow)]/5">
+                            <h3 class="text-4xl font-sync font-bold uppercase italic mb-4">💃 Dance Fitness</h3>
+                            <p class="text-neutral-400">Burn calories while enjoying rhythmic movements designed to keep you active, motivated, and energized.</p>
+                        </div>
+                    </div>
+                </main>
+
+                <!-- Results Section -->
+                <section id="results" class="py-32 bg-white/5 relative overflow-hidden z-10">
+                    <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center">
+                        <div>
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
+                            <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white">Member<br>Stories.</h2>
+                            <div class="space-y-10">
+                                <div class="glass p-10 border-l-4 border-l-[var(--pink)] hover:translate-x-2 transition-transform">
+                                    <p class="text-2xl italic text-white/90 leading-relaxed font-light">
+                                        “I never liked traditional gyms, but Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”
+                                    </p>
+                                    <div class="mt-8 flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync">SK</div>
+                                        <div>
+                                            <div class="font-bold uppercase text-xs tracking-widest">Santhosh K.</div>
+                                            <div class="text-neutral-500 text-[10px] uppercase">Member • Anna Nagar</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="glass p-10 border-l-4 border-l-[var(--yellow)] hover:translate-x-2 transition-transform">
+                                    <p class="text-2xl italic text-white/90 leading-relaxed font-light">
+                                        “Great trainers and positive vibes. I feel healthier and happier every single week since joining.”
+                                    </p>
+                                    <div class="mt-8 flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-[var(--yellow)] text-black rounded-full flex items-center justify-center font-bold font-sync">RM</div>
+                                        <div>
+                                            <div class="font-bold uppercase text-xs tracking-widest">Radhika M.</div>
+                                            <div class="text-neutral-500 text-[10px] uppercase">Member • K.Pudur</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ba-container aspect-[4/5] shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070" class="w-full h-full object-cover" alt="After">
+                            <div class="ba-after" id="baAfter">
+                                <img src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?q=80&w=2070" class="absolute top-0 left-0 h-full object-cover" style="width: 1000px; max-width: none;" alt="Before">
+                            </div>
+                            <div class="ba-handle" id="baHandle">
+                                <i data-lucide="move-horizontal" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Final CTA -->
+                <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
+                    <div class="max-w-4xl mx-auto relative z-10">
+                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br>No Excuses.</h2>
+                        <p class="mb-16 font-bold uppercase tracking-[0.3em] text-sm opacity-60">Just Movement and Results. Join the Jasmine City Elite.</p>
+                        <div class="flex flex-col md:flex-row gap-6 justify-center">
+                            <button onclick="openModal('appointment-modal')" class="bg-black text-white px-12 py-7 font-sync font-bold uppercase italic text-lg hover:scale-105 transition-all flex items-center justify-center gap-4">
+                                Book an Appointment
+                            </button>
+                            <button onclick="openModal('contact-modal')" class="border-2 border-black text-black px-12 py-7 font-sync font-bold uppercase italic text-lg hover:bg-black hover:text-white transition-all">
+                                Contact Us
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505]">
+                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+                        <div class="text-3xl font-sync font-bold italic">D<span class="text-[var(--pink)]">&</span>L<span class="text-[var(--pink)]">.</span></div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.5em] opacity-40">Madurai’s Home for Active Fitness</div>
+                        <div class="flex gap-8 text-[10px] font-bold uppercase tracking-widest opacity-30">
+                            <span>Instagram</span>
+                            <span>WhatsApp</span>
+                            <span>Privacy</span>
+                        </div>
+                    </div>
+                </footer>
+
+        </div>
+    </div>
+
     <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://gylygcfcasxrehzjkixb.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5bHlnY2ZjYXN4cmVoempraXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUxODc0OTUsImV4cCI6MjA4MDc2MzQ5NX0.FH6J9K1hWHC6fp8J0OyEbSAccbqgY2Yc287m6FN0qUI';
+        // 1. Initialize Lenis (Professional Smooth Scroll)
+        const lenis = new Lenis({ 
+            duration: 1.2, 
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smoothWheel: true
+        });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
 
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: {
-                autoRefreshToken: true,
-                persistSession: true,
-                detectSessionInUrl: true
-            }
+        // 2. Initialize Plugins
+        gsap.registerPlugin(ScrollTrigger);
+        lucide.createIcons();
+
+        // 3. Modal Functions
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            lenis.stop();
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            lenis.start();
+        }
+
+        // 4. Mobile Menu Toggle Logic
+        const openMenu = document.getElementById('open-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+
+        function openMobileMenu() {
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            lenis.stop();
+        }
+
+        function closeMobileMenu() {
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            lenis.start();
+        }
+
+        openMenu.addEventListener('click', openMobileMenu);
+        closeMenu.addEventListener('click', closeMobileMenu);
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
         });
 
-        // App State
-        let currentUser = null;
-        let authMode = 'login';
+        // 5. Hero Reveal Sequence
+        window.addEventListener('load', () => {
+            const tl = gsap.timeline();
+            tl.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, ease: "power4.out" });
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log('App initializing...');
-            
-            // Check for existing session
-            const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-            
-            if (sessionError) {
-                console.error('Session error:', sessionError);
-                return;
-            }
-            
-            if (session) {
-                console.log('Found existing session:', session.user.email);
-                currentUser = session.user;
-                await loadUserData();
-                showScreen('dashboard');
-            } else {
-                console.log('No session found, showing auth screen');
-                showScreen('auth');
-            }
-            
-            // Listen for auth changes
-            supabase.auth.onAuthStateChange(async (event, session) => {
-                console.log('Auth state changed:', event);
-                
-                if (event === 'SIGNED_IN' && session) {
-                    currentUser = session.user;
-                    await loadUserData();
-                    showScreen('dashboard');
-                } else if (event === 'SIGNED_OUT') {
-                    currentUser = null;
-                    showScreen('auth');
-                }
+            // Hero Fade Out on Scroll
+            gsap.to("#hero-section", {
+                scrollTrigger: {
+                    trigger: "#hero-section",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                },
+                opacity: 0,
+                y: -100,
+                scale: 0.95
             });
-        });
 
-        // Auth Functions
-        function switchAuthTab(mode) {
-            authMode = mode;
-            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            const signupFields = document.getElementById('signup-fields');
-            const authButton = document.getElementById('auth-button');
-            
-            if (mode === 'signup') {
-                signupFields.classList.remove('hidden');
-                authButton.textContent = 'Sign Up';
-            } else {
-                signupFields.classList.add('hidden');
-                authButton.textContent = 'Login';
-            }
-            
-            document.getElementById('auth-error').classList.add('hidden');
-        }
-
-        async function handleAuth() {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const errorDiv = document.getElementById('auth-error');
-            
-            errorDiv.classList.add('hidden');
-            
-            if (!email || !password) {
-                showError('Please fill in all fields');
-                return;
-            }
-            
-            try {
-                if (authMode === 'signup') {
-                    const nickname = document.getElementById('auth-nickname').value;
-                    const grade = document.getElementById('auth-grade').value;
-                    
-                    if (!nickname || !grade) {
-                        showError('Please fill in all fields');
-                        return;
-                    }
-                    
-                    console.log('Signing up:', email);
-                    const { data, error } = await supabase.auth.signUp({
-                        email,
-                        password,
-                        options: {
-                            data: { nickname, grade }
-                        }
-                    });
-                    
-                    if (error) throw error;
-                    
-                    console.log('Signup successful:', data);
-                    showToast('Account created! Please check your email.');
-                    
-                } else {
-                    console.log('Logging in:', email);
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email,
-                        password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    console.log('Login successful:', data);
-                    showToast('Welcome back!');
-                }
-            } catch (error) {
-                console.error('Auth error:', error);
-                showError(error.message);
-            }
-        }
-
-        function showError(message) {
-            const errorDiv = document.getElementById('auth-error');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-        }
-
-        // User Data
-        async function loadUserData() {
-            if (!currentUser) return;
-            
-            console.log('Loading user data for:', currentUser.email);
-            
-            try {
-                // Load or create profile
-                let { data: profile, error } = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', currentUser.id)
-                    .single();
-                
-                if (error && error.code === 'PGRST116') {
-                    // Profile doesn't exist, create one
-                    console.log('Creating new profile...');
-                    const { data: newProfile, error: createError } = await supabase
-                        .from('profiles')
-                        .insert([{
-                            id: currentUser.id,
-                            nickname: currentUser.user_metadata?.nickname || 'Student',
-                            grade: currentUser.user_metadata?.grade || 'Freshman',
-                            privacy: 'classmates'
-                        }])
-                        .select()
-                        .single();
-                    
-                    if (createError) throw createError;
-                    profile = newProfile;
-                } else if (error) {
-                    throw error;
-                }
-                
-                console.log('Profile loaded:', profile);
-                
-                // Update UI
-                updateProfileUI(profile);
-                
-                // Load files and chat
-                await Promise.all([loadFiles(), loadChat()]);
-                
-            } catch (error) {
-                console.error('Error loading user data:', error);
-                showToast('Error loading data: ' + error.message);
-            }
-        }
-
-        function updateProfileUI(profile) {
-            document.getElementById('sidebar-name').textContent = profile?.nickname || 'Student';
-            document.getElementById('sidebar-grade').textContent = profile?.grade || 'Freshman';
-            
-            document.getElementById('profile-name-display').textContent = profile?.nickname || 'Student';
-            document.getElementById('profile-grade-display').textContent = profile?.grade || 'Freshman';
-            
-            if (profile) {
-                document.getElementById('profile-nickname').value = profile.nickname || '';
-                document.getElementById('profile-grade').value = profile.grade || '';
-                
-                const privacyRadio = document.querySelector(`input[name="privacy"][value="${profile.privacy || 'classmates'}"]`);
-                if (privacyRadio) privacyRadio.checked = true;
-            }
-        }
-
-        async function updateProfile() {
-            if (!currentUser) return;
-            
-            const nickname = document.getElementById('profile-nickname').value;
-            const grade = document.getElementById('profile-grade').value;
-            const privacy = document.querySelector('input[name="privacy"]:checked')?.value || 'classmates';
-            
-            if (!nickname || !grade) {
-                showToast('Please fill in all fields');
-                return;
-            }
-            
-            try {
-                const { error } = await supabase
-                    .from('profiles')
-                    .update({
-                        nickname,
-                        grade,
-                        privacy,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', currentUser.id);
-                
-                if (error) throw error;
-                
-                showToast('Profile updated!');
-                updateProfileUI({ nickname, grade, privacy });
-                
-            } catch (error) {
-                console.error('Error updating profile:', error);
-                showToast('Error updating profile: ' + error.message);
-            }
-        }
-
-        // Files Functions
-        async function loadFiles() {
-            if (!currentUser) return;
-            
-            console.log('Loading files...');
-            
-            try {
-                const { data: files, error } = await supabase
-                    .from('files')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    console.error('Error loading files:', error);
-                    showNoFiles();
-                    return;
-                }
-                
-                console.log('Files loaded:', files);
-                
-                if (!files || files.length === 0) {
-                    showNoFiles();
-                    return;
-                }
-                
-                renderFiles(files);
-                
-            } catch (error) {
-                console.error('Error in loadFiles:', error);
-                showNoFiles();
-            }
-        }
-
-        function renderFiles(files) {
-            // Update stats
-            const sharedCount = files.filter(f => f.is_shared).length;
-            document.getElementById('file-count').textContent = files.length;
-            document.getElementById('shared-count').textContent = sharedCount;
-            
-            // Dashboard files (first 4)
-            const dashboardContainer = document.getElementById('dashboard-files');
-            const filesContainer = document.getElementById('files-grid');
-            const noFilesElement = document.getElementById('no-files');
-            
-            dashboardContainer.innerHTML = '';
-            filesContainer.innerHTML = '';
-            
-            // Hide no files message
-            noFilesElement.classList.add('hidden');
-            
-            // All files for files page
-            files.forEach(file => {
-                filesContainer.appendChild(createFileCard(file));
+            // About Section Entrance
+            gsap.from("#about", {
+                scrollTrigger: {
+                    trigger: "#about",
+                    start: "top 80%",
+                    end: "center center",
+                    scrub: true
+                },
+                opacity: 0,
+                y: 100
             });
-            
-            // First 4 files for dashboard
-            files.slice(0, 4).forEach(file => {
-                dashboardContainer.appendChild(createFileCard(file));
-            });
-        }
 
-        function createFileCard(file) {
-            const div = document.createElement('div');
-            div.className = 'file-card';
-            div.onclick = () => openFile(file);
-            
-            const icon = getFileIcon(file.type);
-            const fileName = truncate(file.name, 20);
-            
-            div.innerHTML = `
-                <div class="file-preview" style="color: ${icon.color}">
-                    <i class="${icon.class} file-preview-icon"></i>
-                </div>
-                <div class="file-info">
-                    <div class="file-name">${fileName}</div>
-                    <div class="file-meta">
-                        <span>${file.size}</span>
-                        <span>${formatTimeAgo(file.created_at)}</span>
-                    </div>
-                </div>
-            `;
-            
-            return div;
-        }
-
-        function showNoFiles() {
-            document.getElementById('dashboard-files').innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #8E8E93;">
-                    <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                    <p>No files yet</p>
-                </div>
-            `;
-            
-            document.getElementById('no-files').classList.remove('hidden');
-            document.getElementById('file-count').textContent = '0';
-            document.getElementById('shared-count').textContent = '0';
-        }
-
-        async function uploadFile() {
-            if (!currentUser) {
-                showToast('Please login first');
-                return;
-            }
-            
-            // Create file input
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '*/*';
-            
-            input.onchange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                try {
-                    showToast('Uploading...');
-                    
-                    const fileExt = file.name.split('.').pop().toLowerCase();
-                    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-                    
-                    console.log('Uploading file:', fileName);
-                    
-                    // Upload to storage
-                    const { data: uploadData, error: uploadError } = await supabase.storage
-                        .from('resources')
-                        .upload(fileName, file, {
-                            cacheControl: '3600',
-                            upsert: false
-                        });
-                    
-                    if (uploadError) {
-                        console.error('Upload error:', uploadError);
-                        throw uploadError;
+            // Horizontal Gallery Scroll
+            const gallery = document.querySelector('.gallery-container');
+            if (gallery) {
+                gsap.to(gallery, {
+                    x: () => -(gallery.scrollWidth - window.innerWidth),
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: "#gallery",
+                        start: "top top",
+                        end: () => "+=" + gallery.scrollWidth,
+                        scrub: 1,
+                        pin: true,
+                        invalidateOnRefresh: true
                     }
-                    
-                    console.log('Upload successful:', uploadData);
-                    
-                    // Get public URL
-                    const { data: { publicUrl } } = supabase.storage
-                        .from('resources')
-                        .getPublicUrl(fileName);
-                    
-                    console.log('Public URL:', publicUrl);
-                    
-                    // Save to database
-                    const fileSize = formatFileSize(file.size);
-                    const { error: dbError } = await supabase
-                        .from('files')
-                        .insert([{
-                            name: file.name,
-                            type: fileExt,
-                            size: fileSize,
-                            url: publicUrl,
-                            owner_id: currentUser.id,
-                            is_shared: true
-                        }]);
-                    
-                    if (dbError) {
-                        console.error('Database error:', dbError);
-                        throw dbError;
-                    }
-                    
-                    console.log('File saved to database');
-                    showToast('File uploaded successfully!');
-                    
-                    // Reload files
-                    await loadFiles();
-                    
-                } catch (error) {
-                    console.error('Upload failed:', error);
-                    showToast('Upload failed: ' + error.message);
-                }
-            };
-            
-            input.click();
-        }
-
-        // Chat Functions
-        async function loadChat() {
-            if (!currentUser) return;
-            
-            console.log('Loading chat...');
-            
-            try {
-                // First get all messages
-                const { data: messages, error } = await supabase
-                    .from('messages')
-                    .select('*')
-                    .order('created_at', { ascending: true })
-                    .limit(50);
-                
-                if (error) {
-                    console.error('Error loading messages:', error);
-                    return;
-                }
-                
-                console.log('Messages loaded:', messages?.length);
-                
-                // Get profiles for messages
-                const messagesWithProfiles = await Promise.all(
-                    (messages || []).map(async (msg) => {
-                        const { data: profile } = await supabase
-                            .from('profiles')
-                            .select('nickname')
-                            .eq('id', msg.sender_id)
-                            .single();
-                        
-                        return {
-                            ...msg,
-                            profile: profile || { nickname: 'Classmate' }
-                        };
-                    })
-                );
-                
-                renderMessages(messagesWithProfiles);
-                
-                // Setup real-time subscription
-                setupChatSubscription();
-                
-            } catch (error) {
-                console.error('Error loading chat:', error);
-            }
-        }
-
-        function renderMessages(messages) {
-            const container = document.getElementById('messages-container');
-            container.innerHTML = '';
-            
-            if (!messages || messages.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #8E8E93;">
-                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                        <p>No messages yet. Start the conversation!</p>
-                    </div>
-                `;
-                document.getElementById('message-count').textContent = '0';
-                return;
-            }
-            
-            // Update message count
-            document.getElementById('message-count').textContent = messages.length;
-            
-            messages.forEach(msg => {
-                const isMe = msg.sender_id === currentUser.id;
-                const div = document.createElement('div');
-                div.className = `message ${isMe ? 'sent' : 'received'}`;
-                
-                const nickname = msg.profile?.nickname || 'Classmate';
-                const avatarLetter = nickname.charAt(0).toUpperCase();
-                
-                if (isMe) {
-                    div.innerHTML = `
-                        <div class="message-bubble">
-                            ${msg.content}
-                            <div class="message-time">${formatTime(msg.created_at)}</div>
-                        </div>
-                        <div class="message-avatar">${avatarLetter}</div>
-                    `;
-                } else {
-                    div.innerHTML = `
-                        <div class="message-avatar">${avatarLetter}</div>
-                        <div class="message-bubble">
-                            ${msg.content}
-                            <div class="message-time">${formatTime(msg.created_at)} • ${nickname}</div>
-                        </div>
-                    `;
-                }
-                
-                container.appendChild(div);
-            });
-            
-            // Scroll to bottom
-            setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
-            }, 100);
-        }
-
-        function setupChatSubscription() {
-            console.log('Setting up chat subscription...');
-            
-            // Remove existing subscription
-            supabase.removeAllChannels();
-            
-            // Create new subscription
-            const channel = supabase
-                .channel('public:messages')
-                .on('postgres_changes', 
-                    { 
-                        event: 'INSERT', 
-                        schema: 'public', 
-                        table: 'messages' 
-                    }, 
-                    async (payload) => {
-                        console.log('New message received:', payload);
-                        
-                        // Get the new message with profile
-                        const { data: message, error } = await supabase
-                            .from('messages')
-                            .select('*')
-                            .eq('id', payload.new.id)
-                            .single();
-                        
-                        if (!error && message) {
-                            // Get profile for the message
-                            const { data: profile } = await supabase
-                                .from('profiles')
-                                .select('nickname')
-                                .eq('id', message.sender_id)
-                                .single();
-                            
-                            // Reload all messages to keep order
-                            loadChat();
-                        }
-                    }
-                )
-                .subscribe((status) => {
-                    console.log('Chat subscription status:', status);
                 });
+            }
+
+            // Video Background Fade
+            gsap.to("#hero-video-bg", {
+                scrollTrigger: {
+                    trigger: "main",
+                    start: "top bottom",
+                    end: "top top",
+                    scrub: true
+                },
+                opacity: 0.15,
+                filter: "brightness(0.05) grayscale(1)"
+            });
+        });
+
+        // 6. Marquee Loop
+        gsap.to(".marquee-track", {
+            xPercent: -50,
+            ease: "none",
+            duration: 35,
+            repeat: -1
+        });
+
+        // 7. Before/After Interactive Slider (Corrected Scope)
+        const updateBAMain = (clientX) => {
+            const container = document.querySelector('.ba-container');
+            const after = document.querySelector('#baAfter');
+            const handle = document.querySelector('#baHandle');
+            if(!container || !after || !handle) return;
+            const rect = container.getBoundingClientRect();
+            let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+            let p = (x / rect.width) * 100;
+            after.style.width = p + '%';
+            handle.style.left = p + '%';
+        };
+
+        const baContainerMain = document.querySelector('.ba-container');
+        if (baContainerMain) {
+            baContainerMain.addEventListener('mousemove', (e) => updateBAMain(e.clientX));
+            baContainerMain.addEventListener('touchmove', (e) => {
+                updateBAMain(e.touches[0].clientX);
+            }, { passive: true });
         }
 
-        async function sendMessage() {
-            if (!currentUser) {
-                showToast('Please login first');
-                return;
-            }
-            
-            const input = document.getElementById('message-input');
-            const content = input.value.trim();
-            
-            if (!content) return;
-            
-            try {
-                console.log('Sending message:', content);
-                
-                const { error } = await supabase
-                    .from('messages')
-                    .insert([{
-                        content,
-                        sender_id: currentUser.id,
-                        class_id: 'default_class'
-                    }]);
-                
-                if (error) {
-                    console.error('Error sending message:', error);
-                    throw error;
+        // 8. General Section Fade-ins
+        gsap.utils.toArray('.glass, .gallery-item').forEach(el => {
+            gsap.from(el, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 95%",
                 }
-                
-                console.log('Message sent successfully');
-                input.value = '';
-                
-            } catch (error) {
-                console.error('Send message error:', error);
-                showToast('Failed to send: ' + error.message);
-            }
-        }
-
-        // Utility Functions
-        function getFileIcon(type) {
-            const typeLower = type.toLowerCase();
-            if (typeLower === 'pdf') return { class: 'fas fa-file-pdf', color: '#FF3B30' };
-            if (['doc', 'docx'].includes(typeLower)) return { class: 'fas fa-file-word', color: '#2B579A' };
-            if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(typeLower)) return { class: 'fas fa-file-image', color: '#4CD964' };
-            if (['mp4', 'mov', 'avi', 'mkv'].includes(typeLower)) return { class: 'fas fa-file-video', color: '#FF2D55' };
-            if (['mp3', 'wav', 'aac'].includes(typeLower)) return { class: 'fas fa-file-audio', color: '#5856D6' };
-            if (['zip', 'rar', '7z'].includes(typeLower)) return { class: 'fas fa-file-archive', color: '#FF9500' };
-            return { class: 'fas fa-file', color: '#8E8E93' };
-        }
-
-        function formatTime(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        function formatTimeAgo(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / (1000 * 60));
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-            const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins < 60) return `${diffMins}m ago`;
-            if (diffHours < 24) return `${diffHours}h ago`;
-            if (diffDays === 1) return 'Yesterday';
-            if (diffDays < 7) return `${diffDays}d ago`;
-            
-            return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-            return (bytes / (1024 * 1024 * 1024)).toFixed(1) + ' GB';
-        }
-
-        function truncate(str, n) {
-            return str.length > n ? str.substr(0, n-1) + '...' : str;
-        }
-
-        function openFile(file) {
-            window.open(file.url, '_blank');
-        }
-
-        async function createTestData() {
-            if (!currentUser) {
-                showToast('Please login first');
-                return;
-            }
-            
-            try {
-                showToast('Creating test data...');
-                
-                // Create test files
-                const testFiles = [
-                    {
-                        name: 'Math_Notes.pdf',
-                        type: 'pdf',
-                        size: '2.4 MB',
-                        url: 'https://example.com/math_notes.pdf',
-                        owner_id: currentUser.id,
-                        is_shared: true
-                    },
-                    {
-                        name: 'Chemistry_Lab.docx',
-                        type: 'docx',
-                        size: '3.1 MB',
-                        url: 'https://example.com/chemistry_lab.docx',
-                        owner_id: currentUser.id,
-                        is_shared: true
-                    },
-                    {
-                        name: 'Physics_Formula_Sheet.jpg',
-                        type: 'jpg',
-                        size: '1.8 MB',
-                        url: 'https://example.com/physics_formulas.jpg',
-                        owner_id: currentUser.id,
-                        is_shared: false
-                    }
-                ];
-                
-                // Insert test files
-                const { error: filesError } = await supabase
-                    .from('files')
-                    .insert(testFiles);
-                
-                if (filesError) throw filesError;
-                
-                // Create test messages
-                const testMessages = [
-                    {
-                        content: 'Welcome to StudySync! How is everyone doing?',
-                        sender_id: currentUser.id,
-                        class_id: 'default_class'
-                    },
-                    {
-                        content: 'Has anyone completed the math assignment yet?',
-                        sender_id: currentUser.id,
-                        class_id: 'default_class'
-                    },
-                    {
-                        content: 'I just uploaded the notes to the resources section',
-                        sender_id: currentUser.id,
-                        class_id: 'default_class'
-                    }
-                ];
-                
-                // Insert test messages
-                const { error: messagesError } = await supabase
-                    .from('messages')
-                    .insert(testMessages);
-                
-                if (messagesError) throw messagesError;
-                
-                showToast('Test data created!');
-                
-                // Reload data
-                await Promise.all([loadFiles(), loadChat()]);
-                
-            } catch (error) {
-                console.error('Error creating test data:', error);
-                showToast('Error creating test data: ' + error.message);
-            }
-        }
-
-        // UI Functions
-        function showScreen(screenId) {
-            // Hide all screens
-            document.querySelectorAll('.screen').forEach(screen => {
-                screen.classList.remove('active');
             });
-            
-            // Show selected screen
-            document.getElementById(screenId).classList.add('active');
-            
-            // Update bottom nav
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Update based on screen
-            if (screenId === 'dashboard') {
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
-            } else if (screenId === 'files') {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-                loadFiles();
-            } else if (screenId === 'chat') {
-                document.querySelectorAll('.nav-item')[2].classList.add('active');
-                loadChat();
-            } else if (screenId === 'profile') {
-                document.querySelectorAll('.nav-item')[3].classList.add('active');
-            }
-            
-            // Close sidebar if open
-            toggleSidebar(false);
-        }
+        });
 
-        function toggleSidebar(forceClose) {
-            const sidebar = document.querySelector('.sidebar');
-            const overlay = document.querySelector('.sidebar-overlay');
-            
-            if (forceClose === false) {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-            } else {
-                sidebar.classList.toggle('active');
-                overlay.classList.toggle('active');
-            }
-        }
-
-        // Toast Notification
-        function showToast(message) {
-            // Remove existing toast
-            const existingToast = document.querySelector('.toast');
-            if (existingToast) existingToast.remove();
-            
-            // Create toast
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            
-            // Animate in
-            setTimeout(() => {
-                toast.style.transform = 'translateX(-50%) translateY(0)';
-                toast.style.opacity = '1';
-            }, 10);
-            
-            // Remove after delay
-            setTimeout(() => {
-                toast.style.transform = 'translateX(-50%) translateY(20px)';
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        async function logout() {
-            try {
-                const { error } = await supabase.auth.signOut();
-                if (error) throw error;
-                
-                showToast('Logged out successfully');
-                showScreen('auth');
-                
-            } catch (error) {
-                console.error('Logout error:', error);
-                showToast('Error logging out');
-            }
-        }
-
-        // Open console for debugging
-        console.log('StudySync App Loaded');
-        console.log('Supabase URL:', SUPABASE_URL);
     </script>
 </body>
 </html>
