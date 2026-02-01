@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DIAMOND & LION | No-Equipment Fitness Madurai</title>
+    <title>DIAMOND & LION FITNESS | No-Equipment Studio Madurai</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Premium Motion Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Icon Library -->
+    <!-- FontAwesome & Branding Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
@@ -29,7 +29,7 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            overflow-x: hidden; /* Critical for mobile */
+            overflow-x: hidden;
             position: relative;
         }
 
@@ -39,6 +39,24 @@
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Animated Professional Logo */
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .icon-svg {
+            width: 36px;
+            height: 36px;
+            fill: var(--pink);
+            filter: drop-shadow(0 0 8px var(--pink));
+            animation: breathe 3s ease-in-out infinite;
+        }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 15px var(--pink)); }
         }
 
         /* Floating Action Buttons */
@@ -51,7 +69,6 @@
             flex-direction: column;
             gap: 15px;
         }
-
         .fab {
             width: 55px;
             height: 55px;
@@ -64,21 +81,13 @@
             cursor: pointer;
             border: 1px solid rgba(255,255,255,0.1);
         }
-
         .fab-whatsapp { background: #25D366; color: white; }
         .fab-call { background: var(--pink); color: white; }
-        
-        @media (min-width: 1024px) {
-            .fab:hover { transform: scale(1.15) translateY(-8px); }
-        }
 
         /* Video Background */
         #hero-video-bg {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
+            top: 0; left: 0; width: 100%; height: 100vh;
             object-fit: cover;
             z-index: -1;
             filter: brightness(0.35) contrast(1.1);
@@ -92,10 +101,9 @@
             justify-content: center;
             padding: 0 5%;
             width: 100%;
-            box-sizing: border-box;
         }
 
-        /* Modals */
+        /* Modal Architecture */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -106,152 +114,137 @@
             align-items: center;
             justify-content: center;
             padding: 15px;
+            overflow-y: auto;
         }
         .modal-overlay.active { display: flex; }
 
         .nav-gradient {
-            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.7) 70%, transparent 100%);
+            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%);
         }
 
-        /* Gallery Horizontal Scroll Fix */
-        .gallery-wrapper {
+        /* Marquee Strip Animation Fix */
+        .marquee-container {
             width: 100%;
-            overflow: hidden; 
-        }
-        /* Mobile Specific Gallery Style */
-        @media (max-width: 1023px) {
-            .gallery-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none; /* Firefox */
-                -ms-overflow-style: none; /* IE 10+ */
-            }
-            .gallery-wrapper::-webkit-scrollbar { display: none; }
-            .gallery-container {
-                padding: 1rem 5% !important;
-            }
-        }
-
-        .gallery-container {
-            display: flex;
-            gap: 1.5rem;
-            padding: 2rem 0;
-            width: max-content;
-            will-change: transform;
-        }
-        .gallery-item {
-            width: clamp(280px, 75vw, 400px);
-            height: clamp(400px, 60vh, 550px);
-            flex-shrink: 0;
-            position: relative;
             overflow: hidden;
-            border-radius: 12px;
+            display: flex;
+            white-space: nowrap;
+        }
+        .marquee-track {
+            display: flex;
+            flex-shrink: 0;
+            gap: 5rem;
+            width: max-content;
         }
 
         /* Mobile Menu */
         #mobile-menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: var(--bg);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2.5rem;
-            transform: translateX(100%);
-            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            position: fixed; inset: 0; background: var(--bg); z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         }
         #mobile-menu-overlay.active { transform: translateX(0); }
 
-        /* Before/After Custom Handle */
-        .ba-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            width: 100%;
-            touch-action: none;
-        }
-        .ba-after {
-            position: absolute;
-            top: 0; left: 0; width: 50%; height: 100%;
-            overflow: hidden;
-            border-right: 3px solid var(--pink);
-        }
-        .ba-handle {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 48px; height: 48px;
-            background: white;
-            color: black;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            cursor: col-resize;
-            z-index: 10;
-            box-shadow: 0 0 20px var(--pink);
-        }
+        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; }
+        .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
+        .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); }
     </style>
 </head>
 <body>
 
-    <!-- Appointment Modal -->
+    <!-- Appointment Modal (Expanded) -->
     <div id="appointment-modal" class="modal-overlay">
-        <div class="glass max-w-lg w-full p-8 lg:p-10 rounded-2xl relative">
-            <button onclick="closeModal('appointment-modal')" class="absolute top-5 right-5 text-white/50 hover:text-white"><i data-lucide="x"></i></button>
-            <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic mb-8 text-[var(--pink)]">Book Appointment</h3>
-            <form class="space-y-5" onsubmit="event.preventDefault(); alert('Request Sent! Our team will contact you shortly.'); closeModal('appointment-modal');">
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50">Full Name</label>
-                    <input type="text" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-sm" placeholder="Enter name">
+        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-10">
+            <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            
+            <div class="text-center mb-10">
+                <h3 class="text-3xl lg:text-4xl font-sync font-bold uppercase italic text-[var(--pink)]">Reserve Entry</h3>
+                <p class="text-neutral-500 text-[10px] mt-2 tracking-[0.3em] uppercase">Private Member Access</p>
+            </div>
+
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="event.preventDefault(); alert('Booking details sent to the masters. We will contact you shortly.'); closeModal('appointment-modal');">
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Full Name</label>
+                    <input type="text" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg transition-all" placeholder="Enter name">
                 </div>
-                <div>
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50">Phone Number</label>
-                    <input type="tel" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-sm" placeholder="+91">
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Contact Protocol</label>
+                    <input type="tel" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg transition-all" placeholder="+91">
                 </div>
-                <button type="submit" class="w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-sm">Send Details</button>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Age Group</label>
+                    <select class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg">
+                        <option>Under 20</option>
+                        <option selected>20 - 35</option>
+                        <option>35 - 50</option>
+                        <option>50+</option>
+                    </select>
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Arena Choice</label>
+                    <select class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg">
+                        <option>K. Pudur Studio</option>
+                        <option>Anna Nagar Suite</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Interest / Goal</label>
+                    <select id="goal-selector" onchange="const c = document.getElementById('custom-goal-container'); if(this.value==='other') c.classList.remove('hidden'); else c.classList.add('hidden');" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg">
+                        <option>Weight Loss / Body Transformation</option>
+                        <option>Zumba & Dance Fitness</option>
+                        <option>Yoga & Mental Clarity</option>
+                        <option>Functional Training</option>
+                        <option value="other">Other Protocol (Specify Below)</option>
+                    </select>
+                </div>
+                <div id="custom-goal-container" class="md:col-span-2 hidden">
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Specify Requirement</label>
+                    <textarea class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg h-24" placeholder="Tell us more about your fitness goals..."></textarea>
+                </div>
+                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-6 font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg text-white shadow-xl shadow-pink-900/20">Finalize Appointment</button>
             </form>
         </div>
     </div>
 
     <!-- Contact Modal -->
     <div id="contact-modal" class="modal-overlay">
-        <div class="glass max-w-lg w-full p-10 lg:p-12 rounded-2xl text-center relative">
-            <button onclick="closeModal('contact-modal')" class="absolute top-5 right-5 text-white/50 hover:text-white"><i data-lucide="x"></i></button>
-            <div class="mb-8">
-                <i data-lucide="shield-check" class="w-12 h-12 text-[var(--yellow)] mx-auto mb-6"></i>
+        <div class="glass max-w-lg w-full p-10 lg:p-12 rounded-3xl text-center relative">
+            <button onclick="closeModal('contact-modal')" class="absolute top-5 right-5 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <div class="mb-10">
+                <i data-lucide="lion" class="w-16 h-16 text-[var(--yellow)] mx-auto mb-6"></i>
                 <h3 class="text-xl lg:text-2xl font-sync font-bold uppercase italic leading-tight mb-4 text-white">"A lion doesn't lose sleep over the opinion of sheep."</h3>
-                <p class="text-neutral-400 text-sm">Madurai's Elite Studio. Your evolution starts here.</p>
+                <p class="text-neutral-400 text-sm tracking-[0.2em] uppercase">Excellence is a decision. Start Yours.</p>
             </div>
             <div class="flex flex-col gap-4">
-                <a href="tel:+919876543210" class="bg-white text-black py-4 lg:py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-sm hover:bg-[var(--pink)] hover:text-white transition-all">
+                <a href="tel:+919876543210" class="bg-white text-black py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-xl hover:bg-[var(--pink)] hover:text-white transition-all">
                     <i class="fa-solid fa-phone"></i> Call The Arena
                 </a>
-                <a href="https://wa.me/919876543210" target="_blank" class="bg-[#25D366] text-white py-4 lg:py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-sm hover:brightness-110 transition-all">
+                <a href="https://wa.me/919876543210" target="_blank" class="bg-[#25D366] text-white py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-xl hover:brightness-110 transition-all">
                     <i class="fa-brands fa-whatsapp text-2xl"></i> WhatsApp Us
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Mobile Menu Overlay -->
+    <!-- Mobile Menu -->
     <div id="mobile-menu-overlay">
-        <button id="close-menu" class="absolute top-10 right-10 text-white"><i data-lucide="x" class="w-10 h-10"></i></button>
-        <a href="#about" class="mobile-nav-link text-3xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Philosophy</a>
-        <a href="#programs" class="mobile-nav-link text-3xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Programs</a>
-        <a href="gallery.html" class="text-3xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Gallery</a>
-        <a href="results.html" class="text-3xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Testimonials</a>
-        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Now</button>
+        <button id="close-menu" class="absolute top-10 right-10 text-white"><i data-lucide="x" class="w-12 h-12"></i></button>
+        <div class="logo-icon mb-10">
+            <svg class="icon-svg w-10 h-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
+            </svg>
+            <span class="text-2xl font-sync font-bold italic">DIAMOND & LION</span>
+        </div>
+        <a href="#about" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Philosophy</a>
+        <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Programs</a>
+        <a href="gallery.html" class="text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Gallery</a>
+        <a href="results.html" class="text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Results</a>
+        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mt-10 bg-[var(--pink)] text-white px-14 py-6 font-bold uppercase tracking-widest rounded-full shadow-lg shadow-pink-500/20">Book Appointment</button>
     </div>
 
-    <!-- Floating Action Buttons -->
+    <!-- Floating Buttons -->
     <div class="fab-container">
-        <a href="tel:+919876543210" class="fab fab-call" title="Call Us">
-            <i class="fa-solid fa-phone"></i>
-        </a>
-        <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us">
-            <i class="fa-brands fa-whatsapp text-3xl"></i>
-        </a>
+        <a href="tel:+919876543210" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone text-xl"></i></a>
+        <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-4xl"></i></a>
     </div>
 
     <!-- Background Video -->
@@ -260,407 +253,251 @@
     </video>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 w-full z-50 px-6 lg:px-12 py-8 lg:py-12 flex justify-between items-center nav-gradient">
-        <div class="text-2xl lg:text-4xl font-bold tracking-tighter uppercase font-sync italic text-white leading-none">
-            D<span class="text-[var(--pink)]">&</span>L<span class="text-[var(--pink)]">.</span>
+    <nav class="fixed top-0 left-0 w-full z-50 px-6 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
+        <div class="logo-icon">
+            <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
+            </svg>
+            <div class="text-2xl lg:text-3xl font-bold tracking-tighter uppercase font-sync italic text-white leading-none whitespace-nowrap">
+                DIAMOND <span class="text-[var(--pink)]">&</span> LION <span class="text-[var(--pink)]">FITNESS</span>
+            </div>
         </div>
         
-        <!-- Desktop Nav -->
-        <div class="hidden md:flex gap-10 lg:gap-14 text-[10px] lg:text-sm font-bold uppercase tracking-[0.4em] text-white">
+        <div class="hidden xl:flex gap-14 text-xs font-bold uppercase tracking-[0.4em] text-white">
             <a href="#about" class="hover:text-[var(--pink)] transition-colors">Philosophy</a>
             <a href="#programs" class="hover:text-[var(--pink)] transition-colors">Programs</a>
             <a href="gallery.html" class="hover:text-[var(--pink)] transition-colors">Gallery</a>
-            <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Testimonials</a>
+            <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
         </div>
         
-        <div class="flex items-center gap-4 lg:gap-6">
-            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-8 lg:px-12 py-4 lg:py-5 text-[10px] lg:text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
+        <div class="flex items-center gap-6">
+            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-12 py-5 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
                 Book an Appointment
             </button>
-            <!-- Mobile Menu Toggle -->
-            <button id="open-menu" class="md:hidden text-white">
-                <i data-lucide="menu" class="w-9 h-9"></i>
-            </button>
+            <button id="open-menu" class="md:hidden text-white"><i data-lucide="menu" class="w-10 h-10"></i></button>
         </div>
     </nav>
 
-    <!-- Scroll Content Container -->
+    <!-- Content -->
     <div id="smooth-wrapper">
         <div id="smooth-content">
             
-            <!-- Hero Section -->
-            <section class="scroll-section pt-32 lg:pt-48" id="hero-section">
+            <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
                 <div class="text-center w-full px-4">
-                    <div class="hero-reveal inline-block px-4 lg:px-6 py-2 glass text-[var(--pink)] text-[9px] lg:text-xs font-bold uppercase tracking-[0.4em] lg:tracking-[0.5em] mb-10 lg:mb-14">
+                    <div class="hero-reveal inline-block px-6 py-2 glass text-[var(--pink)] text-[10px] lg:text-xs font-bold uppercase tracking-[0.5em] mb-14">
                         Madurai's First No-Equipment Studio
                     </div>
-                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[6vw] leading-[0.85] uppercase italic text-white">
+                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7.5vw] leading-[0.85] uppercase italic text-white">
                         Move <span class="text-[var(--pink)]">Strong.</span><br>Live Powerful.
                     </h1>
-                    <p class="hero-reveal mt-10 lg:mt-14 max-w-2xl mx-auto text-neutral-400 text-sm lg:text-xl leading-relaxed px-4">
-                        Welcome to Lion and Diamond Fitness—where fitness is built through movement, rhythm, and discipline. No machines. No excuses.
+                    <p class="hero-reveal mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed px-4">
+                        Welcome to Lion and Diamond Fitness—built through movement, rhythm, and discipline. No machines. No excuses.
                     </p>
-                    <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center px-4">
-                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-8 lg:px-12 py-5 lg:py-6 font-bold uppercase italic text-[11px] lg:text-sm tracking-[0.2em] transition-all active:scale-95 sm:hover:scale-105">Join the Movement</button>
-                        <button onclick="openModal('appointment-modal')" class="glass text-white px-8 lg:px-12 py-5 lg:py-6 font-bold uppercase italic text-[11px] lg:text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book an Appointment</button>
+                    <div class="hero-reveal mt-14 flex flex-col md:flex-row gap-6 justify-center px-4">
+                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-12 py-6 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl shadow-pink-600/20">Join the Movement</button>
+                        <button onclick="openModal('contact-modal')" class="glass text-white px-12 py-6 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Contact Us</button>
                     </div>
                 </div>
             </section>
 
-            <!-- About Section -->
             <section class="scroll-section" id="about">
-                <div class="max-w-5xl px-6">
+                <div class="max-w-5xl px-4 text-center lg:text-left">
                     <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">The Philosophy</span>
-                    <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-10 lg:mb-12 text-white">
+                    <h2 class="text-6xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-12 text-white">
                         Fitness Beyond<br><span class="text-[var(--pink)]">Machines.</span>
                     </h2>
-                    <p class="text-lg lg:text-2xl text-neutral-300 leading-relaxed max-w-3xl mb-12 lg:mb-14">
+                    <p class="text-xl md:text-2xl text-neutral-300 leading-relaxed max-w-3xl mb-14">
                         Located in the heart of Madurai, we master your own body. Our sessions improve strength, flexibility, and mental well-being without heavy weights.
                     </p>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 w-full">
-                        <div class="glass p-6 lg:p-8 text-center"><div class="text-[var(--pink)] font-bold text-2xl lg:text-3xl mb-2 font-sync">0%</div><div class="text-[9px] lg:text-[10px] uppercase tracking-widest opacity-50">Intimidation</div></div>
-                        <div class="glass p-6 lg:p-8 text-center"><div class="text-white font-bold text-2xl lg:text-3xl mb-2 font-sync">100%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Natural Motion</div></div>
-                        <div class="glass p-6 lg:p-8 text-center"><div class="text-[var(--yellow)] font-bold text-2xl lg:text-3xl mb-2 font-sync">24/7</div><div class="text-[9px] lg:text-[10px] uppercase tracking-widest opacity-50">Expert Guidance</div></div>
-                        <div class="glass p-8 text-center"><div class="text-white font-bold text-2xl lg:text-3xl mb-2 font-sync">SAFE</div><div class="text-[9px] lg:text-[10px] uppercase tracking-widest opacity-50">Environment</div></div>
+                        <div class="glass p-8 text-center"><div class="text-[var(--pink)] font-bold text-3xl mb-2 font-sync">0%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Intimidation</div></div>
+                        <div class="glass p-8 text-center"><div class="text-white font-bold text-3xl mb-2 font-sync">100%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Natural Motion</div></div>
+                        <div class="glass p-8 text-center"><div class="text-[var(--yellow)] font-bold text-3xl mb-2 font-sync">24/7</div><div class="text-[10px] uppercase tracking-widest opacity-50">Expert Access</div></div>
+                        <div class="glass p-8 text-center"><div class="text-white font-bold text-3xl mb-2 font-sync">SAFE</div><div class="text-[10px] uppercase tracking-widest opacity-50">Studio</div></div>
                     </div>
                 </div>
             </section>
 
-            <!-- Horizontal Gallery Section -->
-            <section id="gallery" class="py-24 lg:py-32 overflow-hidden bg-white/5 relative z-10">
-                <div class="px-6 lg:px-8 mb-12 lg:mb-16 max-w-7xl mx-auto flex justify-between items-end">
-                    <div>
-                        <span class="text-[var(--pink)] text-[10px] lg:text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span>
-                        <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic mt-4 text-white">The Results<br>Portfolio.</h2>
-                    </div>
-                    <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">
-                        View Full Gallery <i data-lucide="arrow-right"></i>
-                    </a>
-                </div>
-                
-                <div class="gallery-wrapper">
-                    <div class="gallery-container">
-                        <div class="gallery-item group">
-                            <img src="https://images.unsplash.com/photo-1548690312-e3b507d17a47?q=80&w=1974" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Training">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 lg:p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
-                                <h4 class="font-sync font-bold uppercase italic text-base lg:text-lg text-white">Morning Functional</h4>
-                                <p class="text-[10px] text-neutral-400 mt-2">K.Pudur Arena • 06:00 AM</p>
-                            </div>
-                        </div>
-                        <div class="gallery-item group">
-                            <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Atmosphere">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 lg:p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
-                                <h4 class="font-sync font-bold uppercase italic text-base lg:text-lg text-white">Elite Zumba Flow</h4>
-                                <p class="text-[10px] text-neutral-400 mt-2">Anna Nagar Suite</p>
-                            </div>
-                        </div>
-                        <div class="gallery-item group">
-                            <img src="https://images.unsplash.com/photo-1599058917232-d750c82597d5?q=80&w=2072" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Community">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 lg:p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
-                                <h4 class="font-sync font-bold uppercase italic text-base lg:text-lg text-white">Communal Synergy</h4>
-                                <p class="text-[10px] text-neutral-400 mt-2">Active Training</p>
-                            </div>
-                        </div>
-                        <div class="gallery-item group">
-                            <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" alt="Focus">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent p-6 lg:p-8 flex flex-col justify-end translate-y-10 group-hover:translate-y-0 transition-transform">
-                                <h4 class="font-sync font-bold uppercase italic text-base lg:text-lg text-white">Jasmine Elite</h4>
-                                <p class="text-[10px] text-neutral-400 mt-2">Transformation Sessions</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Philosophy Section -->
-            <section class="py-24 lg:py-40 bg-[var(--pink)] text-black relative z-10">
-                <div class="max-w-7xl mx-auto px-8 text-center text-black">
-                    <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic leading-none text-black">
-                        Train Like a <span class="bg-black text-white px-3 lg:px-4">Lion.</span><br>Shine Like a <span class="bg-white text-black px-3 lg:px-4">Diamond.</span>
-                    </h2>
-                    <p class="mt-10 lg:mt-12 max-w-2xl mx-auto font-bold uppercase tracking-[0.15em] lg:tracking-[0.2em] text-[10px] lg:text-sm opacity-80 text-black">
-                        Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
-                    </p>
-                </div>
-            </section>
-
-            <!-- Main Content Area -->
             <main class="bg-[#050505] relative z-10 border-t border-white/5">
-                
-                <!-- Marquee -->
-                <div class="bg-white py-4 lg:py-6 overflow-hidden">
-                    <div class="flex whitespace-nowrap marquee-track font-sync text-black font-bold uppercase text-lg lg:text-2xl italic gap-10 lg:gap-20">
-                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts</span>
-                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts</span>
+                <!-- Animated Marquee Fix -->
+                <div class="bg-white py-6 marquee-container border-b border-white/10">
+                    <div class="marquee-track font-sync text-black font-bold uppercase text-2xl italic">
+                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts • </span>
+                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts • </span>
+                        <span>No Equipment • High Energy • Certified Trainers • Beginners Welcome • Positive Vibes • Fun Workouts • </span>
                     </div>
                 </div>
 
-                <!-- Programs Section -->
-                <section id="programs" class="py-24 lg:py-32 px-6 lg:px-8 max-w-7xl mx-auto">
-                    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 lg:mb-24 gap-8">
-                        <div class="max-w-xl">
-                            <span class="text-[var(--pink)] text-[10px] lg:text-xs font-bold uppercase tracking-[0.4em]">Our Activities</span>
-                            <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Fitness For<br>Everyone.</h2>
-                        </div>
-                        <p class="text-neutral-500 text-[10px] lg:text-sm max-w-xs leading-relaxed uppercase tracking-widest">
-                            Men & Women • Working Professionals • Students • Homemakers • Beginners
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-                        <div class="lg:col-span-8 glass p-8 lg:p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden min-h-[350px]">
+                <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
+                    <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white mb-20">Our Activities.</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[900px]">
+                        <div class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden">
                             <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?q=80&w=2070" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-1000" alt="Zumba">
                             <div class="relative z-10">
-                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[9px] font-bold uppercase mb-4 lg:mb-6 inline-block">Cardio & Mood</span>
-                                <h3 class="text-3xl lg:text-5xl font-sync font-bold uppercase italic text-white">🕺 Zumba Fitness</h3>
-                                <p class="text-neutral-400 mt-4 max-w-md text-sm lg:text-base">Dance your way to fat loss with high-energy music and fun choreography. Workouts that don't feel like workouts.</p>
+                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block">Cardio & Mood</span>
+                                <h3 class="text-5xl font-sync font-bold uppercase italic">🕺 Zumba Fitness</h3>
+                                <p class="text-neutral-400 mt-4 max-w-md">Dance your way to fat loss with high-energy music. Workouts that don't feel like work.</p>
                             </div>
                         </div>
-                        <div class="lg:col-span-4 glass p-8 lg:p-12 flex flex-col justify-end bg-white/5 min-h-[300px]">
-                            <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic mb-4 text-white">🧘 Yoga</h3>
-                            <p class="text-neutral-400 text-sm">Improve flexibility, posture, and inner calm through guided sessions designed for modern Madurai life.</p>
+                        <div class="md:col-span-4 glass p-12 flex flex-col justify-end bg-white/5 min-h-[300px]">
+                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4">🧘 Yoga</h3>
+                            <p class="text-neutral-400 text-sm">Improve flexibility, posture, and inner calm through guided sessions for modern Madurai life.</p>
                         </div>
-                        <div class="lg:col-span-5 glass p-8 lg:p-12 flex flex-col justify-end group relative overflow-hidden min-h-[300px]">
-                            <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic mb-4 text-white">🔥 Functional</h3>
-                            <p class="text-neutral-400 text-sm">Bodyweight workouts that improve strength, stamina, and coordination for daily movement performance.</p>
+                        <div class="md:col-span-5 glass p-12 flex flex-col justify-end group relative overflow-hidden min-h-[300px]">
+                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4">🔥 Functional</h3>
+                            <p class="text-neutral-400 text-sm">Bodyweight workouts that improve strength, stamina, and coordination for daily life.</p>
                         </div>
-                        <div class="lg:col-span-7 glass p-8 lg:p-12 flex flex-col justify-end group overflow-hidden bg-[var(--yellow)]/5 min-h-[300px]">
-                            <h3 class="text-3xl lg:text-4xl font-sync font-bold uppercase italic mb-4 text-white">💃 Dance Fitness</h3>
-                            <p class="text-neutral-400 text-sm lg:text-base">Burn calories while enjoying rhythmic movements designed to keep you active, motivated, and energized.</p>
+                        <div class="md:col-span-7 glass p-12 flex flex-col justify-end group overflow-hidden bg-[var(--yellow)]/5 min-h-[300px]">
+                            <h3 class="text-4xl font-sync font-bold uppercase italic mb-4 text-white leading-none">💃 Dance Fitness</h3>
+                            <p class="text-neutral-400 mt-4">Enjoy rhythmic movements designed to keep you active, motivated, and energized.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Results Section -->
-                <section id="results" class="py-24 lg:py-32 bg-white/5 relative overflow-hidden z-10">
-                    <div class="max-w-7xl mx-auto px-6 lg:px-8 grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-                        <div>
-                            <span class="text-[var(--pink)] text-[10px] lg:text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
-                            <h2 class="text-5xl lg:text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white">Member<br>Stories.</h2>
-                            <div class="space-y-8 lg:space-y-10">
-                                <div class="glass p-8 lg:p-10 border-l-4 border-l-[var(--pink)]">
-                                    <p class="text-lg lg:text-2xl italic text-white/90 leading-relaxed font-light">
-                                        “I never liked traditional gyms, but Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”
-                                    </p>
-                                    <div class="mt-6 lg:mt-8 flex items-center gap-4">
-                                        <div class="w-10 lg:w-12 h-10 lg:h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync text-white">SK</div>
-                                        <div>
-                                            <div class="font-bold uppercase text-xs tracking-widest text-white">Santhosh K.</div>
-                                            <div class="text-neutral-500 text-[10px] uppercase">Member • Anna Nagar</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="glass p-8 lg:p-10 border-l-4 border-l-[var(--yellow)]">
-                                    <p class="text-lg lg:text-2xl italic text-white/90 leading-relaxed font-light">
-                                        “Great trainers and positive vibes. I feel healthier and happier every single week since joining.”
-                                    </p>
-                                    <div class="mt-6 lg:mt-8 flex items-center gap-4">
-                                        <div class="w-10 lg:w-12 h-10 lg:h-12 bg-[var(--yellow)] text-black rounded-full flex items-center justify-center font-bold font-sync">RM</div>
-                                        <div>
-                                            <div class="font-bold uppercase text-xs tracking-widest text-white">Radhika M.</div>
-                                            <div class="text-neutral-500 text-[10px] uppercase">Member • K.Pudur</div>
-                                        </div>
+                <section id="results" class="py-32 bg-white/5 relative overflow-hidden z-10">
+                    <div class="max-w-7xl mx-auto px-8 grid lg:grid-cols-2 gap-20 items-center">
+                        <div class="mb-20 lg:mb-0">
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
+                            <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white">Real Stories.</h2>
+                            <div class="space-y-10">
+                                <div class="glass p-10 border-l-4 border-l-[var(--pink)] hover:translate-x-2 transition-transform">
+                                    <p class="text-2xl italic text-white/90 leading-relaxed font-light">“Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”</p>
+                                    <div class="mt-8 flex items-center gap-4">
+                                        <div class="w-12 h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync">SK</div>
+                                        <div class="font-bold uppercase text-xs tracking-widest">Santhosh K.</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="flex flex-col items-center w-full">
+                        <div class="relative w-full">
                             <div class="ba-container aspect-[4/5] shadow-2xl">
                                 <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070" class="w-full h-full object-cover" alt="After">
                                 <div class="ba-after" id="baAfter">
                                     <img src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?q=80&w=2070" class="absolute top-0 left-0 h-full object-cover" style="width: 1000px; max-width: none;" alt="Before">
                                 </div>
-                                <div class="ba-handle" id="baHandle">
-                                    <i data-lucide="move-horizontal" class="w-5 h-5 text-black"></i>
-                                </div>
+                                <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
                             </div>
-                            <a href="results.html" class="mt-8 glass px-10 py-4 font-bold uppercase tracking-widest text-[10px] lg:text-xs text-white transition-all active:bg-white active:text-black lg:hover:bg-white lg:hover:text-black">View All Transformations</a>
+                            <div class="mt-8 text-center">
+                                <a href="results.html" class="inline-block glass px-12 py-5 font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-black transition-all">Full Results Page</a>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Final CTA -->
-                <section id="booking" class="py-32 lg:py-48 px-8 bg-white text-black text-center relative overflow-hidden">
+                <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
                     <div class="max-w-4xl mx-auto relative z-10 text-black">
-                        <h2 class="text-4xl lg:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br>No Excuses.</h2>
-                        <p class="mb-12 lg:mb-16 font-bold uppercase tracking-[0.2em] lg:tracking-[0.3em] text-[10px] lg:text-sm opacity-60 text-black">Just Movement and Results. Join the Jasmine City Elite.</p>
-                        <div class="flex flex-col sm:flex-row gap-4 lg:gap-6 justify-center">
-                            <button onclick="openModal('appointment-modal')" class="bg-black text-white px-10 lg:px-12 py-6 lg:py-7 font-sync font-bold uppercase italic text-base lg:text-lg transition-all active:scale-95">
-                                Book an Appointment
-                            </button>
-                            <button onclick="openModal('contact-modal')" class="border-2 border-black text-black px-10 lg:px-12 py-6 lg:py-7 font-sync font-bold uppercase italic text-base lg:text-lg active:bg-black active:text-white transition-all">
-                                Contact Us
-                            </button>
+                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br>No Excuses.</h2>
+                        <div class="flex flex-col md:flex-row gap-6 justify-center">
+                            <button onclick="openModal('appointment-modal')" class="bg-black text-white px-12 py-7 font-sync font-bold uppercase italic text-lg hover:scale-105 transition-all shadow-xl">Book Appointment</button>
+                            <button onclick="openModal('contact-modal')" class="border-2 border-black text-black px-12 py-7 font-sync font-bold uppercase italic text-lg hover:bg-black hover:text-white transition-all">Contact Us</button>
                         </div>
                     </div>
                 </section>
 
-                <footer class="py-16 lg:py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505]">
-                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-10 text-white">
-                        <div class="text-2xl lg:text-3xl font-sync font-bold italic">L<span class="text-[var(--pink)]">&</span>D<span class="text-[var(--pink)]">.</span></div>
-                        <div class="text-[9px] lg:text-[10px] font-bold uppercase tracking-[0.5em] opacity-40">Madurai’s Home for Active Fitness</div>
-                        <div class="flex gap-8 text-[9px] lg:text-[10px] font-bold uppercase tracking-widest opacity-30">
-                            <span>Instagram</span>
-                            <span>WhatsApp</span>
-                            <span>Privacy</span>
+                <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505]">
+                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+                        <div class="logo-icon">
+                            <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
+                            </svg>
+                            <div class="text-2xl font-sync font-bold italic text-white leading-none">
+                                DIAMOND <span class="text-[var(--pink)]">&</span> LION
+                            </div>
+                        </div>
+                        
+                        <div class="flex gap-10 items-center">
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2">
+                                <i class="fa-brands fa-instagram text-2xl"></i>
+                            </a>
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2">
+                                <i class="fa-brands fa-youtube text-2xl"></i>
+                            </a>
+                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp text-2xl"></i>
+                            </a>
+                        </div>
+
+                        <div class="text-[10px] font-bold uppercase tracking-[0.5em] opacity-40 text-white text-center md:text-right">
+                            Madurai’s Elite Active Arena<br>Privacy Protocol 2026
                         </div>
                     </div>
                 </footer>
-
             </main>
         </div>
     </div>
 
     <script>
-        // 1. Initialize Lenis (Professional Smooth Scroll)
-        const lenis = new Lenis({ 
-            duration: 1.2, 
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            smoothWheel: true,
-            touchMultiplier: 1.5
-        });
+        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
-
-        // 2. Initialize Plugins
         gsap.registerPlugin(ScrollTrigger);
         lucide.createIcons();
 
-        // 3. Modal Controls
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-            lenis.stop();
-        }
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            lenis.start();
-        }
+        function openModal(id) { document.getElementById(id).classList.add('active'); lenis.stop(); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); lenis.start(); }
+        function openMobileMenu() { document.getElementById('mobile-menu-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; lenis.stop(); }
+        function closeMobileMenu() { document.getElementById('mobile-menu-overlay').classList.remove('active'); document.body.style.overflow = ''; lenis.start(); }
 
-        // 4. Mobile Menu Toggle Logic
-        const openMenu = document.getElementById('open-menu');
-        const closeMenu = document.getElementById('close-menu');
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        document.getElementById('open-menu').onclick = openMobileMenu;
+        document.getElementById('close-menu').onclick = closeMobileMenu;
+        document.querySelectorAll('.mobile-nav-link').forEach(l => l.onclick = closeMobileMenu);
 
-        function openMobileMenu() {
-            mobileMenuOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            lenis.stop();
-        }
-
-        function closeMobileMenu() {
-            mobileMenuOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-            lenis.start();
-        }
-
-        if(openMenu) openMenu.onclick = openMobileMenu;
-        if(closeMenu) closeMenu.onclick = closeMobileMenu;
-        mobileNavLinks.forEach(link => link.onclick = closeMobileMenu);
-
-        // 5. Cinematic Scroll Sequences
-        window.addEventListener('load', () => {
+        window.onload = () => {
+            // Restore Cinematic Scroll Sequences
             const tl = gsap.timeline();
-            tl.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.15, ease: "power4.out" });
+            tl.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, ease: "power4.out" });
 
-            // Desktop Horizontal Pin Logic
-            const gallery = document.querySelector('.gallery-container');
-            
-            gsap.matchMedia().add("(min-width: 1024px)", () => {
-                // Pin logic only for large screens
-                if (gallery) {
-                    gsap.to(gallery, {
-                        x: () => -(gallery.scrollWidth - window.innerWidth),
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: "#gallery",
-                            start: "top top",
-                            end: () => "+=" + (gallery.scrollWidth - window.innerWidth),
-                            scrub: 1,
-                            pin: true,
-                            invalidateOnRefresh: true,
-                            anticipatePin: 1
-                        }
-                    });
-                }
-            });
-
-            // Hero Fade
             gsap.to("#hero-section", {
-                scrollTrigger: {
-                    trigger: "#hero-section",
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: true
-                },
-                opacity: 0, y: -50
+                scrollTrigger: { trigger: "#hero-section", start: "top top", end: "bottom top", scrub: true },
+                opacity: 0, y: -100, scale: 0.95
             });
 
-            // About entrance
             gsap.from("#about", {
-                scrollTrigger: {
-                    trigger: "#about",
-                    start: "top 80%",
-                    end: "center center",
-                    scrub: true
-                },
-                opacity: 0, y: 50
+                scrollTrigger: { trigger: "#about", start: "top 80%", end: "center center", scrub: true },
+                opacity: 0, y: 100
             });
 
-            // Background Video Fade
+            const gallery = document.querySelector('.gallery-container');
+            if (gallery) {
+                gsap.to(gallery, {
+                    x: () => -(gallery.scrollWidth - window.innerWidth),
+                    ease: "none",
+                    scrollTrigger: { trigger: "#gallery", start: "top top", end: () => "+=" + gallery.scrollWidth, scrub: 1, pin: true, invalidateOnRefresh: true }
+                });
+            }
+
+            // Fixed Marquee Animation
+            gsap.to(".marquee-track", {
+                xPercent: -33.33,
+                ease: "none",
+                duration: 20,
+                repeat: -1
+            });
+
             gsap.to("#hero-video-bg", {
-                scrollTrigger: {
-                    trigger: "main",
-                    start: "top bottom",
-                    end: "top top",
-                    scrub: true
-                },
-                opacity: 0.1,
-                filter: "brightness(0.02) grayscale(1)"
+                scrollTrigger: { trigger: "main", start: "top bottom", end: "top top", scrub: true },
+                opacity: 0.15, filter: "brightness(0.05) grayscale(1)"
             });
-        });
+        };
 
-        // 6. Marquee Loop
-        gsap.to(".marquee-track", {
-            xPercent: -50,
-            ease: "none",
-            duration: 35,
-            repeat: -1
-        });
-
-        // 7. Before/After Slider Logic
-        const initBASlider = () => {
+        // Corrected B/A Scope
+        const handleBA = (clientX) => {
             const container = document.querySelector('.ba-container');
             const after = document.querySelector('#baAfter');
             const handle = document.querySelector('#baHandle');
-            if(!container || !after || !handle) return;
-
-            const move = (clientX) => {
-                const rect = container.getBoundingClientRect();
-                const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-                const p = (x / rect.width) * 100;
-                after.style.width = p + '%';
-                handle.style.left = p + '%';
-            };
-
-            container.addEventListener('mousemove', e => move(e.clientX));
-            container.addEventListener('touchmove', e => move(e.touches[0].clientX), { passive: true });
+            if(!container) return;
+            const rect = container.getBoundingClientRect();
+            let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+            let p = (x / rect.width) * 100;
+            after.style.width = p + '%';
+            handle.style.left = p + '%';
         };
-        initBASlider();
-
-        // 8. General Section Fade-ins
-        gsap.utils.toArray('.glass, .gallery-item').forEach(el => {
-            gsap.from(el, {
-                opacity: 0,
-                y: 30,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: el,
-                    start: "top 95%",
-                }
-            });
-        });
+        const baC = document.querySelector('.ba-container');
+        if (baC) {
+            baC.addEventListener('mousemove', e => handleBA(e.clientX));
+            baC.addEventListener('touchmove', e => handleBA(e.touches[0].clientX), {passive: true});
+        }
     </script>
 </body>
 </html>
