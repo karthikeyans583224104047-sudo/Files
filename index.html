@@ -45,11 +45,11 @@
         .logo-icon {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
         .icon-svg {
-            width: clamp(24px, 5vw, 36px);
-            height: clamp(24px, 5vw, 36px);
+            width: clamp(28px, 5vw, 36px);
+            height: clamp(28px, 5vw, 36px);
             fill: var(--pink);
             filter: drop-shadow(0 0 8px var(--pink));
             animation: breathe 3s ease-in-out infinite;
@@ -109,8 +109,8 @@
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.96);
-            backdrop-filter: blur(20px);
-            z-index: 2000;
+            backdrop-filter: blur(15px);
+            z-index: 5000;
             display: none;
             align-items: flex-start;
             justify-content: center;
@@ -120,10 +120,11 @@
         .modal-overlay.active { display: flex; }
 
         .nav-gradient {
-            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.7) 70%, transparent 100%);
+            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%);
         }
 
         /* Gallery Horizontal Scroll Fix */
+        .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
         @media (max-width: 1023px) {
             .gallery-wrapper {
                 overflow-x: auto;
@@ -133,12 +134,12 @@
             .gallery-wrapper::-webkit-scrollbar { display: none; }
             .gallery-container { padding: 1rem 5% !important; }
         }
-
         .gallery-container {
             display: flex;
             gap: 1.5rem;
             padding: 2rem 0;
             width: max-content;
+            will-change: transform;
         }
         .gallery-item {
             width: clamp(280px, 75vw, 400px);
@@ -147,25 +148,21 @@
             border-radius: 12px;
             overflow: hidden;
             position: relative;
+            background: #111;
         }
 
+        /* Mobile Menu */
         #mobile-menu-overlay {
-            position: fixed; inset: 0; background: var(--bg); z-index: 3000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
-            transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            position: fixed; inset: 0; 
+            background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%);
+            z-index: 4000;
+            display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+            opacity: 0;
+            backdrop-filter: blur(10px);
         }
-        #mobile-menu-overlay.active { transform: translateX(0); }
+        .mobile-nav-link { opacity: 0; transform: translateY(20px); }
 
-        /* Marquee Animation Fix */
-        .marquee-container { width: 100%; overflow: hidden; white-space: nowrap; display: flex; }
-        .marquee-track { display: flex; gap: 4rem; flex-shrink: 0; width: max-content; will-change: transform; }
-
-        /* Before/After Logic */
-        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; }
-        .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
-        .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
-
-        /* Premium White to Pink Button Animation */
+        /* Premium Buttons */
         .btn-premium-cta {
             background-color: white;
             color: black;
@@ -191,23 +188,50 @@
         .btn-premium-cta:hover {
             color: white;
             border-color: var(--pink);
-            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
         }
         .btn-premium-cta:hover::before {
             width: 300%;
             height: 600%;
         }
+
+        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; }
+        .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
+        .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
+
+        /* Ticker Strip Fix */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            background: white;
+            padding: 1.5rem 0;
+        }
+        .marquee-track {
+            display: flex;
+            flex-shrink: 0;
+            gap: 5rem;
+            width: max-content;
+            align-items: center;
+        }
+        .marquee-track span {
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .brand-text { font-size: clamp(14px, 4vw, 24px); }
     </style>
 </head>
 <body>
 
     <!-- Appointment Modal -->
     <div id="appointment-modal" class="modal-overlay">
-        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-10">
+        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto">
             <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
             
             <div class="text-center mb-8">
-                <h3 class="text-3xl lg:text-4xl font-sync font-bold uppercase italic text-[var(--pink)]">Reserve Entry</h3>
+                <h3 class="text-3xl lg:text-4xl font-sync font-bold uppercase italic text-[var(--pink)]">Begin Evolution</h3>
                 <p class="text-neutral-500 text-[10px] mt-2 tracking-[0.3em] uppercase">Private Member Registration</p>
             </div>
 
@@ -233,26 +257,26 @@
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Goal Preference</label>
+                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Fitness Goal</label>
                     <select id="goal-selector" onchange="const c = document.getElementById('custom-goal-container'); if(this.value==='other') c.classList.remove('hidden'); else c.classList.add('hidden');" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg cursor-pointer">
-                        <option>Weight Loss / Body Transformation</option>
-                        <option>Zumba & Dance Fitness</option>
-                        <option>Yoga & Mental Clarity</option>
+                        <option>Weight Loss / Fat Burn</option>
+                        <option>Zumba / Mood Elevation</option>
+                        <option>Yoga / Flexibility</option>
                         <option>Functional Training</option>
-                        <option value="other">Other Protocol (Specify Below)</option>
+                        <option value="other">Other Interest</option>
                     </select>
                 </div>
                 <div id="custom-goal-container" class="md:col-span-2 hidden">
                     <textarea class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg h-24" placeholder="Specify your custom requirements..."></textarea>
                 </div>
-                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-6 font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg text-white shadow-xl">Finalize Appointment</button>
+                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-6 font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg text-white">Send Appointment Details</button>
             </form>
         </div>
     </div>
 
     <!-- Contact Modal -->
     <div id="contact-modal" class="modal-overlay">
-        <div class="glass max-w-lg w-full p-10 lg:p-12 rounded-3xl text-center relative my-auto">
+        <div class="glass max-w-lg w-full p-10 lg:p-12 rounded-3xl text-center relative my-auto mx-auto">
             <button onclick="closeModal('contact-modal')" class="absolute top-5 right-5 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
             <div class="mb-10 text-center">
                 <i data-lucide="shield-check" class="w-16 h-16 text-[var(--yellow)] mx-auto mb-8"></i>
@@ -275,64 +299,60 @@
         <button id="close-menu" class="absolute top-10 right-10 text-white"><i data-lucide="x" class="w-12 h-12"></i></button>
         <div class="logo-icon mb-10 scale-125">
             <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
-            <span class="text-xl font-sync font-bold italic text-white">DIAMOND & LION</span>
+            <span class="text-xl font-sync font-bold italic text-white text-center uppercase tracking-tighter">DIAMOND & LION <br> <span class="text-[var(--pink)]">FITNESS</span></span>
         </div>
-        <a href="#about" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Philosophy</a>
-        <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Programs</a>
-        <a href="gallery.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Gallery</a>
-        <a href="results.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Results</a>
-        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
+        <a href="#about" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Philosophy</a>
+        <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Programs</a>
+        <a href="gallery.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Gallery</a>
+        <a href="results.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Results</a>
+        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mobile-nav-link mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
     </div>
 
-    <!-- Floating Buttons -->
+    <!-- Floating Action Buttons -->
     <div class="fab-container">
         <a href="tel:+919876543210" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
         <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
-    <!-- Background Video -->
-    <video autoplay muted loop playsinline id="hero-video-bg">
-        <source src="Yoga_Video_Generation.mp4" type="video/mp4">
-    </video>
-
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 w-full z-50 px-6 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
-        <div class="logo-icon">
-            <svg class="icon-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <nav class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
+        <div class="logo-icon max-w-[70%]">
+            <svg class="icon-svg flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
             </svg>
-            <div class="text-xl lg:text-3xl font-bold tracking-tighter uppercase font-sync italic text-white leading-none whitespace-nowrap">
+            <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white leading-none whitespace-nowrap overflow-hidden text-ellipsis">
                 DIAMOND <span class="text-[var(--pink)]">&</span> LION <span class="text-[var(--pink)]">FITNESS</span>
             </div>
         </div>
         
-        <div class="hidden xl:flex gap-14 text-sm font-bold uppercase tracking-[0.4em] text-white">
+        <div class="hidden lg:flex gap-14 text-[10px] xl:text-xs font-bold uppercase tracking-[0.4em] text-white">
             <a href="#about" class="hover:text-[var(--pink)] transition-colors">Philosophy</a>
             <a href="#programs" class="hover:text-[var(--pink)] transition-colors">Programs</a>
             <a href="gallery.html" class="hover:text-[var(--pink)] transition-colors">Gallery</a>
             <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
         </div>
         
-        <div class="flex items-center gap-6">
-            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-12 py-5 text-xs font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
-                Book an Appointment
+        <div class="flex items-center gap-4">
+            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
+                Appointment
             </button>
-            <button id="open-menu" class="md:hidden text-white">
-                <i data-lucide="menu" class="w-10 h-10"></i>
+            <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors">
+                <i data-lucide="menu" class="w-9 h-9 lg:w-10 lg:h-10"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Content -->
+    <!-- Scroll Content Container -->
     <div id="smooth-wrapper">
         <div id="smooth-content">
             
+            <!-- Hero Overlay -->
             <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
                 <div class="text-center w-full px-4">
                     <div class="hero-reveal inline-block px-4 lg:px-6 py-2 glass text-[var(--pink)] text-[9px] lg:text-xs font-bold uppercase tracking-[0.5em] mb-14">
                         Madurai's First No-Equipment Studio
                     </div>
-                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[6vw] leading-[0.85] uppercase italic text-white">
+                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white">
                         Move <span class="text-[var(--pink)]">Strong.</span><br>Live Powerful.
                     </h1>
                     <p class="hero-reveal mt-10 lg:mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed px-4">
@@ -345,6 +365,7 @@
                 </div>
             </section>
 
+            <!-- About Section Overlay -->
             <section class="scroll-section" id="about">
                 <div class="max-w-5xl px-4 text-center lg:text-left">
                     <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">Fitness Beyond Machines</span>
@@ -407,49 +428,44 @@
                     </div>
                 </section>
 
-                <!-- Location Section (Bright Maps) -->
-                <section id="arenas" class="py-32 px-8 bg-black">
+                <!-- Location Section -->
+                <section id="arenas" class="py-32 px-8 bg-black relative">
                     <div class="max-w-7xl mx-auto">
                         <div class="mb-16">
                             <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Locate Excellence</span>
                             <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Our Arenas.</h2>
                         </div>
                         <div class="grid md:grid-cols-2 gap-10">
-                            <!-- K.Pudur Map (Always Bright) -->
-                            <div class="glass overflow-hidden rounded-3xl group">
-                                <div class="h-[400px] w-full transition-all duration-700">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.126410141673!2d78.1368!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c59218204689%3A0x6b80f90e54b6d4e4!2sK.%20Pudur%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <div class="glass overflow-hidden rounded-3xl">
+                                <div class="h-[400px] w-full">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.126410141673!2d78.1368!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c59218204689%3A0x6b80f90e54b6d4e4!2sK.%20Pudur%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                                 </div>
                                 <div class="p-8">
                                     <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--pink)] mb-4">K.Pudur Arena</h4>
                                     <p class="text-neutral-400 text-sm mb-6">Opp. EB Office, K.Pudur, Madurai 625007</p>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase">
-                                        <i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 10:00 PM
-                                    </div>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 10:00 PM</div>
                                 </div>
                             </div>
-                            <!-- Anna Nagar Map (Always Bright) -->
-                            <div class="glass overflow-hidden rounded-3xl group">
-                                <div class="h-[400px] w-full transition-all duration-700">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.134510141673!2d78.1468!3d9.9202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sAnna%20Nagar%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000001!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                            <div class="glass overflow-hidden rounded-3xl">
+                                <div class="h-[400px] w-full">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.134510141673!2d78.1468!3d9.9202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sAnna%20Nagar%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000001!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                                 </div>
                                 <div class="p-8">
                                     <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-4">Anna Nagar Suite</h4>
                                     <p class="text-neutral-400 text-sm mb-6">Anna Nagar Main Road, Madurai 625020</p>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase">
-                                        <i data-lucide="clock" class="w-3 h-3"></i> 06:00 AM — 09:30 PM
-                                    </div>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 06:00 AM — 09:30 PM</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                <!-- Horizontal Gallery -->
                 <section id="gallery" class="py-32 overflow-hidden bg-white/5 relative z-10">
                     <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
                         <div>
                             <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">The Results<br>Portfolio.</h2>
+                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">The Portfolio.</h2>
                         </div>
                         <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">
                             View Full Gallery <i data-lucide="arrow-right"></i>
@@ -460,12 +476,13 @@
                             <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1548690312-e3b507d17a47?q=80&w=1974" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
                             <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
                             <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1599058917232-d750c82597d5?q=80&w=2072" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                            <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
                         </div>
                     </div>
                 </section>
 
                 <section class="py-40 bg-[var(--pink)] text-black text-center relative z-10">
-                    <div class="max-w-7xl mx-auto px-8 text-black">
+                    <div class="max-w-7xl mx-auto px-8">
                         <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-none mb-8 text-black">
                             Train Like a <span class="bg-black text-white px-4">Lion.</span><br>Shine Like a <span class="bg-white text-black px-4">Diamond.</span>
                         </h2>
@@ -477,22 +494,15 @@
 
                 <section id="results" class="py-32 px-8 max-w-7xl mx-auto">
                     <div class="grid lg:grid-cols-2 gap-20 items-center">
-                        <div>
+                        <div class="mb-20 lg:mb-0">
                             <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
                             <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white">Member<br>Stories.</h2>
                             <div class="space-y-10">
                                 <div class="glass p-10 border-l-4 border-l-[var(--pink)] hover:translate-x-2 transition-transform">
                                     <p class="text-2xl italic text-white/90 leading-relaxed font-light">“I never liked traditional gyms, but Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”</p>
-                                    <div class="mt-8 flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync text-white">SK</div>
-                                        <div class="font-bold uppercase text-xs tracking-widest text-white">Santhosh K.</div>
-                                    </div>
-                                </div>
-                                <div class="glass p-10 border-l-4 border-l-[var(--yellow)] hover:translate-x-2 transition-transform text-white">
-                                    <p class="text-2xl italic text-white/90 leading-relaxed font-light">“Great trainers and positive vibes. I feel healthier and happier every single week since joining.”</p>
-                                    <div class="mt-8 flex items-center gap-4">
-                                        <div class="w-12 h-12 bg-[var(--yellow)] text-black rounded-full flex items-center justify-center font-bold font-sync">RM</div>
-                                        <div class="font-bold uppercase text-xs tracking-widest text-white">Radhika M.</div>
+                                    <div class="mt-8 flex items-center gap-4 text-white">
+                                        <div class="w-12 h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync">SK</div>
+                                        <div class="font-bold uppercase text-xs tracking-widest">Santhosh K.</div>
                                     </div>
                                 </div>
                             </div>
@@ -513,13 +523,12 @@
                     </div>
                 </section>
 
-                <!-- Final CTA Section (Solid White Background with Animated Buttons) -->
+                <!-- Final CTA Section -->
                 <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
                     <div class="max-w-4xl mx-auto relative z-10">
                         <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
                         <p class="mb-16 font-bold uppercase tracking-[0.3em] text-sm opacity-60 text-black">Just Movement and Results. Join the Jasmine City Elite.</p>
                         <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                            <!-- White Background Buttons with Pink Animation -->
                             <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">
                                 Book Appointment
                             </button>
@@ -534,20 +543,16 @@
                     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-white">
                         <div class="logo-icon">
                             <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
-                            <div class="text-2xl font-sync font-bold italic text-white leading-none uppercase">
-                                DIAMOND <span class="text-[var(--pink)]">&</span> LION
-                            </div>
+                            <div class="text-2xl font-sync font-bold italic text-white uppercase">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
                         </div>
                         
                         <div class="flex gap-10 items-center">
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-instagram text-3xl"></i></a>
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-youtube text-3xl"></i></a>
-                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-instagram text-3xl"></i></a>
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-youtube text-3xl"></i></a>
+                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
                         </div>
 
-                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-white text-center md:text-right">
-                            Madurai’s Home for Active Fitness<br>Privacy Protocol 2026
-                        </div>
+                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-white text-center md:text-right">Madurai’s Home for Active Fitness<br>Privacy Protocol 2026</div>
                     </div>
                 </footer>
             </main>
@@ -563,11 +568,26 @@
 
         function openModal(id) { document.getElementById(id).classList.add('active'); lenis.stop(); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); lenis.start(); }
-        function openMobileMenu() { document.getElementById('mobile-menu-overlay').classList.add('active'); document.body.style.overflow = 'hidden'; lenis.stop(); }
-        function closeMobileMenu() { document.getElementById('mobile-menu-overlay').classList.remove('active'); document.body.style.overflow = ''; lenis.start(); }
+        
+        const openMenu = document.getElementById('open-menu');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 
-        document.getElementById('open-menu').onclick = openMobileMenu;
-        document.getElementById('close-menu').onclick = closeMobileMenu;
+        function openMobileMenu() { 
+            mobileMenuOverlay.style.display = 'flex';
+            lenis.stop();
+            gsap.to(mobileMenuOverlay, { opacity: 1, duration: 0.4 });
+            gsap.to(mobileMenuOverlay, { x: 0, duration: 0.6, ease: "power4.out" });
+            gsap.to(".mobile-nav-link", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 0.2 });
+        }
+        function closeMobileMenu() { 
+            lenis.start();
+            gsap.to(".mobile-nav-link", { opacity: 0, y: 20, duration: 0.3 });
+            gsap.to(mobileMenuOverlay, { x: "100%", opacity: 0, duration: 0.5, onComplete: () => mobileMenuOverlay.style.display = 'none' });
+        }
+
+        openMenu.onclick = openMobileMenu;
+        closeMenu.onclick = closeMobileMenu;
         document.querySelectorAll('.mobile-nav-link').forEach(l => l.onclick = closeMobileMenu);
 
         window.onload = () => {
@@ -584,13 +604,22 @@
                 opacity: 0, y: 100
             });
 
+            // Horizontal Scroll Gallery Logic
             const gallery = document.querySelector('.gallery-container');
             gsap.matchMedia().add("(min-width: 1024px)", () => {
                 if (gallery) {
                     gsap.to(gallery, {
                         x: () => -(gallery.scrollWidth - window.innerWidth),
                         ease: "none",
-                        scrollTrigger: { trigger: "#gallery", start: "top top", end: () => "+=" + (gallery.scrollWidth - window.innerWidth), scrub: 1, pin: true, invalidateOnRefresh: true }
+                        scrollTrigger: { 
+                            trigger: "#gallery", 
+                            start: "top top", 
+                            end: () => "+=" + (gallery.scrollWidth - window.innerWidth), 
+                            scrub: 1, 
+                            pin: true, 
+                            invalidateOnRefresh: true, 
+                            anticipatePin: 1 
+                        }
                     });
                 }
             });
@@ -603,21 +632,21 @@
             });
         };
 
-        const handleSliderMove = (clientX) => {
+        const initSlider = (clientX) => {
             const container = document.querySelector('.ba-container');
             const after = document.querySelector('#baAfter');
             const handle = document.querySelector('#baHandle');
-            if(!container) return;
+            if(!container || !after || !handle) return;
             const rect = container.getBoundingClientRect();
             let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
             let p = (x / rect.width) * 100;
             after.style.width = p + '%';
             handle.style.left = p + '%';
         };
-        const baArea = document.querySelector('.ba-container');
-        if (baArea) {
-            baArea.addEventListener('mousemove', e => handleSliderMove(e.clientX));
-            baArea.addEventListener('touchmove', e => handleSliderMove(e.touches[0].clientX), {passive: true});
+        const baTriggerEl = document.querySelector('.ba-container');
+        if (baTriggerEl) {
+            baTriggerEl.addEventListener('mousemove', e => initSlider(e.clientX));
+            baTriggerEl.addEventListener('touchmove', e => initSlider(e.touches[0].clientX), {passive: true});
         }
     </script>
 </body>
