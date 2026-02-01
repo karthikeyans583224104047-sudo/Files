@@ -35,6 +35,11 @@
 
         .font-sync { font-family: 'Syncopate', sans-serif; }
 
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
+            color: transparent;
+        }
+
         .glass {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px);
@@ -195,7 +200,14 @@
             height: 600%;
         }
 
-        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; }
+        /* Fix for touch interaction on slider: allow vertical scrolling */
+        .ba-container { 
+            position: relative; 
+            overflow: hidden; 
+            border-radius: 8px; 
+            width: 100%; 
+            touch-action: pan-y; /* Allows vertical scrolling but intercepts horizontal if needed */
+        }
         .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
         .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
 
@@ -220,7 +232,11 @@
             white-space: nowrap;
         }
 
-        .brand-text { font-size: clamp(14px, 4vw, 24px); }
+        /* Improved responsive title visibility */
+        .brand-text { 
+            font-size: clamp(12px, 3.5vw, 24px); 
+            line-height: 1.1;
+        }
     </style>
 </head>
 <body>
@@ -305,7 +321,7 @@
         <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Programs</a>
         <a href="gallery.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Gallery</a>
         <a href="results.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)]">Results</a>
-        <button onclick="openModal('appointment-modal'); closeMobileMenu();" class="mobile-nav-link mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
+        <button id="mobile-book-btn" class="mobile-nav-link mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
     </div>
 
     <!-- Floating Action Buttons -->
@@ -314,13 +330,18 @@
         <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
+    <!-- Background Video -->
+    <video autoplay muted loop playsinline id="hero-video-bg">
+        <source src="Yoga_Video_Generation.mp4" type="video/mp4">
+    </video>
+
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
-        <div class="logo-icon max-w-[70%]">
+        <div class="logo-icon flex-shrink-0">
             <svg class="icon-svg flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
             </svg>
-            <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white leading-none whitespace-nowrap overflow-hidden text-ellipsis">
+            <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white leading-tight whitespace-nowrap">
                 DIAMOND <span class="text-[var(--pink)]">&</span> LION <span class="text-[var(--pink)]">FITNESS</span>
             </div>
         </div>
@@ -334,7 +355,7 @@
         
         <div class="flex items-center gap-4">
             <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
-                Appointment
+                Book Appointment
             </button>
             <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors">
                 <i data-lucide="menu" class="w-9 h-9 lg:w-10 lg:h-10"></i>
@@ -496,7 +517,7 @@
                     <div class="grid lg:grid-cols-2 gap-20 items-center">
                         <div class="mb-20 lg:mb-0">
                             <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
-                            <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white">Member<br>Stories.</h2>
+                            <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white leading-none">Member<br>Stories.</h2>
                             <div class="space-y-10">
                                 <div class="glass p-10 border-l-4 border-l-[var(--pink)] hover:translate-x-2 transition-transform">
                                     <p class="text-2xl italic text-white/90 leading-relaxed font-light">“I never liked traditional gyms, but Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”</p>
@@ -560,7 +581,7 @@
     </div>
 
     <script>
-        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+        const lenis = new Lenis({ duration: 1.2, smoothWheel: true, touchMultiplier: 1.5 });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         gsap.registerPlugin(ScrollTrigger);
@@ -588,7 +609,16 @@
 
         openMenu.onclick = openMobileMenu;
         closeMenu.onclick = closeMobileMenu;
-        document.querySelectorAll('.mobile-nav-link').forEach(l => l.onclick = closeMobileMenu);
+        document.querySelectorAll('.mobile-nav-link:not(#mobile-book-btn)').forEach(l => l.onclick = closeMobileMenu);
+        
+        // Fix for mobile book button in menu
+        const mobileBookBtn = document.getElementById('mobile-book-btn');
+        if (mobileBookBtn) {
+            mobileBookBtn.onclick = () => {
+                openModal('appointment-modal');
+                closeMobileMenu();
+            };
+        }
 
         window.onload = () => {
             const tl = gsap.timeline();
@@ -632,7 +662,7 @@
             });
         };
 
-        const initSlider = (clientX) => {
+        const handleSliderUpdate = (clientX) => {
             const container = document.querySelector('.ba-container');
             const after = document.querySelector('#baAfter');
             const handle = document.querySelector('#baHandle');
@@ -645,8 +675,8 @@
         };
         const baTriggerEl = document.querySelector('.ba-container');
         if (baTriggerEl) {
-            baTriggerEl.addEventListener('mousemove', e => initSlider(e.clientX));
-            baTriggerEl.addEventListener('touchmove', e => initSlider(e.touches[0].clientX), {passive: true});
+            baTriggerEl.addEventListener('mousemove', e => handleSliderUpdate(e.clientX));
+            baTriggerEl.addEventListener('touchmove', e => handleSliderUpdate(e.touches[0].clientX), {passive: true});
         }
     </script>
 </body>
