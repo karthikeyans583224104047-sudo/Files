@@ -22,8 +22,12 @@
             --bg: #050505;
         }
 
-        html, body {
-            background-color: var(--bg);
+        html {
+            background-color: var(--bg); /* Fallback for the very bottom */
+        }
+
+        body {
+            background-color: transparent; /* Changed to transparent so fixed video behind it is visible */
             color: white;
             font-family: 'Space Grotesk', sans-serif;
             margin: 0;
@@ -89,13 +93,17 @@
         .fab-whatsapp { background: #25D366; color: white; }
         .fab-call { background: var(--pink); color: white; }
 
-        /* Video Background */
+        /* Video Background Fixed */
         #hero-video-bg {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100vh;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100vh;
             object-fit: cover;
-            z-index: -1;
-            filter: brightness(0.35) contrast(1.1);
+            z-index: -1; /* Placed behind content but visible since body is transparent */
+            filter: brightness(0.4) contrast(1.1);
+            background-color: var(--bg); /* Fallback color while video loads */
         }
 
         .scroll-section {
@@ -206,7 +214,7 @@
             overflow: hidden; 
             border-radius: 8px; 
             width: 100%; 
-            touch-action: pan-y; /* Allows vertical scrolling but intercepts horizontal if needed */
+            touch-action: pan-y; 
         }
         .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
         .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
@@ -330,9 +338,9 @@
         <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
-    <!-- Background Video -->
-    <video autoplay muted loop playsinline id="hero-video-bg">
-        <source src="Yoga_Video_Generation.mp4" type="video/mp4">
+    <!-- Background Video - Relative path with explicit autoplay attributes -->
+    <video autoplay muted loop playsinline preload="auto" id="hero-video-bg" src="Yoga_Video_Generation.mp4">
+        <!-- Browsers often play better when src is on video tag directly for bg videos -->
     </video>
 
     <!-- Navigation -->
@@ -449,7 +457,7 @@
                     </div>
                 </section>
 
-                <!-- Location Section -->
+                <!-- Location Section (Bright Maps Always) -->
                 <section id="arenas" class="py-32 px-8 bg-black relative">
                     <div class="max-w-7xl mx-auto">
                         <div class="mb-16">
@@ -457,6 +465,7 @@
                             <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Our Arenas.</h2>
                         </div>
                         <div class="grid md:grid-cols-2 gap-10">
+                            <!-- K.Pudur Map -->
                             <div class="glass overflow-hidden rounded-3xl">
                                 <div class="h-[400px] w-full">
                                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.126410141673!2d78.1368!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c59218204689%3A0x6b80f90e54b6d4e4!2sK.%20Pudur%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
@@ -467,6 +476,7 @@
                                     <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 10:00 PM</div>
                                 </div>
                             </div>
+                            <!-- Anna Nagar Map -->
                             <div class="glass overflow-hidden rounded-3xl">
                                 <div class="h-[400px] w-full">
                                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.134510141673!2d78.1468!3d9.9202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sAnna%20Nagar%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000001!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
@@ -544,7 +554,7 @@
                     </div>
                 </section>
 
-                <!-- Final CTA Section -->
+                <!-- Final CTA Section (Solid White with Pink Buttons) -->
                 <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
                     <div class="max-w-4xl mx-auto relative z-10">
                         <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
@@ -568,9 +578,9 @@
                         </div>
                         
                         <div class="flex gap-10 items-center">
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-instagram text-3xl"></i></a>
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-youtube text-3xl"></i></a>
-                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-instagram text-3xl"></i></a>
+                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-youtube text-3xl"></i></a>
+                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
                         </div>
 
                         <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-white text-center md:text-right">Madurai’s Home for Active Fitness<br>Privacy Protocol 2026</div>
@@ -586,6 +596,17 @@
         requestAnimationFrame(raf);
         gsap.registerPlugin(ScrollTrigger);
         lucide.createIcons();
+
+        // Background Video Forced Play Logic
+        const video = document.getElementById('hero-video-bg');
+        if (video) {
+            video.muted = true;
+            video.play().catch(e => {
+                console.log("Autoplay blocked, forcing play on interaction");
+                const forcePlay = () => { video.play(); document.removeEventListener('click', forcePlay); };
+                document.addEventListener('click', forcePlay);
+            });
+        }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); lenis.stop(); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); lenis.start(); }
@@ -609,9 +630,7 @@
 
         openMenu.onclick = openMobileMenu;
         closeMenu.onclick = closeMobileMenu;
-        document.querySelectorAll('.mobile-nav-link:not(#mobile-book-btn)').forEach(l => l.onclick = closeMobileMenu);
         
-        // Fix for mobile book button in menu
         const mobileBookBtn = document.getElementById('mobile-book-btn');
         if (mobileBookBtn) {
             mobileBookBtn.onclick = () => {
@@ -619,6 +638,8 @@
                 closeMobileMenu();
             };
         }
+        
+        document.querySelectorAll('.mobile-nav-link:not(#mobile-book-btn)').forEach(l => l.onclick = closeMobileMenu);
 
         window.onload = () => {
             const tl = gsap.timeline();
