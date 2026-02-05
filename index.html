@@ -4,16 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DIAMOND & LION FITNESS | Women & Youth Fitness Madurai</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
         :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
         html { background-color: var(--bg); }
         body { background-color: transparent; color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: relative; }
@@ -26,29 +33,40 @@
         .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         .fab-whatsapp { background: #25D366; color: white; }
         .fab-call { background: var(--pink); color: white; }
-        #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1s ease-in; opacity: 0; }
+        
+        /* PERFORMANCE: Video opacity transition */
+        #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1.5s ease-in; opacity: 0; }
+        
         .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
-        .modal-overlay.active { display: flex; }
+        
+        /* FIX: Mobile Modal Scroll Issues */
+        .modal-overlay { 
+            position: fixed; inset: 0; 
+            background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); 
+            z-index: 5000; 
+            display: none; 
+            overflow-y: auto; /* Enable vertical scroll */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            padding: 20px;
+        }
+        .modal-overlay.active { display: block; } /* Changed from flex to block to prevent flex-shrink issues */
+        
+        /* FIX: Modal Container Spacing */
+        .modal-container-inner {
+            margin: 20px auto 100px auto; /* Top margin + Huge Bottom margin for mobile nav bars */
+            position: relative;
+        }
+
         .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
         
-        /* Gallery Styles */
         .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
         .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
         .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
 
-        /* Mobile Gallery Fixes */
         @media (max-width: 1023px) { 
-            .gallery-wrapper { 
-                overflow-x: auto; 
-                -webkit-overflow-scrolling: touch; 
-                scrollbar-width: none; /* Firefox */
-            } 
-            .gallery-wrapper::-webkit-scrollbar { display: none; /* Chrome/Safari */ } 
-            .gallery-container { 
-                padding: 1rem 5% !important; 
-                width: auto !important; /* Allow natural flow on mobile */
-            } 
+            .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } 
+            .gallery-wrapper::-webkit-scrollbar { display: none; } 
+            .gallery-container { padding: 1rem 5% !important; width: auto !important; } 
         }
 
         #mobile-menu-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; backdrop-filter: blur(10px); transition: opacity 0.5s ease; }
@@ -64,35 +82,16 @@
         .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
         .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
         .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
-        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
+        
+        /* PERFORMANCE: Simplified Loader */
+        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
 
-        .carousel-nav-container {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            transform: translateY(-50%);
-            pointer-events: none;
-            z-index: 50;
-            padding: 0 5%;
-        }
-        .slider-nav-btn {
-            width: 65px; height: 65px; border-radius: 50%;
-            background: rgba(255, 20, 147, 0.15);
-            border: 1px solid rgba(255, 20, 147, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer;
-            pointer-events: auto;
-            backdrop-filter: blur(12px);
-        }
+        .carousel-nav-container { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 50; padding: 0 5%; }
+        .slider-nav-btn { width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 20, 147, 0.15); border: 1px solid rgba(255, 20, 147, 0.4); display: flex; align-items: center; justify-content: center; color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; pointer-events: auto; backdrop-filter: blur(12px); }
         .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
 
-        #lightbox {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000;
-            display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out;
-        }
+        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
         #lightbox.active { display: flex; }
-        
         #lightbox-img, #lightbox-video { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
         #lightbox-video { display: none; }
     </style>
@@ -107,7 +106,7 @@
     </div>
 
     <div id="appointment-modal" class="modal-overlay">
-        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto text-white">
+        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl text-white modal-container-inner">
             <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
             <div class="text-center mb-8">
                 <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic text-[var(--pink)]">Appointment Form</h3>
@@ -407,106 +406,121 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-        gsap.registerPlugin(ScrollTrigger);
-        lucide.createIcons();
+        // PERFORMANCE: Defer execution of heavy logic slightly to allow main thread to clear
+        document.addEventListener('DOMContentLoaded', () => {
+            // PERFORMANCE: Hide loader IMMEDIATELY. Do not wait for data.
+            const loader = document.getElementById('loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 300);
+            }
+
+            const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            
+            // GSAP and other init
+            if(window.gsap && window.ScrollTrigger && window.lucide) {
+                gsap.registerPlugin(ScrollTrigger);
+                lucide.createIcons();
+            }
+            
+            // Start loading data in background
+            loadSupabaseData();
+        });
 
         let featuredResults = [];
         let currentSlide = 0;
 
         async function loadSupabaseData() {
             try {
-                // 1. Fetch Hero Video
-                const { data: heroAsset } = await supabaseClient.from('site_assets').select('file_url').eq('id', 'homepage_hero_video').single();
+                // PERFORMANCE: Use Promise.all to fetch EVERYTHING in parallel
+                const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
+                    supabaseClient.from('site_assets').select('file_url').eq('id', 'homepage_hero_video').single(),
+                    supabaseClient.from('service_assets').select('*'),
+                    supabaseClient.storage.from('gallery').list(),
+                    supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
+                ]);
+
+                // 1. Handle Hero Video (Background load - fade in when ready)
                 const videoEl = document.getElementById('hero-video-bg');
-                if(heroAsset?.file_url) {
-                    videoEl.src = heroAsset.file_url;
-                    videoEl.style.opacity = 1;
-                    videoEl.play().catch(() => { document.addEventListener('click', () => videoEl.play(), {once:true}); });
+                if(heroRes.data?.file_url) {
+                    videoEl.src = heroRes.data.file_url;
+                    // Only fade in once video data is actually playable
+                    videoEl.oncanplay = () => {
+                        videoEl.style.opacity = 1;
+                        videoEl.play();
+                    };
                 }
 
-                // 2. Fetch Service Thumbnails (Isolated table)
-                const { data: servAssets } = await supabaseClient.from('service_assets').select('*');
-                servAssets?.forEach(asset => {
+                // 2. Handle Service Images
+                servRes.data?.forEach(asset => {
                     const id = asset.id.replace('service_', '');
                     const img = document.getElementById(`img-${id}`);
                     if(img) img.src = asset.image_url;
                 });
 
-                // 3. Fetch Gallery (Portfolio bucket only) - UPDATED FOR VIDEO SUPPORT
-                const { data: galleryFiles } = await supabaseClient.storage.from('gallery').list();
+                // 3. Handle Gallery
                 const galleryContainer = document.getElementById('supabase-gallery');
-                if(galleryFiles) {
+                if(galleryRes.data) {
                     galleryContainer.innerHTML = '';
-                    galleryFiles.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
+                    // Note: getPublicUrl is synchronous, so this loop is fast
+                    galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
                         const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
                         const item = document.createElement('div');
                         item.className = 'gallery-item group';
-                        
-                        // Check extension to decide if it's a video or image
                         const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
 
                         if (isVideo) {
-                            // Video Logic
                             item.innerHTML = `
                                 <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
                                 <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-none"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
                             `;
                         } else {
-                            // Image Logic (Existing)
                             item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
                         }
                         galleryContainer.appendChild(item);
                     });
-                    lucide.createIcons(); // Refresh icons for the play buttons
+                    if(window.lucide) lucide.createIcons();
                 }
 
-                // 4. Results
-                const { data: trans } = await supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true);
-                if(trans?.length) { featuredResults = trans; renderSlide(0); }
+                // 4. Handle Results
+                if(transRes.data?.length) { 
+                    featuredResults = transRes.data; 
+                    renderSlide(0); 
+                }
 
             } catch (err) { console.error("Load error:", err); }
             finally {
                 initGSAPAnimations();
-                document.getElementById('loader').style.opacity = '0';
-                setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
             }
         }
 
-        // UI Handlers - UPDATED LIGHTBOX LOGIC
+        // UI Handlers
         function openLightbox(src, type) { 
             const img = document.getElementById('lightbox-img');
             const vid = document.getElementById('lightbox-video');
-
             if (type === 'video') {
-                img.style.display = 'none';
-                vid.style.display = 'block';
-                vid.src = src;
-                vid.play();
+                img.style.display = 'none'; vid.style.display = 'block'; vid.src = src; vid.play();
             } else {
-                vid.style.display = 'none';
-                vid.pause();
-                img.style.display = 'block';
-                img.src = src;
+                vid.style.display = 'none'; vid.pause(); img.style.display = 'block'; img.src = src;
             }
             document.getElementById('lightbox').classList.add('active'); 
-            lenis.stop(); 
+            if(window.lenis) window.lenis.stop(); 
         }
 
         function closeLightbox() { 
             const vid = document.getElementById('lightbox-video');
-            vid.pause(); // Stop video when closing
+            vid.pause(); 
             document.getElementById('lightbox').classList.remove('active'); 
-            lenis.start(); 
+            if(window.lenis) window.lenis.start(); 
         }
 
         function openBookingWithService(s) { document.getElementById('program-select').value = s; openModal('appointment-modal'); }
-        function openModal(id) { document.getElementById(id).classList.add('active'); lenis.stop(); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); lenis.start(); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); if(window.lenis) window.lenis.stop(); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); if(window.lenis) window.lenis.start(); }
         
-        // --- MOBILE MENU FIX ---
+        // Mobile Menu
         document.getElementById('open-menu').onclick = () => {
             const menu = document.getElementById('mobile-menu-overlay');
             menu.style.display = 'flex';
@@ -532,6 +546,8 @@
         function renderSlide(index) {
             const trans = featuredResults[index];
             const container = document.getElementById('featured-transformation-container');
+            if(!container) return;
+            
             gsap.to(container, { opacity: 0, y: 20, duration: 0.4, onComplete: () => {
                 container.innerHTML = `
                     <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
@@ -545,7 +561,9 @@
                         <p class="text-2xl italic text-neutral-300 leading-relaxed font-light">"${trans.quote}"</p>
                     </div>
                 `;
-                lucide.createIcons(); initSliderLogic(); gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
+                if(window.lucide) lucide.createIcons(); 
+                initSliderLogic(); 
+                gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
             }});
         }
 
@@ -570,7 +588,6 @@
             gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
             gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
             
-            // --- UPDATED GALLERY LOGIC: Auto-scroll on Desktop, Manual on Mobile ---
             ScrollTrigger.matchMedia({
                 "(min-width: 1024px)": function() {
                     const gallery = document.querySelector('.gallery-container');
@@ -593,8 +610,6 @@
 
             gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
         }
-
-        window.addEventListener('load', loadSupabaseData);
     </script>
 </body>
 </html>
