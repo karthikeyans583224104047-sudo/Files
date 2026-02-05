@@ -3,322 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DIAMOND & LION FITNESS | No-Equipment Studio Madurai</title>
+    <title>DIAMOND & LION FITNESS | Women & Youth Fitness Madurai</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Premium Motion Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Icon Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
-
-        :root {
-            --pink: #FF1493;
-            --yellow: #FFD700;
-            --bg: #050505;
-        }
-
-        html {
-            background-color: var(--bg); /* Fallback for the very bottom */
-        }
-
-        body {
-            background-color: transparent; /* Changed to transparent so fixed video behind it is visible */
-            color: white;
-            font-family: 'Space Grotesk', sans-serif;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            overflow-x: hidden;
-            position: relative;
-        }
-
+        :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
+        html { background-color: var(--bg); }
+        body { background-color: transparent; color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: relative; }
         .font-sync { font-family: 'Syncopate', sans-serif; }
-
-        .text-outline {
-            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-            color: transparent;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        /* Animated Professional Logo */
-        .logo-icon {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .icon-svg {
-            width: clamp(28px, 5vw, 36px);
-            height: clamp(28px, 5vw, 36px);
-            fill: var(--pink);
-            filter: drop-shadow(0 0 8px var(--pink));
-            animation: breathe 3s ease-in-out infinite;
-        }
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 1; }
-        }
-
-        /* Floating Action Buttons */
-        .fab-container {
-            position: fixed;
-            bottom: 30px;
-            right: 20px;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .fab {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .logo-icon { display: flex; align-items: center; gap: 12px; }
+        .icon-svg { width: clamp(28px, 5vw, 36px); height: clamp(28px, 5vw, 36px); fill: var(--pink); filter: drop-shadow(0 0 8px var(--pink)); animation: breathe 3s ease-in-out infinite; }
+        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
+        .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         .fab-whatsapp { background: #25D366; color: white; }
         .fab-call { background: var(--pink); color: white; }
-
-        /* Video Background Fixed */
-        #hero-video-bg {
-            position: fixed;
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100vh;
-            object-fit: cover;
-            z-index: -1; /* Placed behind content but visible since body is transparent */
-            filter: brightness(0.4) contrast(1.1);
-            background-color: var(--bg); /* Fallback color while video loads */
-        }
-
-        .scroll-section {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5%;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* Modals */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.96);
-            backdrop-filter: blur(15px);
-            z-index: 5000;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 20px;
-            overflow-y: auto;
-        }
+        #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1s ease-in; opacity: 0; }
+        .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
         .modal-overlay.active { display: flex; }
-
-        .nav-gradient {
-            background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%);
-        }
-
-        /* Gallery Horizontal Scroll Fix */
+        .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
         .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
-        @media (max-width: 1023px) {
-            .gallery-wrapper {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-            .gallery-wrapper::-webkit-scrollbar { display: none; }
-            .gallery-container { padding: 1rem 5% !important; }
-        }
-        .gallery-container {
-            display: flex;
-            gap: 1.5rem;
-            padding: 2rem 0;
-            width: max-content;
-            will-change: transform;
-        }
-        .gallery-item {
-            width: clamp(280px, 75vw, 400px);
-            height: clamp(400px, 60vh, 550px);
-            flex-shrink: 0;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            background: #111;
-        }
-
-        /* Mobile Menu */
-        #mobile-menu-overlay {
-            position: fixed; inset: 0; 
-            background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%);
-            z-index: 4000;
-            display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
-            opacity: 0;
-            backdrop-filter: blur(10px);
-        }
+        @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; } }
+        .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
+        .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
+        #mobile-menu-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; backdrop-filter: blur(10px); }
         .mobile-nav-link { opacity: 0; transform: translateY(20px); }
-
-        /* Premium Buttons */
-        .btn-premium-cta {
-            background-color: white;
-            color: black;
-            border: 2px solid black;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
-            transition: all 0.5s ease;
-        }
-        .btn-premium-cta::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background-color: var(--pink);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
-            z-index: -1;
-        }
-        .btn-premium-cta:hover {
-            color: white;
-            border-color: var(--pink);
-            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
-        }
-        .btn-premium-cta:hover::before {
-            width: 300%;
-            height: 600%;
-        }
-
-        /* Fix for touch interaction on slider: allow vertical scrolling */
-        .ba-container { 
-            position: relative; 
-            overflow: hidden; 
-            border-radius: 8px; 
-            width: 100%; 
-            touch-action: pan-y; 
-        }
+        .btn-premium-cta { background-color: white; color: black; border: 2px solid black; position: relative; z-index: 1; overflow: hidden; transition: all 0.5s ease; }
+        .btn-premium-cta::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background-color: var(--pink); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; z-index: -1; }
+        .btn-premium-cta:hover { color: white; border-color: var(--pink); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4); }
+        .btn-premium-cta:hover::before { width: 300%; height: 600%; }
+        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: pan-y; }
         .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
         .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
+        .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
+        .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
+        .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
+        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.8s ease; }
 
-        /* Ticker Strip Fix */
-        .marquee-container {
-            width: 100%;
-            overflow: hidden;
-            display: flex;
-            white-space: nowrap;
-            background: white;
-            padding: 1.5rem 0;
+        .carousel-nav-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 50;
+            padding: 0 5%;
         }
-        .marquee-track {
-            display: flex;
-            flex-shrink: 0;
-            gap: 5rem;
-            width: max-content;
-            align-items: center;
+        .slider-nav-btn {
+            width: 65px; height: 65px; border-radius: 50%;
+            background: rgba(255, 20, 147, 0.15);
+            border: 1px solid rgba(255, 20, 147, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer;
+            pointer-events: auto;
+            backdrop-filter: blur(12px);
         }
-        .marquee-track span {
-            display: inline-block;
-            white-space: nowrap;
-        }
+        .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
 
-        /* Improved responsive title visibility */
-        .brand-text { 
-            font-size: clamp(12px, 3.5vw, 24px); 
-            line-height: 1.1;
+        #lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000;
+            display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out;
         }
+        #lightbox.active { display: flex; }
+        #lightbox-img { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
+    <div id="loader"><div class="logo-icon scale-150"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg></div></div>
 
-    <!-- Appointment Modal -->
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="">
+        <button class="absolute top-10 right-10 text-white opacity-50 hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-10 h-10"></i></button>
+    </div>
+
     <div id="appointment-modal" class="modal-overlay">
-        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto">
+        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto text-white">
             <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
-            
             <div class="text-center mb-8">
-                <h3 class="text-3xl lg:text-4xl font-sync font-bold uppercase italic text-[var(--pink)]">Begin Evolution</h3>
-                <p class="text-neutral-500 text-[10px] mt-2 tracking-[0.3em] uppercase">Private Member Registration</p>
+                <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic text-[var(--pink)]">Appointment Form</h3>
+                <p class="text-neutral-500 text-[11px] mt-2 tracking-[0.2em] uppercase font-bold">Appoinment Book Pannunga</p>
             </div>
-
-            <form class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="event.preventDefault(); alert('Booking details captured. We will contact you shortly.'); closeModal('appointment-modal');">
+            <form id="lead-form" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Full Name</label>
-                    <input type="text" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg transition-all" placeholder="Enter name">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Full Name / பெயர்</label>
+                    <input type="text" name="full_name" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Phone Number</label>
-                    <input type="tel" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg transition-all" placeholder="+91">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Mobile Number / மொபைல் எண்</label>
+                    <input type="tel" name="phone" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Age Group</label>
-                    <select class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg cursor-pointer">
-                        <option>20 - 35</option><option>35 - 50</option><option>50+</option><option>Under 20</option>
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Age / வயது (optional)</label>
+                    <input type="number" name="age" class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Select Branch / கிளை தேர்வு</label>
+                    <select name="branch" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option>Diamond Fitness - Surya Nagar</option>
+                        <option>Lion Fitness - Iyer Bungalow</option>
                     </select>
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Arena Choice</label>
-                    <select class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg cursor-pointer">
-                        <option>K. Pudur Studio</option><option>Anna Nagar Suite</option>
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Interested Program / பயிற்சி</label>
+                    <select id="program-select" name="program" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option value="Weight Loss">Weight Loss</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Zumba">Zumba</option>
+                        <option value="Personal Training">Personal Training</option>
+                        <option value="Aerobics">Aerobics</option>
+                        <option value="Cardio Exercise">Cardio Exercise</option>
+                        <option value="Circuit Training">Circuit Training</option>
+                        <option value="Nutrition Guidance">Nutrition Guidance</option>
+                    </select>
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Preferred Time / விருப்ப நேரம்</label>
+                    <select name="preferred_time" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option>Morning</option><option>Evening</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-[10px] uppercase tracking-widest mb-2 opacity-50 font-bold">Fitness Goal</label>
-                    <select id="goal-selector" onchange="const c = document.getElementById('custom-goal-container'); if(this.value==='other') c.classList.remove('hidden'); else c.classList.add('hidden');" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg cursor-pointer">
-                        <option>Weight Loss / Fat Burn</option>
-                        <option>Zumba / Mood Elevation</option>
-                        <option>Yoga / Flexibility</option>
-                        <option>Functional Training</option>
-                        <option value="other">Other Interest</option>
-                    </select>
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Message (optional)</label>
+                    <textarea name="message" class="w-full bg-white/5 border border-white/10 p-4 h-20 outline-none focus:border-[var(--pink)] rounded-lg"></textarea>
                 </div>
-                <div id="custom-goal-container" class="md:col-span-2 hidden">
-                    <textarea class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] text-white rounded-lg h-24" placeholder="Specify your custom requirements..."></textarea>
-                </div>
-                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-6 font-bold uppercase tracking-widest hover:brightness-110 transition-all rounded-lg text-white">Send Appointment Details</button>
+                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Finalize Appointment</button>
             </form>
         </div>
     </div>
 
-    <!-- Contact Modal -->
-    <div id="contact-modal" class="modal-overlay">
-        <div class="glass max-w-lg w-full p-10 lg:p-12 rounded-3xl text-center relative my-auto mx-auto">
-            <button onclick="closeModal('contact-modal')" class="absolute top-5 right-5 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
-            <div class="mb-10 text-center">
-                <i data-lucide="shield-check" class="w-16 h-16 text-[var(--yellow)] mx-auto mb-8"></i>
-                <h3 class="text-2xl font-sync font-bold uppercase italic leading-tight mb-4 text-white">"A lion doesn't lose sleep over the opinion of sheep."</h3>
-                <p class="text-neutral-400">Step into Madurai's elite movement arena. Your evolution starts now.</p>
-            </div>
-            <div class="flex flex-col gap-4">
-                <a href="tel:+919876543210" class="bg-white text-black py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-xl hover:bg-[var(--pink)] hover:text-white transition-all">
-                    <i class="fa-solid fa-phone"></i> Call The Arena
-                </a>
-                <a href="https://wa.me/919876543210" target="_blank" class="bg-[#25D366] text-white py-5 font-bold uppercase tracking-widest flex items-center justify-center gap-3 rounded-xl hover:brightness-110 transition-all">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i> WhatsApp Us
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay">
         <button id="close-menu" class="absolute top-10 right-10 text-white"><i data-lucide="x" class="w-12 h-12"></i></button>
         <div class="text-center mb-10 scale-125">
@@ -332,69 +154,55 @@
         <button id="mobile-book-btn" class="mobile-nav-link mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
     </div>
 
-    <!-- Floating Action Buttons -->
     <div class="fab-container">
-        <a href="tel:+919876543210" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
-        <a href="https://wa.me/919876543210" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+        <a href="tel:+919585121321" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+        <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
-    <!-- Background Video - Relative path with explicit autoplay attributes -->
-    <video autoplay muted loop playsinline preload="auto" id="hero-video-bg" src="Yoga_Video_Generation.mp4">
-        <!-- Browsers often play better when src is on video tag directly for bg videos -->
-    </video>
+    <video autoplay muted loop playsinline preload="auto" id="hero-video-bg"></video>
 
-    <!-- Navigation -->
     <nav class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
         <div class="logo-icon flex-shrink-0">
             <svg class="icon-svg flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/>
             </svg>
-            <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white leading-tight whitespace-nowrap">
+            <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white whitespace-nowrap">
                 DIAMOND <span class="text-[var(--pink)]">&</span> LION <span class="text-[var(--pink)]">FITNESS</span>
             </div>
         </div>
-        
         <div class="hidden lg:flex gap-14 text-[10px] xl:text-xs font-bold uppercase tracking-[0.4em] text-white">
             <a href="#about" class="hover:text-[var(--pink)] transition-colors">Philosophy</a>
             <a href="#programs" class="hover:text-[var(--pink)] transition-colors">Programs</a>
             <a href="gallery.html" class="hover:text-[var(--pink)] transition-colors">Gallery</a>
             <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
         </div>
-        
         <div class="flex items-center gap-4">
-            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">
-                Book Appointment
-            </button>
-            <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors">
-                <i data-lucide="menu" class="w-9 h-9 lg:w-10 lg:h-10"></i>
-            </button>
+            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">Book Appointment</button>
+            <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors"><i data-lucide="menu" class="w-9 h-9"></i></button>
         </div>
     </nav>
 
-    <!-- Scroll Content Container -->
     <div id="smooth-wrapper">
         <div id="smooth-content">
             
-            <!-- Hero Overlay -->
             <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
                 <div class="text-center w-full px-4">
-                    <div class="hero-reveal inline-block px-4 lg:px-6 py-2 glass text-[var(--pink)] text-[9px] lg:text-xs font-bold uppercase tracking-[0.5em] mb-14">
-                        Madurai's First No-Equipment Studio
+                    <div class="hero-reveal inline-block px-4 lg:px-6 py-2 bg-white text-black text-[9px] lg:text-xs font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
+                        Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white">
                         Move <span class="text-[var(--pink)]">Strong.</span><br>Live Powerful.
                     </h1>
-                    <p class="hero-reveal mt-10 lg:mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed px-4">
+                    <p class="hero-reveal mt-10 lg:mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed">
                         Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, your energy, and expert guidance.
                     </p>
                     <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-6 justify-center px-4">
-                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl shadow-pink-600/20">Join the Movement</button>
+                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl">Join Today</button>
                         <button onclick="openModal('appointment-modal')" class="glass text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book an Appointment</button>
                     </div>
                 </div>
             </section>
 
-            <!-- About Section Overlay -->
             <section class="scroll-section" id="about">
                 <div class="max-w-5xl px-4 text-center lg:text-left">
                     <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">Fitness Beyond Machines</span>
@@ -402,7 +210,7 @@
                         Master Your<br><span class="text-[var(--pink)]">Body.</span>
                     </h2>
                     <p class="text-xl md:text-2xl text-neutral-300 leading-relaxed max-w-3xl mb-14">
-                        At Lion and Diamond Fitness, we believe real fitness comes from mastering your own body. Located in the heart of Madurai, we are a no-equipment fitness center focused on group activities that improve strength, flexibility, endurance, and mental well-being.
+                        We believe real fitness comes from mastering your own body. Located in the heart of Madurai, we are a no-equipment fitness center focused on activities that improve strength, flexibility, endurance, and mental well-being for the women and youth of Madurai.
                     </p>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 w-full">
                         <div class="glass p-8 text-center"><div class="text-[var(--pink)] font-bold text-3xl mb-2 font-sync">0%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Weights</div></div>
@@ -414,176 +222,160 @@
             </section>
 
             <main class="bg-[#050505] relative z-10 border-t border-white/5">
-                
                 <div class="bg-white py-6 marquee-container border-b border-white/10">
                     <div class="marquee-track font-sync text-black font-bold uppercase text-xl lg:text-2xl italic">
-                        <span>No Equipment • No Intimidation • Just Natural Movement • High-Energy Sessions • Certified Trainers • Safe Clean Environment • Beginners Welcome • Fun Workouts • </span>
-                        <span>No Equipment • No Intimidation • Just Natural Movement • High-Energy Sessions • Certified Trainers • Safe Clean Environment • Beginners Welcome • Fun Workouts • </span>
+                        <span>No Equipment • Women-friendly environment • Certified trainers • High-Energy Sessions • Beginners Welcome • Fun Workouts • No Intimidation • Positive Vibes • </span>
                     </div>
                 </div>
 
                 <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
                     <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
                         <div class="max-w-xl">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Our Fitness Programs</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Expertly<br>Curated.</h2>
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Expertly Curated</span>
+                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-tight">Our Services.</h2>
                         </div>
                         <p class="text-neutral-500 text-sm max-w-xs leading-relaxed uppercase tracking-widest">
-                            No Prior Experience Required — Just the willingness to move.
+                            Built for Madurai's elite community. Click a service to start your protocol today.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto md:h-[900px]">
-                        <div class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?q=80&w=2070" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:scale-110 transition-transform duration-1000">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
+                        <div onclick="openBookingWithService('Zumba')" class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
+                            <img id="img-zumba" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
-                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block">Cardio & Mood</span>
-                                <h3 class="text-5xl font-sync font-bold uppercase italic text-white">🕺 Zumba Fitness</h3>
-                                <p class="text-neutral-400 mt-4 max-w-md">Dance your way to fat loss with high-energy music and fun choreography. Workouts that don't feel like workouts.</p>
+                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block tracking-widest">Core Cardio</span>
+                                <h3 class="text-5xl font-sync font-bold uppercase italic text-white leading-none">Zumba</h3>
+                                <p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dance your way to fat loss with high-energy music and fun choreography.</p>
                             </div>
                         </div>
-                        <div class="md:col-span-4 glass p-12 flex flex-col justify-end bg-white/5 min-h-[300px]">
-                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4 text-white">🧘 Yoga</h3>
-                            <p class="text-neutral-400 text-sm">Improve flexibility, posture, and inner calm through guided sessions for modern Madurai life.</p>
-                        </div>
-                        <div class="md:col-span-5 glass p-12 flex flex-col justify-end group relative overflow-hidden min-h-[300px]">
-                            <h3 class="text-3xl font-sync font-bold uppercase italic mb-4 text-white">🔥 Functional</h3>
-                            <p class="text-neutral-400 text-sm">Bodyweight workouts that improve strength, stamina, and coordination for daily movement performance.</p>
-                        </div>
-                        <div class="md:col-span-7 glass p-12 flex flex-col justify-end group overflow-hidden bg-[var(--yellow)]/5 min-h-[300px]">
-                            <h3 class="text-4xl font-sync font-bold uppercase italic mb-4 text-white leading-none">💃 Dance Fitness</h3>
-                            <p class="text-neutral-400 mt-4">Enjoy rhythmic movements designed to keep you active, motivated, and energized.</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Location Section (Bright Maps Always) -->
-                <section id="arenas" class="py-32 px-8 bg-black relative">
-                    <div class="max-w-7xl mx-auto">
-                        <div class="mb-16">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Locate Excellence</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">Our Arenas.</h2>
-                        </div>
-                        <div class="grid md:grid-cols-2 gap-10">
-                            <!-- K.Pudur Map -->
-                            <div class="glass overflow-hidden rounded-3xl">
-                                <div class="h-[400px] w-full">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.126410141673!2d78.1368!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c59218204689%3A0x6b80f90e54b6d4e4!2sK.%20Pudur%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                                </div>
-                                <div class="p-8">
-                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--pink)] mb-4">K.Pudur Arena</h4>
-                                    <p class="text-neutral-400 text-sm mb-6">Opp. EB Office, K.Pudur, Madurai 625007</p>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 10:00 PM</div>
-                                </div>
+                        <div onclick="openBookingWithService('Yoga')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
+                            <img id="img-yoga" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Yoga</h3>
+                                <p class="text-neutral-300 text-sm mt-4 leading-relaxed font-medium">Improve wellness, flexibility, and inner calm through guided sessions.</p>
                             </div>
-                            <!-- Anna Nagar Map -->
-                            <div class="glass overflow-hidden rounded-3xl">
-                                <div class="h-[400px] w-full">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.134510141673!2d78.1468!3d9.9202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sAnna%20Nagar%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000001!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                                </div>
-                                <div class="p-8">
-                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-4">Anna Nagar Suite</h4>
-                                    <p class="text-neutral-400 text-sm mb-6">Anna Nagar Main Road, Madurai 625020</p>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 06:00 AM — 09:30 PM</div>
-                                </div>
+                        </div>
+                        <div onclick="openBookingWithService('Aerobics')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-aerobics" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Aerobics</h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Boost cardiovascular health with rhythmic aerobic exercise.</p>
+                            </div>
+                        </div>
+                        <div onclick="openBookingWithService('Personal Training')" class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-personal_training" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Personal Training</h3>
+                                <p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dedicated one-on-one attention to crush your specific fitness goals.</p>
+                            </div>
+                        </div>
+                        <div onclick="openBookingWithService('Cardio Exercise')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-cardio" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Cardio Exercise</h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">High-stamina training for maximum calorie burn and heart health.</p>
+                            </div>
+                        </div>
+                        <div onclick="openBookingWithService('Circuit Training')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-circuit" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Circuit Training</h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Targeted full-body routines using natural bodyweight resistance.</p>
+                            </div>
+                        </div>
+                        <div onclick="openBookingWithService('Nutrition Guidance')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-nutrition" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Nutrition Guidance</h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Expert advice on fuel and recovery to complement your physical training.</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <!-- Horizontal Gallery -->
                 <section id="gallery" class="py-32 overflow-hidden bg-white/5 relative z-10">
                     <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
-                        <div>
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white">The Portfolio.</h2>
-                        </div>
-                        <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">
-                            View Full Gallery <i data-lucide="arrow-right"></i>
-                        </a>
+                        <div><span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span><h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">The Portfolio.</h2></div>
+                        <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View All Portfolio <i data-lucide="arrow-right"></i></a>
                     </div>
                     <div class="gallery-wrapper">
-                        <div class="gallery-container">
-                            <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1548690312-e3b507d17a47?q=80&w=1974" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                            <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=1975" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                            <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1599058917232-d750c82597d5?q=80&w=2072" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
-                            <div class="gallery-item group"><img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=2070" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"></div>
+                        <div class="gallery-container" id="supabase-gallery">
+                            </div>
+                    </div>
+                </section>
+
+                <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible">
+                    <div class="mb-16">
+                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Evidence of Change</span>
+                        <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic text-white mt-4 leading-none">Elite Success.</h2>
+                    </div>
+
+                    <div class="carousel-nav-container">
+                        <div class="flex justify-between w-full">
+                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
+                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
                         </div>
                     </div>
-                </section>
 
-                <section class="py-40 bg-[var(--pink)] text-black text-center relative z-10">
-                    <div class="max-w-7xl mx-auto px-8">
-                        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-none mb-8 text-black">
-                            Train Like a <span class="bg-black text-white px-4">Lion.</span><br>Shine Like a <span class="bg-white text-black px-4">Diamond.</span>
-                        </h2>
-                        <p class="mt-12 max-w-2xl mx-auto font-bold uppercase tracking-[0.2em] text-sm opacity-80 text-black">
-                            Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
-                        </p>
+                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
+                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10" id="featured-transformation-container">
+                            </div>
                     </div>
                 </section>
 
-                <section id="results" class="py-32 px-8 max-w-7xl mx-auto">
-                    <div class="grid lg:grid-cols-2 gap-20 items-center">
-                        <div class="mb-20 lg:mb-0">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Voice of the Pride</span>
-                            <h2 class="text-6xl font-sync font-bold uppercase italic mt-4 mb-10 text-white leading-none">Member<br>Stories.</h2>
-                            <div class="space-y-10">
-                                <div class="glass p-10 border-l-4 border-l-[var(--pink)] hover:translate-x-2 transition-transform">
-                                    <p class="text-2xl italic text-white/90 leading-relaxed font-light">“I never liked traditional gyms, but Lion and Diamond Fitness changed my mindset. Zumba here is amazing!”</p>
-                                    <div class="mt-8 flex items-center gap-4 text-white">
-                                        <div class="w-12 h-12 bg-[var(--pink)] rounded-full flex items-center justify-center font-bold font-sync">SK</div>
-                                        <div class="font-bold uppercase text-xs tracking-widest">Santhosh K.</div>
-                                    </div>
+                <section id="arenas" class="py-32 px-8 bg-black relative border-t border-white/5">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="mb-16">
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Locate Our Centers</span>
+                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">Our Arenas.</h2>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <div class="glass overflow-hidden rounded-3xl">
+                                <div class="h-[400px] w-full">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.126410141673!2d78.1368!3d9.9252!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sSurya%20Nagar%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                                <div class="p-8">
+                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--pink)] mb-4">Diamond Fitness</h4>
+                                    <p class="text-neutral-400 text-sm mb-6 uppercase tracking-wider">Surya Nagar, Madurai, Tamil Nadu</p>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 09:30 PM</div>
+                                </div>
+                            </div>
+                            <div class="glass overflow-hidden rounded-3xl">
+                                <div class="h-[400px] w-full">
+                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.134510141673!2d78.1468!3d9.9202!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c5bc6b5952d9%3A0x29849206b864a780!2sIyer%20Bungalow%2C%20Madurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000001!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                                </div>
+                                <div class="p-8">
+                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-4">Lion Fitness</h4>
+                                    <p class="text-neutral-400 text-sm mb-6 uppercase tracking-wider">Iyer Bungalow, Madurai, Tamil Nadu</p>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 06:00 AM — 09:00 PM</div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="relative w-full">
-                            <div class="ba-container aspect-[4/5] shadow-2xl">
-                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070" class="w-full h-full object-cover" alt="After">
-                                <div class="ba-after" id="baAfter">
-                                    <img src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?q=80&w=2070" class="absolute top-0 left-0 h-full object-cover" style="width: 1000px; max-width: none;" alt="Before">
-                                </div>
-                                <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
-                            </div>
-                            <div class="mt-8 text-center">
-                                <a href="results.html" class="inline-block glass px-12 py-5 font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-black transition-all text-white">Full Results Page</a>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
-                <!-- Final CTA Section (Solid White with Pink Buttons) -->
                 <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
-                    <div class="max-w-4xl mx-auto relative z-10">
-                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.8] mb-10 text-black">No Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
-                        <p class="mb-16 font-bold uppercase tracking-[0.3em] text-sm opacity-60 text-black">Just Movement and Results. Join the Jasmine City Elite.</p>
+                    <div class="max-w-4xl mx-auto relative z-10 text-black">
+                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic mb-10 text-black">No Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
                         <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                            <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">
-                                Book Appointment
-                            </button>
-                            <button onclick="openModal('contact-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">
-                                Contact Us
-                            </button>
+                            <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Join Today</button>
+                            <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Contact Us</button>
                         </div>
                     </div>
                 </section>
 
-                <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505]">
-                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12 text-white">
+                <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505] text-white">
+                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
                         <div class="logo-icon">
                             <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
-                            <div class="text-2xl font-sync font-bold italic text-white uppercase">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
+                            <div class="text-2xl font-sync font-bold italic uppercase leading-none">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
                         </div>
-                        
                         <div class="flex gap-10 items-center">
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-instagram text-3xl"></i></a>
-                            <a href="#" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-youtube text-3xl"></i></a>
-                            <a href="https://wa.me/919876543210" class="text-white hover:text-[var(--pink)] transition-all flex items-center gap-2"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+                            <a href="#"><i class="fa-brands fa-instagram text-3xl"></i></a>
+                            <a href="#"><i class="fa-brands fa-youtube text-3xl"></i></a>
+                            <a href="https://wa.me/919585121321"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
                         </div>
-
-                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-white text-center md:text-right">Madurai’s Home for Active Fitness<br>Privacy Protocol 2026</div>
+                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-center md:text-right">Madurai’s Home for Active Fitness<br>Surya Nagar & Iyer Bungalow</div>
                     </div>
                 </footer>
             </main>
@@ -591,114 +383,117 @@
     </div>
 
     <script>
-        const lenis = new Lenis({ duration: 1.2, smoothWheel: true, touchMultiplier: 1.5 });
+        const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
         function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
         requestAnimationFrame(raf);
         gsap.registerPlugin(ScrollTrigger);
         lucide.createIcons();
 
-        // Background Video Forced Play Logic
-        const video = document.getElementById('hero-video-bg');
-        if (video) {
-            video.muted = true;
-            video.play().catch(e => {
-                console.log("Autoplay blocked, forcing play on interaction");
-                const forcePlay = () => { video.play(); document.removeEventListener('click', forcePlay); };
-                document.addEventListener('click', forcePlay);
-            });
+        let featuredResults = [];
+        let currentSlide = 0;
+
+        async function loadSupabaseData() {
+            try {
+                // 1. Fetch Hero Video
+                const { data: heroAsset } = await supabaseClient.from('site_assets').select('file_url').eq('id', 'homepage_hero_video').single();
+                const videoEl = document.getElementById('hero-video-bg');
+                if(heroAsset?.file_url) {
+                    videoEl.src = heroAsset.file_url;
+                    videoEl.style.opacity = 1;
+                    videoEl.play().catch(() => { document.addEventListener('click', () => videoEl.play(), {once:true}); });
+                }
+
+                // 2. Fetch Service Thumbnails (Isolated table)
+                const { data: servAssets } = await supabaseClient.from('service_assets').select('*');
+                servAssets?.forEach(asset => {
+                    const id = asset.id.replace('service_', '');
+                    const img = document.getElementById(`img-${id}`);
+                    if(img) img.src = asset.image_url;
+                });
+
+                // 3. Fetch Gallery (Portfolio bucket only)
+                const { data: galleryFiles } = await supabaseClient.storage.from('gallery').list();
+                const galleryContainer = document.getElementById('supabase-gallery');
+                if(galleryFiles) {
+                    galleryContainer.innerHTML = '';
+                    galleryFiles.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
+                        const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item group';
+                        item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}')">`;
+                        galleryContainer.appendChild(item);
+                    });
+                }
+
+                // 4. Results
+                const { data: trans } = await supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true);
+                if(trans?.length) { featuredResults = trans; renderSlide(0); }
+
+            } catch (err) { console.error("Load error:", err); }
+            finally {
+                initGSAPAnimations();
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => document.getElementById('loader').style.display = 'none', 800);
+            }
         }
 
+        // UI Handlers
+        function openLightbox(src) { document.getElementById('lightbox-img').src = src; document.getElementById('lightbox').classList.add('active'); lenis.stop(); }
+        function closeLightbox() { document.getElementById('lightbox').classList.remove('active'); lenis.start(); }
+        function openBookingWithService(s) { document.getElementById('program-select').value = s; openModal('appointment-modal'); }
         function openModal(id) { document.getElementById(id).classList.add('active'); lenis.stop(); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); lenis.start(); }
         
-        const openMenu = document.getElementById('open-menu');
-        const closeMenu = document.getElementById('close-menu');
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-
-        function openMobileMenu() { 
-            mobileMenuOverlay.style.display = 'flex';
-            lenis.stop();
-            gsap.to(mobileMenuOverlay, { opacity: 1, duration: 0.4 });
-            gsap.to(mobileMenuOverlay, { x: 0, duration: 0.6, ease: "power4.out" });
-            gsap.to(".mobile-nav-link", { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, delay: 0.2 });
+        function renderSlide(index) {
+            const trans = featuredResults[index];
+            const container = document.getElementById('featured-transformation-container');
+            gsap.to(container, { opacity: 0, y: 20, duration: 0.4, onComplete: () => {
+                container.innerHTML = `
+                    <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
+                        <img src="${trans.after_image_url}" class="w-full h-full object-cover">
+                        <div class="ba-after" id="baAfter"><img src="${trans.before_image_url}" class="absolute top-0 left-0 h-full object-cover" style="width: 1000px; max-width: none;"></div>
+                        <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
+                    </div>
+                    <div class="space-y-8">
+                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
+                        <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name} <br> <span class="text-[var(--pink)]">${trans.result_summary}</span></h2>
+                        <p class="text-2xl italic text-neutral-300 leading-relaxed font-light">"${trans.quote}"</p>
+                    </div>
+                `;
+                lucide.createIcons(); initSliderLogic(); gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
+            }});
         }
-        function closeMobileMenu() { 
-            lenis.start();
-            gsap.to(".mobile-nav-link", { opacity: 0, y: 20, duration: 0.3 });
-            gsap.to(mobileMenuOverlay, { x: "100%", opacity: 0, duration: 0.5, onComplete: () => mobileMenuOverlay.style.display = 'none' });
-        }
 
-        openMenu.onclick = openMobileMenu;
-        closeMenu.onclick = closeMobileMenu;
-        
-        const mobileBookBtn = document.getElementById('mobile-book-btn');
-        if (mobileBookBtn) {
-            mobileBookBtn.onclick = () => {
-                openModal('appointment-modal');
-                closeMobileMenu();
-            };
-        }
-        
-        document.querySelectorAll('.mobile-nav-link:not(#mobile-book-btn)').forEach(l => l.onclick = closeMobileMenu);
+        document.getElementById('next-result').onclick = () => { currentSlide = (currentSlide + 1) % featuredResults.length; renderSlide(currentSlide); };
+        document.getElementById('prev-result').onclick = () => { currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length; renderSlide(currentSlide); };
 
-        window.onload = () => {
-            const tl = gsap.timeline();
-            tl.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2, ease: "power4.out" });
-
-            gsap.to("#hero-section", {
-                scrollTrigger: { trigger: "#hero-section", start: "top top", end: "bottom top", scrub: true },
-                opacity: 0, y: -100, scale: 0.95
-            });
-
-            gsap.from("#about", {
-                scrollTrigger: { trigger: "#about", start: "top 80%", end: "center center", scrub: true },
-                opacity: 0, y: 100
-            });
-
-            // Horizontal Scroll Gallery Logic
-            const gallery = document.querySelector('.gallery-container');
-            gsap.matchMedia().add("(min-width: 1024px)", () => {
-                if (gallery) {
-                    gsap.to(gallery, {
-                        x: () => -(gallery.scrollWidth - window.innerWidth),
-                        ease: "none",
-                        scrollTrigger: { 
-                            trigger: "#gallery", 
-                            start: "top top", 
-                            end: () => "+=" + (gallery.scrollWidth - window.innerWidth), 
-                            scrub: 1, 
-                            pin: true, 
-                            invalidateOnRefresh: true, 
-                            anticipatePin: 1 
-                        }
-                    });
-                }
-            });
-
-            gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
-
-            gsap.to("#hero-video-bg", {
-                scrollTrigger: { trigger: "main", start: "top bottom", end: "top top", scrub: true },
-                opacity: 0.15, filter: "brightness(0.05) grayscale(1)"
-            });
-        };
-
-        const handleSliderUpdate = (clientX) => {
+        function initSliderLogic() {
             const container = document.querySelector('.ba-container');
-            const after = document.querySelector('#baAfter');
-            const handle = document.querySelector('#baHandle');
-            if(!container || !after || !handle) return;
-            const rect = container.getBoundingClientRect();
-            let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-            let p = (x / rect.width) * 100;
-            after.style.width = p + '%';
-            handle.style.left = p + '%';
-        };
-        const baTriggerEl = document.querySelector('.ba-container');
-        if (baTriggerEl) {
-            baTriggerEl.addEventListener('mousemove', e => handleSliderUpdate(e.clientX));
-            baTriggerEl.addEventListener('touchmove', e => handleSliderUpdate(e.touches[0].clientX), {passive: true});
+            if (!container) return;
+            const update = (clientX) => {
+                const rect = container.getBoundingClientRect();
+                let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+                let p = (x / rect.width) * 100;
+                document.getElementById('baAfter').style.width = p + '%';
+                document.getElementById('baHandle').style.left = p + '%';
+            };
+            container.addEventListener('mousemove', e => update(e.clientX));
+            container.addEventListener('touchmove', e => update(e.touches[0].clientX), {passive: true});
         }
+
+        function initGSAPAnimations() {
+            gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
+            gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
+            const gallery = document.querySelector('.gallery-container');
+            if (gallery) { gsap.to(gallery, { x: () => -(gallery.scrollWidth - window.innerWidth), ease: "none", scrollTrigger: { trigger: "#gallery", start: "top top", end: () => "+=" + (gallery.scrollWidth - window.innerWidth), scrub: 1, pin: true, anticipatePin: 1 } }); }
+            gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
+        }
+
+        window.addEventListener('load', loadSupabaseData);
     </script>
 </body>
 </html>
