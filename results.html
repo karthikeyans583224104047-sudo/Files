@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Results | DIAMOND & LION FITNESS</title>
+    <!-- Preconnect to Supabase for faster handshake -->
+    <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
+        :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
+        body { background-color: var(--bg); color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+        
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+
+        /* FABs (Synced with Homepage Numbers) */
+        .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
+        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        .fab:hover { transform: scale(1.15) translateY(-5px); box-shadow: 0 20px 45px rgba(0,0,0,0.6); }
+        .fab-whatsapp { background: #25D366; color: white; }
+        .fab-call { background: var(--pink); color: white; }
+
+        /* Modal Overlay */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; align-items: flex-start; justify-content: center; padding: 20px; overflow-y: auto; }
+        .modal-overlay.active { display: flex; }
+
+        /* Interactive B/A Slider */
+        .ba-wrapper { 
+            position: relative; 
+            width: 100%; 
+            aspect-ratio: 4/5; 
+            border-radius: 20px; 
+            overflow: hidden; 
+            touch-action: pan-y; 
+            background: #0a0a0a;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        @media (min-width: 1024px) { .ba-wrapper { aspect-ratio: 4/5; } }
+        
+        .ba-after-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        
+        .ba-before-container { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 50%; 
+            height: 100%; 
+            overflow: hidden; 
+            border-right: 3px solid var(--pink); 
+            z-index: 2; 
+            pointer-events: none;
+        }
+        
+        .ba-before-img { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            height: 100%; 
+            object-fit: cover; 
+            width: 100vw; 
+        }
+        
+        .ba-handle { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            width: 48px; 
+            height: 48px; 
+            background: white; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 10; 
+            cursor: col-resize; 
+            box-shadow: 0 0 25px rgba(255, 20, 147, 0.5); 
+            color: black; 
+        }
+
+        .nav-glass { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Reveal Animations */
+        .result-card { opacity: 0; transform: translateY(40px); }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- FABs (Synced Numbers: +919585121321) -->
+    <div class="fab-container">
+        <a href="tel:+919585121321" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
+        <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+    </div>
+
+    <!-- Appointment Modal (Synced Identically with Homepage) -->
+    <div id="appointment-modal" class="modal-overlay">
+        <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto text-white">
+            <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <div class="text-center mb-8">
+                <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic text-[var(--pink)]">Appointment Form</h3>
+                <p class="text-neutral-500 text-[11px] mt-2 tracking-[0.2em] uppercase font-bold">Appoinment Book Pannunga</p>
+            </div>
+            <form id="lead-form" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Full Name / பெயர்</label>
+                    <input type="text" name="full_name" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Mobile Number / மொபைல் எண்</label>
+                    <input type="tel" name="phone" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Age / வயது (optional)</label>
+                    <input type="number" name="age" class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Select Branch / கிளை தேர்வு</label>
+                    <select name="branch" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option>Diamond Fitness - Surya Nagar</option>
+                        <option>Lion Fitness - Iyer Bungalow</option>
+                    </select>
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Interested Program / பயிற்சி</label>
+                    <select id="program-select" name="program" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option value="Weight Loss">Weight Loss</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Zumba">Zumba</option>
+                        <option value="Personal Training">Personal Training</option>
+                        <option value="Aerobics">Aerobics</option>
+                        <option value="Cardio Exercise">Cardio Exercise</option>
+                        <option value="Circuit Training">Circuit Training</option>
+                        <option value="Nutrition Guidance">Nutrition Guidance</option>
+                    </select>
+                </div>
+                <div class="md:col-span-1">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Preferred Time / விருப்ப நேரம்</label>
+                    <select name="preferred_time" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                        <option>Morning</option><option>Evening</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Message (optional)</label>
+                    <textarea name="message" class="w-full bg-white/5 border border-white/10 p-4 h-20 outline-none focus:border-[var(--pink)] rounded-lg"></textarea>
+                </div>
+                <button type="submit" id="submit-btn" class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Finalize Appointment</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-4 md:px-10 py-5 md:py-6 flex justify-between items-center nav-glass">
+        <a href="index.html" class="flex items-center gap-2 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] bg-white text-black px-4 md:px-6 py-2.5 rounded-full hover:bg-[var(--pink)] hover:text-white transition-all shadow-lg shadow-white/5">
+            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Back to Homepage
+        </a>
+        <div class="text-xs md:text-base font-sync font-bold uppercase italic text-white tracking-tighter">
+            Elite <span class="text-[var(--pink)]">Results</span>
+        </div>
+    </nav>
+
+    <main class="pt-32 md:pt-48 pb-20">
+        <!-- Header -->
+        <header class="px-6 md:px-12 max-w-7xl mx-auto mb-20 md:mb-32 text-center md:text-left">
+            <span class="text-[var(--pink)] text-[9px] font-bold uppercase tracking-[0.5em] mb-4 inline-block opacity-60">Visual Archive</span>
+            <h1 class="text-5xl md:text-9xl font-sync font-bold uppercase italic leading-[0.85] tracking-tighter mb-8">REAL<br>RESULTS<span class="text-[var(--pink)]">.</span></h1>
+            <p class="text-neutral-500 max-w-lg mx-auto md:mx-0 text-xs md:text-sm uppercase tracking-widest leading-relaxed">High-impact success stories from the arena. Real members, real work, verified progress.</p>
+        </header>
+
+        <!-- Transformations Feed -->
+        <div id="results-feed" class="space-y-32 md:space-y-48">
+            <!-- Skeleton State -->
+            <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 animate-pulse">
+                <div class="aspect-[4/5] bg-neutral-900 rounded-3xl"></div>
+                <div class="space-y-6 pt-10">
+                    <div class="h-4 w-24 bg-neutral-900 rounded"></div>
+                    <div class="h-12 w-full bg-neutral-900 rounded"></div>
+                    <div class="h-20 w-full bg-neutral-900 rounded"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join Pride Section -->
+        <section class="mt-40 py-32 px-8 bg-white text-black text-center relative overflow-hidden">
+            <div class="max-w-4xl mx-auto relative z-10">
+                <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic mb-10 leading-none">Ready to<br><span class="text-[var(--pink)]">Transform?</span></h2>
+                <button onclick="openModal('appointment-modal')" class="bg-black text-white px-12 py-6 font-sync font-bold uppercase italic text-lg hover:scale-105 transition-all inline-block rounded-sm shadow-2xl">
+                    Join Today
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
+        // Corrected Project Ref Key (Handshake Sync: rvoupfsoghdkpyawelgq)
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        gsap.registerPlugin(ScrollTrigger);
+        lucide.createIcons();
+
+        // Modal Functions
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+            lenis.stop(); 
+        }
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = ''; 
+            lenis.start(); 
+        }
+
+        // Form Handling (Synced with Homepage leads table)
+        document.getElementById('lead-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "PROCESSING PROTOCOL...";
+            btn.disabled = true;
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const { error } = await supabaseClient.from('leads').insert([data]);
+                if (error) throw error;
+                btn.innerText = "SUCCESS! WE WILL CALL YOU.";
+                setTimeout(() => {
+                    closeModal('appointment-modal');
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    e.target.reset();
+                }, 3000);
+            } catch (err) {
+                btn.innerText = "ERROR. TRY AGAIN.";
+                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; }, 3000);
+            }
+        };
+
+        async function loadEvolutions() {
+            const feed = document.getElementById('results-feed');
+            try {
+                const { data: transformations, error } = await supabaseClient
+                    .from('transformations')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (transformations?.length) {
+                    feed.innerHTML = transformations.map((t, index) => `
+                        <div class="result-card max-w-7xl mx-auto px-6 md:px-12">
+                            <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                                <!-- B/A Component -->
+                                <div class="ba-wrapper shadow-2xl ${index % 2 !== 0 ? 'lg:order-2' : ''}">
+                                    <img src="${t.after_image_url}" class="ba-after-img" alt="After Transformation">
+                                    <div class="ba-before-container">
+                                        <img src="${t.before_image_url}" class="ba-before-img" alt="Before Transformation">
+                                    </div>
+                                    <div class="ba-handle">
+                                        <i data-lucide="move-horizontal"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-8 ${index % 2 !== 0 ? 'lg:order-1' : ''}">
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-[9px] font-bold uppercase tracking-[0.4em] bg-white text-black px-3 py-1 rounded-sm">${t.duration || 'Success'} Protocol</span>
+                                        <div class="h-px flex-grow bg-white/10"></div>
+                                    </div>
+                                    
+                                    <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-[0.9] tracking-tighter">
+                                        ${t.member_name} <br> 
+                                        <span class="text-[var(--pink)]">${t.result_summary}</span>
+                                    </h2>
+                                    
+                                    <p class="text-xl md:text-2xl italic text-neutral-300 leading-relaxed font-light">
+                                        "${t.quote}"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    lucide.createIcons();
+                    initSliders();
+                    animateIn();
+                } else {
+                    feed.innerHTML = `<div class="py-40 text-center opacity-20 uppercase tracking-[0.5em] text-xs">Awaiting verified success stories...</div>`;
+                }
+            } catch (err) {
+                console.error("Connection Handshake Failed:", err);
+                feed.innerHTML = `<div class="p-20 text-center uppercase tracking-widest text-[10px] text-red-500/50 font-bold">API Sync Error. Verify project rvoupfsoghdkpyawelgq</div>`;
+            }
+        }
+
+        function initSliders() {
+            document.querySelectorAll('.ba-wrapper').forEach(wrapper => {
+                const before = wrapper.querySelector('.ba-before-container');
+                const handle = wrapper.querySelector('.ba-handle');
+                const beforeImg = wrapper.querySelector('.ba-before-img');
+
+                const updateSlider = (clientX) => {
+                    const rect = wrapper.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+                    const percent = (x / rect.width) * 100;
+                    
+                    before.style.width = `${percent}%`;
+                    handle.style.left = `${percent}%`;
+                    beforeImg.style.width = `${rect.width}px`;
+                };
+
+                wrapper.addEventListener('mousemove', e => updateSlider(e.clientX));
+                wrapper.addEventListener('touchmove', e => updateSlider(e.touches[0].clientX), { passive: true });
+                
+                window.addEventListener('resize', () => {
+                    beforeImg.style.width = `${wrapper.offsetWidth}px`;
+                });
+                beforeImg.style.width = `${wrapper.offsetWidth}px`;
+            });
+        }
+
+        function animateIn() {
+            document.querySelectorAll('.result-card').forEach(card => {
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top 85%",
+                        toggleActions: "play none none none"
+                    },
+                    opacity: 1,
+                    y: 0,
+                    duration: 1.2,
+                    ease: "expo.out"
+                });
+            });
+        }
+
+        window.addEventListener('load', loadEvolutions);
+    </script>
+</body>
+</html>

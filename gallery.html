@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gallery | DIAMOND & LION FITNESS</title>
+    <!-- Preconnect to Supabase for faster handshake -->
+    <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
+        :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
+        body { background-color: var(--bg); color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+        
+        /* Fast-loading Grid Logic */
+        .gallery-card { 
+            position: relative; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            cursor: zoom-in; 
+            background: #0a0a0a; 
+            border: 1px solid rgba(255,255,255,0.05);
+            /* Performance: Skip rendering when off-screen */
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 400px;
+        }
+        
+        .gallery-card img, .gallery-card video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); 
+            will-change: transform;
+        }
+        
+        .gallery-card:hover img, .gallery-card:hover video { transform: scale(1.05); }
+        
+        .video-indicator { 
+            position: absolute; top: 12px; right: 12px; z-index: 5; 
+            background: rgba(0,0,0,0.6); padding: 6px; border-radius: 50%; 
+            border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+        }
+
+        /* Lightbox */
+        #lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 6000;
+            display: none; align-items: center; justify-content: center; padding: 15px; cursor: zoom-out;
+            backdrop-filter: blur(15px);
+        }
+        #lightbox.active { display: flex; }
+        #lightbox-content { max-width: 100%; max-height: 85vh; position: relative; }
+        #lightbox-img, #lightbox-video { 
+            max-width: 100%; max-height: 85vh; border-radius: 12px; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.5); display: none; 
+        }
+
+        .nav-glass { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        
+        /* Optimized Entrance */
+        .reveal-item { opacity: 0; transform: translateY(20px); }
+
+        .skeleton-loader { 
+            background: linear-gradient(90deg, #0a0a0a 25%, #111 50%, #0a0a0a 75%); 
+            background-size: 200% 100%; 
+            animation: shimmer 2s infinite linear; 
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+    </style>
+</head>
+<body>
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <div id="lightbox-content">
+            <img id="lightbox-img" src="" alt="Full view">
+            <video id="lightbox-video" controls playsinline></video>
+        </div>
+        <button class="absolute top-6 right-6 text-white/40 hover:text-white transition-colors">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <!-- Navigation with White CTA Back Button -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-4 md:px-10 py-5 md:py-6 flex justify-between items-center nav-glass">
+        <a href="index.html" class="flex items-center gap-2 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] bg-white text-black px-4 md:px-6 py-2.5 rounded-full hover:bg-[var(--pink)] hover:text-white transition-all shadow-lg shadow-white/5">
+            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Back to Homepage
+        </a>
+        <div class="text-xs md:text-base font-sync font-bold uppercase italic text-white tracking-tighter">
+            Elite <span class="text-[var(--pink)]">Gallery</span>
+        </div>
+    </nav>
+
+    <main class="pt-32 md:pt-44 pb-20 px-4 md:px-12 max-w-7xl mx-auto">
+        <header class="mb-12 md:mb-20 text-center md:text-left">
+            <span class="text-[var(--pink)] text-[9px] font-bold uppercase tracking-[0.5em] mb-3 inline-block reveal-item">Visual Protocol</span>
+            <h1 class="text-5xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] tracking-tighter reveal-item">PORTFOLIO<span class="text-[var(--pink)]">.</span></h1>
+            <p class="reveal-item mt-6 text-neutral-500 max-w-lg mx-auto md:mx-0 text-xs md:text-sm uppercase tracking-widest leading-relaxed">High-energy captures and cinematic reels from Madurai's premier training environment.</p>
+        </header>
+
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <!-- Fast Skeleton Sleds -->
+            <div class="skeleton-loader h-[400px] rounded-2xl"></div>
+            <div class="skeleton-loader h-[400px] rounded-2xl"></div>
+            <div class="skeleton-loader h-[400px] rounded-2xl"></div>
+        </div>
+    </main>
+
+    <script>
+        const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
+        // Corrected Project Key: matches project ref rvoupfsoghdkpyawelgq
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Instant Smooth Scroll
+        const lenis = new Lenis({ duration: 1, smoothWheel: true });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        lucide.createIcons();
+
+        // Reveal header immediately for perceived speed
+        gsap.to(".reveal-item", { opacity: 1, y: 0, duration: 0.8, stagger: 0.1 });
+
+        const isVideo = (f) => /\.(mp4|webm|mov|ogg)$/i.test(f);
+
+        async function loadGallery() {
+            const grid = document.getElementById('gallery-grid');
+            try {
+                // Fetch list
+                const { data: files, error } = await supabaseClient.storage.from('gallery').list('', {
+                    limit: 100,
+                    sortBy: { column: 'name', order: 'desc' }
+                });
+
+                if (error) throw error;
+
+                if (files) {
+                    const galleryFiles = files.filter(f => 
+                        f.name !== '.emptyFolderPlaceholder' && 
+                        !f.name.startsWith('serv_') && 
+                        !f.name.startsWith('s_')
+                    );
+
+                    if (galleryFiles.length === 0) {
+                        grid.innerHTML = `<p class="col-span-full py-20 text-center opacity-20 uppercase text-xs tracking-widest font-bold">Visuals syncing...</p>`;
+                        return;
+                    }
+
+                    const fragment = document.createDocumentFragment();
+
+                    galleryFiles.forEach((file, index) => {
+                        const { data: { publicUrl } } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                        const isVid = isVideo(file.name);
+
+                        const card = document.createElement('div');
+                        card.className = 'gallery-card aspect-[4/5] opacity-0 translate-y-4';
+                        
+                        if (isVid) {
+                            card.innerHTML = `
+                                <div class="video-indicator"><i data-lucide="play" class="w-3 h-3 text-white fill-white"></i></div>
+                                <video src="${publicUrl}" muted loop playsinline preload="metadata" class="lazy-video"></video>
+                            `;
+                            // Hover to play
+                            card.onmouseenter = () => {
+                                const v = card.querySelector('video');
+                                if (v) v.play();
+                            };
+                            card.onmouseleave = () => {
+                                const v = card.querySelector('video');
+                                if (v) {
+                                    v.pause();
+                                    v.currentTime = 0;
+                                }
+                            };
+                        } else {
+                            card.innerHTML = `<img src="${publicUrl}" alt="Fitness Training" loading="lazy" fetchpriority="${index < 3 ? 'high' : 'low'}">`;
+                        }
+
+                        card.onclick = () => openLightbox(publicUrl, isVid);
+                        fragment.appendChild(card);
+                    });
+
+                    grid.innerHTML = '';
+                    grid.appendChild(fragment);
+                    lucide.createIcons();
+
+                    gsap.to(".gallery-card", {
+                        opacity: 1, y: 0, duration: 0.6, stagger: 0.05, ease: "power2.out"
+                    });
+                }
+            } catch (err) {
+                console.error("Sync failure:", err);
+                grid.innerHTML = `<p class="col-span-full text-red-500/40 text-center py-10 uppercase text-[10px] tracking-widest font-bold">Database connection error. Please refresh.</p>`;
+            }
+        }
+
+        function openLightbox(src, isVid) {
+            const lb = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const vid = document.getElementById('lightbox-video');
+
+            if (isVid) {
+                img.style.display = 'none';
+                vid.style.display = 'block';
+                vid.src = src;
+                vid.play();
+            } else {
+                vid.style.display = 'none';
+                img.style.display = 'block';
+                img.src = src;
+            }
+
+            lb.classList.add('active');
+            lenis.stop();
+            gsap.fromTo("#lightbox-content", { scale: 0.95, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3 });
+        }
+
+        function closeLightbox() {
+            const lb = document.getElementById('lightbox');
+            const vid = document.getElementById('lightbox-video');
+            vid.pause();
+            vid.src = "";
+            lb.classList.remove('active');
+            lenis.start();
+        }
+
+        window.addEventListener('keydown', (e) => { if (e.key === "Escape") closeLightbox(); });
+        window.addEventListener('DOMContentLoaded', loadGallery);
+    </script>
+</body>
+</html>
