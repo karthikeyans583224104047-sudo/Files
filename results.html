@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Results | DIAMOND & LION FITNESS</title>
-    <!-- Preconnect to Supabase for faster handshake -->
     <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -66,7 +65,8 @@
             left: 0; 
             height: 100%; 
             object-fit: cover; 
-            width: 100vw; 
+            /* Changed from 100vw to 100% to prevent initial overflow on mobile before JS kicks in */
+            width: 100%; 
         }
         
         .ba-handle { 
@@ -99,13 +99,11 @@
 </head>
 <body>
 
-    <!-- FABs (Synced Numbers: +919585121321) -->
     <div class="fab-container">
         <a href="tel:+919585121321" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
         <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
-    <!-- Appointment Modal (Synced Identically with Homepage) -->
     <div id="appointment-modal" class="modal-overlay">
         <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl relative my-auto mx-auto text-white">
             <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
@@ -161,7 +159,6 @@
         </div>
     </div>
 
-    <!-- Navigation -->
     <nav class="fixed top-0 left-0 w-full z-50 px-4 md:px-10 py-5 md:py-6 flex justify-between items-center nav-glass">
         <a href="index.html" class="flex items-center gap-2 text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] bg-white text-black px-4 md:px-6 py-2.5 rounded-full hover:bg-[var(--pink)] hover:text-white transition-all shadow-lg shadow-white/5">
             <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i> Back to Homepage
@@ -172,16 +169,13 @@
     </nav>
 
     <main class="pt-32 md:pt-48 pb-20">
-        <!-- Header -->
         <header class="px-6 md:px-12 max-w-7xl mx-auto mb-20 md:mb-32 text-center md:text-left">
             <span class="text-[var(--pink)] text-[9px] font-bold uppercase tracking-[0.5em] mb-4 inline-block opacity-60">Visual Archive</span>
-            <h1 class="text-5xl md:text-9xl font-sync font-bold uppercase italic leading-[0.85] tracking-tighter mb-8">REAL<br>RESULTS<span class="text-[var(--pink)]">.</span></h1>
+            <h1 class="text-4xl sm:text-6xl md:text-9xl font-sync font-bold uppercase italic leading-[0.85] tracking-tighter mb-8">REAL<br>RESULTS<span class="text-[var(--pink)]">.</span></h1>
             <p class="text-neutral-500 max-w-lg mx-auto md:mx-0 text-xs md:text-sm uppercase tracking-widest leading-relaxed">High-impact success stories from the arena. Real members, real work, verified progress.</p>
         </header>
 
-        <!-- Transformations Feed -->
         <div id="results-feed" class="space-y-32 md:space-y-48">
-            <!-- Skeleton State -->
             <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-10 animate-pulse">
                 <div class="aspect-[4/5] bg-neutral-900 rounded-3xl"></div>
                 <div class="space-y-6 pt-10">
@@ -192,11 +186,10 @@
             </div>
         </div>
 
-        <!-- Join Pride Section -->
-        <section class="mt-40 py-32 px-8 bg-white text-black text-center relative overflow-hidden">
+        <section class="mt-20 md:mt-40 py-20 md:py-32 px-4 md:px-8 bg-white text-black text-center relative overflow-hidden">
             <div class="max-w-4xl mx-auto relative z-10">
-                <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic mb-10 leading-none">Ready to<br><span class="text-[var(--pink)]">Transform?</span></h2>
-                <button onclick="openModal('appointment-modal')" class="bg-black text-white px-12 py-6 font-sync font-bold uppercase italic text-lg hover:scale-105 transition-all inline-block rounded-sm shadow-2xl">
+                <h2 class="text-3xl sm:text-5xl md:text-8xl font-sync font-bold uppercase italic mb-8 md:mb-10 leading-none break-words">Ready to<br><span class="text-[var(--pink)]">Transform?</span></h2>
+                <button onclick="openModal('appointment-modal')" class="bg-black text-white px-8 py-4 md:px-12 md:py-6 font-sync font-bold uppercase italic text-sm md:text-lg hover:scale-105 transition-all inline-block rounded-sm shadow-2xl">
                     Join Today
                 </button>
             </div>
@@ -269,7 +262,6 @@
                     feed.innerHTML = transformations.map((t, index) => `
                         <div class="result-card max-w-7xl mx-auto px-6 md:px-12">
                             <div class="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-                                <!-- B/A Component -->
                                 <div class="ba-wrapper shadow-2xl ${index % 2 !== 0 ? 'lg:order-2' : ''}">
                                     <img src="${t.after_image_url}" class="ba-after-img" alt="After Transformation">
                                     <div class="ba-before-container">
