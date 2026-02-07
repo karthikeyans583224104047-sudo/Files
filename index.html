@@ -35,40 +35,16 @@
         .fab-call { background: var(--pink); color: white; }
         #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1.5s ease-in; opacity: 0; }
         .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
-        
-        /* FIX: Mobile Modal Scroll Issues */
-        .modal-overlay { 
-            position: fixed; inset: 0; 
-            background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); 
-            z-index: 5000; 
-            display: none; 
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            padding: 20px;
-            overscroll-behavior: contain; /* Prevents scroll chaining to body */
-        }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; overscroll-behavior: contain; }
         .modal-overlay.active { display: block; }
-        
-        .modal-container-inner {
-            margin: 20px auto 100px auto; 
-            position: relative;
-        }
-
+        .modal-container-inner { margin: 20px auto 100px auto; position: relative; }
         .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
-        
         .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
         .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
         .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
-
-        @media (max-width: 1023px) { 
-            .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } 
-            .gallery-wrapper::-webkit-scrollbar { display: none; } 
-            .gallery-container { padding: 1rem 5% !important; width: auto !important; } 
-        }
-
+        @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; width: auto !important; } }
         #mobile-menu-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; backdrop-filter: blur(10px); transition: opacity 0.5s ease; }
         .mobile-nav-link { opacity: 0; transform: translateY(20px); }
-        
         .btn-premium-cta { background-color: white; color: black; border: 2px solid black; position: relative; z-index: 1; overflow: hidden; transition: all 0.5s ease; }
         .btn-premium-cta::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background-color: var(--pink); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; z-index: -1; }
         .btn-premium-cta:hover { color: white; border-color: var(--pink); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4); }
@@ -79,13 +55,10 @@
         .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
         .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
         .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
-        
         #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
-
         .carousel-nav-container { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 50; padding: 0 5%; }
         .slider-nav-btn { width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 20, 147, 0.15); border: 1px solid rgba(255, 20, 147, 0.4); display: flex; align-items: center; justify-content: center; color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; pointer-events: auto; backdrop-filter: blur(12px); }
         .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
-
         #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
         #lightbox.active { display: flex; }
         #lightbox-img, #lightbox-video { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
@@ -174,7 +147,7 @@
         <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
-    <video autoplay muted loop playsinline preload="auto" id="hero-video-bg"></video>
+    <video muted loop playsinline preload="auto" id="hero-video-bg"></video>
 
     <nav class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
         <div class="logo-icon flex-shrink-0">
@@ -209,7 +182,7 @@
                         Move <span class="text-[var(--pink)]">Strong.</span><br>Live Powerful.
                     </h1>
                     <p class="hero-reveal mt-10 lg:mt-14 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed">
-                        Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, your energy, and expert guidance.
+                        Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
                     </p>
                     <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-6 justify-center px-4">
                         <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl">Join Today</button>
@@ -434,20 +407,59 @@
 
         async function loadSupabaseData() {
             try {
+                // UPDATE: Fetching logic changed to look DIRECTLY at storage bucket
                 const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
-                    supabaseClient.from('site_assets').select('file_url').eq('id', 'homepage_hero_video').single(),
+                    supabaseClient.storage.from('hero_video').list(), // Changed from table fetch to storage list
                     supabaseClient.from('service_assets').select('*'),
                     supabaseClient.storage.from('gallery').list(),
                     supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
                 ]);
 
+                // UPDATE: New Video Play Logic
                 const videoEl = document.getElementById('hero-video-bg');
-                if(heroRes.data?.file_url) {
-                    videoEl.src = heroRes.data.file_url;
-                    videoEl.oncanplay = () => {
-                        videoEl.style.opacity = 1;
-                        videoEl.play();
-                    };
+                
+                // Check if we found any files in the bucket
+                if (heroRes.data && heroRes.data.length > 0) {
+                    // Filter out system folders
+                    const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+                    
+                    if (validFiles.length > 0) {
+                        // Take the most recent file
+                        const videoFile = validFiles[0]; 
+                        const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
+                        
+                        videoEl.src = vidUrl.publicUrl;
+                        videoEl.muted = true;
+                        videoEl.playsInline = true;
+                        videoEl.load();
+
+                        const attemptPlay = () => {
+                            const playPromise = videoEl.play();
+                            if (playPromise !== undefined) {
+                                playPromise
+                                    .then(() => {
+                                        videoEl.style.opacity = 1;
+                                    })
+                                    .catch(err => {
+                                        console.warn("Autoplay fallback engaged");
+                                        const unlockVideo = () => {
+                                            videoEl.play();
+                                            videoEl.style.opacity = 1;
+                                            document.removeEventListener('touchstart', unlockVideo);
+                                            document.removeEventListener('click', unlockVideo);
+                                        };
+                                        document.addEventListener('touchstart', unlockVideo, { once: true });
+                                        document.addEventListener('click', unlockVideo, { once: true });
+                                    });
+                            }
+                        };
+
+                        if (videoEl.readyState >= 3) {
+                            attemptPlay();
+                        } else {
+                            videoEl.addEventListener('loadeddata', attemptPlay);
+                        }
+                    }
                 }
 
                 servRes.data?.forEach(asset => {
@@ -508,18 +520,17 @@
             if(window.lenis) window.lenis.start(); 
         }
 
-        // UPDATED: Modal scroll lock logic
         function openBookingWithService(s) { document.getElementById('program-select').value = s; openModal('appointment-modal'); }
         
         function openModal(id) { 
             document.getElementById(id).classList.add('active'); 
-            document.body.style.overflow = 'hidden'; // Stop background scroll
+            document.body.style.overflow = 'hidden'; 
             if(window.lenis) window.lenis.stop(); 
         }
         
         function closeModal(id) { 
             document.getElementById(id).classList.remove('active'); 
-            document.body.style.overflow = ''; // Restore background scroll
+            document.body.style.overflow = ''; 
             if(window.lenis) window.lenis.start(); 
         }
         
