@@ -20,50 +20,229 @@
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
-        :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
-        html { background-color: var(--bg); }
-        body { background-color: transparent; color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: relative; }
-        .font-sync { font-family: 'Syncopate', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .logo-icon { display: flex; align-items: center; gap: 12px; }
-        .icon-svg { width: clamp(28px, 5vw, 36px); height: clamp(28px, 5vw, 36px); fill: var(--pink); filter: drop-shadow(0 0 8px var(--pink)); animation: breathe 3s ease-in-out infinite; }
-        @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
-        .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
-        .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        .fab-whatsapp { background: #25D366; color: white; }
-        .fab-call { background: var(--pink); color: white; }
-        #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1.5s ease-in; opacity: 0; }
-        .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; overscroll-behavior: contain; }
-        .modal-overlay.active { display: block; }
-        .modal-container-inner { margin: 20px auto 100px auto; position: relative; }
-        .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
-        .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
-        .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
-        .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
-        @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; width: auto !important; } }
-        #mobile-menu-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; backdrop-filter: blur(10px); transition: opacity 0.5s ease; }
-        .mobile-nav-link { opacity: 0; transform: translateY(20px); }
-        .btn-premium-cta { background-color: white; color: black; border: 2px solid black; position: relative; z-index: 1; overflow: hidden; transition: all 0.5s ease; }
-        .btn-premium-cta::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background-color: var(--pink); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; z-index: -1; }
-        .btn-premium-cta:hover { color: white; border-color: var(--pink); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4); }
-        .btn-premium-cta:hover::before { width: 300%; height: 600%; }
-        .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: pan-y; }
-        .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
-        .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: col-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; }
-        .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
-        .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
-        .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
-        #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
-        .carousel-nav-container { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 50; padding: 0 5%; }
-        .slider-nav-btn { width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 20, 147, 0.15); border: 1px solid rgba(255, 20, 147, 0.4); display: flex; align-items: center; justify-content: center; color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; pointer-events: auto; backdrop-filter: blur(12px); }
-        .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
-        #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
-        #lightbox.active { display: flex; }
-        #lightbox-img, #lightbox-video { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-        #lightbox-video { display: none; }
-    </style>
+<style>
+    :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
+    html { background-color: var(--bg); }
+    body { background-color: transparent; color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: relative; }
+    .font-sync { font-family: 'Syncopate', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .logo-icon { display: flex; align-items: center; gap: 12px; }
+    .icon-svg { width: clamp(28px, 5vw, 36px); height: clamp(28px, 5vw, 36px); fill: var(--pink); filter: drop-shadow(0 0 8px var(--pink)); animation: breathe 3s ease-in-out infinite; }
+    @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
+    .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
+    .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+    .fab-whatsapp { background: #25D366; color: white; }
+    .fab-call { background: var(--pink); color: white; }
+    #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1.5s ease-in; opacity: 0; }
+    .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; overscroll-behavior: contain; }
+    .modal-overlay.active { display: block; }
+    .modal-container-inner { margin: 20px auto 100px auto; position: relative; }
+    .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
+    .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
+    .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
+    .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
+    @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; width: auto !important; } }
+    #mobile-menu-overlay { position: fixed; inset: 0; background: radial-gradient(circle at center, rgba(30,30,30,0.98) 0%, rgba(5,5,5,1) 100%); z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; backdrop-filter: blur(10px); transition: opacity 0.5s ease; }
+    .mobile-nav-link { opacity: 0; transform: translateY(20px); }
+    .btn-premium-cta { background-color: white; color: black; border: 2px solid black; position: relative; z-index: 1; overflow: hidden; transition: all 0.5s ease; }
+    .btn-premium-cta::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background-color: var(--pink); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; z-index: -1; }
+    .btn-premium-cta:hover { color: white; border-color: var(--pink); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4); }
+    .btn-premium-cta:hover::before { width: 300%; height: 600%; }
+    .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; cursor: ew-resize; user-select: none; }
+    .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
+    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: ew-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; pointer-events: none; user-select: none; }
+    .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
+    .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
+    .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
+    #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
+    .carousel-nav-container { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 50; padding: 0 5%; }
+    .slider-nav-btn { width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 20, 147, 0.15); border: 1px solid rgba(255, 20, 147, 0.4); display: flex; align-items: center; justify-content: center; color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; pointer-events: auto; backdrop-filter: blur(12px); }
+    .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
+    #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
+    #lightbox.active { display: flex; }
+    #lightbox-img, #lightbox-video { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+    #lightbox-video { display: none; }
+    
+    /* Updated description styles - optimized for senior readability */
+    /* Main hero description under "Move Strong. Live Powerful." */
+    .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+        color: white !important;
+        font-size: clamp(1.25rem, 4vw, 1.75rem) !important; /* 20px-28px */
+        line-height: 1.9 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+    }
+    
+    /* Master Your Body description */
+    .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
+        color: white !important;
+        font-size: clamp(1.25rem, 4vw, 1.75rem) !important; /* 20px-28px */
+        line-height: 1.9 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+    }
+    
+    /* Our Services section description - fix alignment and color */
+    .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
+        color: white !important;
+        font-size: 1.125rem !important; /* 18px */
+        line-height: 1.8 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase;
+        max-width: none !important;
+        width: 100% !important;
+        text-align: left !important;
+        margin-top: 1rem !important;
+    }
+    
+    /* Program card descriptions */
+    .text-neutral-300.mt-4.max-w-md.text-sm.font-medium,
+    .text-neutral-300.text-sm.mt-4.leading-relaxed.font-medium,
+    .text-neutral-300.text-xs.mt-3.font-medium {
+        color: white !important;
+        font-size: 1.125rem !important; /* 18px */
+        line-height: 1.7 !important;
+        font-weight: 400 !important;
+    }
+    
+    /* Other paragraph text */
+    .text-lg.md\:text-2xl.text-neutral-300.leading-relaxed,
+    p.text-neutral-300,
+    p.text-neutral-400,
+    .text-neutral-400,
+    .text-neutral-300 {
+        color: white !important;
+        font-size: 1.125rem !important; /* 18px */
+        line-height: 1.8 !important;
+        font-weight: 400 !important;
+        letter-spacing: 0.02em !important;
+    }
+    
+    /* Before/After slider fix */
+    .ba-container .ba-after img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        max-width: none !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+    }
+    
+    .ba-container img:first-child {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+    }
+    
+    /* Train Like a Lion Section - SIMPLIFIED */
+    .lion-diamond-section {
+        background: linear-gradient(135deg, var(--pink) 0%, #ff6b9d 50%, #ff4081 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .lion-diamond-section h2 {
+        color: black !important;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .lion-diamond-section p {
+        color: black !important;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+            font-size: 1.375rem !important; /* 22px on mobile */
+        }
+        
+        .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
+            font-size: 1.375rem !important; /* 22px on mobile */
+        }
+        
+        .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
+            font-size: 1rem !important; /* 16px on mobile */
+            text-align: center !important;
+            margin-top: 0.5rem !important;
+        }
+        
+        /* Fix layout on mobile for Our Services section */
+        #programs .flex-col.md\:flex-row.justify-between.items-end {
+            align-items: flex-start !important;
+            gap: 2rem !important;
+        }
+        
+        /* Lion & Diamond Section mobile adjustments */
+        .lion-diamond-section h2 {
+            font-size: 2.5rem !important;
+            line-height: 1.2 !important;
+        }
+        
+        .lion-diamond-section p {
+            font-size: 0.875rem !important;
+            max-width: 90% !important;
+        }
+        
+        /* Mobile-specific slider adjustments */
+        .ba-handle {
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 0 15px var(--pink);
+        }
+    }
+    
+    /* Desktop optimization */
+    @media (min-width: 1024px) {
+        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+            font-size: 1.75rem !important; /* 28px on desktop */
+            max-width: 48rem !important;
+        }
+        
+        .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
+            font-size: 1.75rem !important; /* 28px on desktop */
+        }
+        
+        .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
+            font-size: 1rem !important; /* 16px - keeping it smaller since it's a sub-description */
+            max-width: 20rem !important;
+            text-align: right !important;
+            margin-top: 0 !important;
+        }
+        
+        /* Program card descriptions */
+        .text-neutral-300.mt-4.max-w-md.text-sm.font-medium,
+        .text-neutral-300.text-sm.mt-4.leading-relaxed.font-medium {
+            font-size: 1.125rem !important; /* 18px for program cards */
+        }
+        
+        .text-neutral-300.text-xs.mt-3.font-medium {
+            font-size: 1rem !important; /* 16px for smaller cards */
+        }
+    }
+    
+    /* New section styles */
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .benefit-icon {
+        color: var(--pink);
+        flex-shrink: 0;
+    }
+    
+    .timing-card {
+        background: linear-gradient(135deg, rgba(255,20,147,0.1), rgba(255,215,0,0.05));
+        border: 1px solid rgba(255,20,147,0.2);
+    }
+</style>
 </head>
 <body>
     <div id="loader"><div class="logo-icon scale-150"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg></div></div>
@@ -117,14 +296,15 @@
                 <div class="md:col-span-1">
                     <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Preferred Time / விருப்ப நேரம்</label>
                     <select name="preferred_time" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
-                        <option>Morning</option><option>Evening</option>
+                        <option>Morning (6:30 AM - 11:00 AM)</option>
+                        <option>Evening (5:30 PM - 8:30 PM)</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Message (optional)</label>
                     <textarea name="message" class="w-full bg-white/5 border border-white/10 p-4 h-20 outline-none focus:border-[var(--pink)] rounded-lg"></textarea>
                 </div>
-                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Finalize Appointment</button>
+                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Send via WhatsApp</button>
             </form>
         </div>
     </div>
@@ -135,8 +315,11 @@
             <span class="text-xl font-sync font-bold italic text-white block uppercase tracking-tighter">DIAMOND & LION</span>
             <span class="text-xl font-sync font-bold italic text-[var(--pink)] block uppercase tracking-tighter">FITNESS</span>
         </div>
-        <a href="#about" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Philosophy</a>
+        <a href="events.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Events</a>
         <a href="#programs" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Programs</a>
+        <a href="#why-choose" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Why Choose Us</a>
+        <a href="#about-details" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">About Us</a>
+        <a href="#lion-diamond" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Our Philosophy</a>
         <a href="gallery.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Gallery</a>
         <a href="results.html" class="mobile-nav-link text-4xl font-sync font-bold uppercase italic hover:text-[var(--pink)] transition-colors">Results</a>
         <button id="mobile-book-btn" class="mobile-nav-link mt-8 bg-[var(--pink)] text-white px-12 py-5 font-bold uppercase tracking-widest rounded-full">Book Appointment</button>
@@ -159,8 +342,11 @@
             </div>
         </div>
         <div class="hidden lg:flex gap-14 text-[10px] xl:text-xs font-bold uppercase tracking-[0.4em] text-white">
-            <a href="#about" class="hover:text-[var(--pink)] transition-colors">Philosophy</a>
+            <a href="events.html" class="hover:text-[var(--pink)] transition-colors">Events</a>
             <a href="#programs" class="hover:text-[var(--pink)] transition-colors">Programs</a>
+            <a href="#why-choose" class="hover:text-[var(--pink)] transition-colors">Why Choose Us</a>
+            <a href="#about-details" class="hover:text-[var(--pink)] transition-colors">About Us</a>
+            <a href="#lion-diamond" class="hover:text-[var(--pink)] transition-colors">Our Philosophy</a>
             <a href="gallery.html" class="hover:text-[var(--pink)] transition-colors">Gallery</a>
             <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
         </div>
@@ -191,7 +377,7 @@
                 </div>
             </section>
 
-            <section class="scroll-section" id="about">
+            <section class="scroll-section" id="events-section">
                 <div class="max-w-5xl px-4 text-center lg:text-left">
                     <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">Fitness Beyond Machines</span>
                     <h2 class="text-6xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-12 text-white">
@@ -215,6 +401,158 @@
                         <span>No Equipment • Women-friendly environment • Certified trainers • High-Energy Sessions • Beginners Welcome • Fun Workouts • No Intimidation • Positive Vibes • </span>
                     </div>
                 </div>
+
+                <!-- Train Like a Lion Section - SIMPLIFIED -->
+                <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
+                    <div class="max-w-7xl mx-auto px-8 text-center">
+                        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-none mb-12">
+                            Train Like a <span class="bg-black text-white px-4 py-2 rounded-lg shadow-2xl">Lion.</span><br>
+                            Shine Like a <span class="bg-white text-black px-4 py-2 rounded-lg shadow-2xl">Diamond.</span>
+                        </h2>
+                        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90">
+                            Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- About Us Section -->
+                <section id="about-details" class="py-32 px-8 max-w-7xl mx-auto">
+                    <div class="mb-16">
+                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Our Mission</span>
+                        <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">About Us.</h2>
+                    </div>
+                    <div class="glass p-12 rounded-3xl">
+                        <div class="grid md:grid-cols-2 gap-12 items-center">
+                            <div>
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-[var(--pink)] mb-6">Diamond & Lion Fitness</h3>
+                                <p class="text-white text-lg leading-relaxed mb-6">
+                                    Diamond & Lion Fitness are dedicated fitness centres focused on women, youth, and overall wellness. Our goal is simple: help you become stronger, healthier, and more confident.
+                                </p>
+                                <p class="text-white text-lg leading-relaxed">
+                                    With branches in Surya Nagar and Iyer Bungalow, we provide a safe, welcoming environment where everyone can achieve their fitness goals through natural body movements, disciplined training, and positive community support.
+                                </p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="glass p-8 text-center">
+                                    <i data-lucide="users" class="w-12 h-12 text-[var(--pink)] mx-auto mb-4"></i>
+                                    <div class="text-white font-bold text-2xl mb-2">Women & Youth</div>
+                                    <div class="text-neutral-400 text-sm">Focused Community</div>
+                                </div>
+                                <div class="glass p-8 text-center">
+                                    <i data-lucide="heart" class="w-12 h-12 text-[var(--pink)] mx-auto mb-4"></i>
+                                    <div class="text-white font-bold text-2xl mb-2">Wellness First</div>
+                                    <div class="text-neutral-400 text-sm">Holistic Approach</div>
+                                </div>
+                                <div class="glass p-8 text-center">
+                                    <i data-lucide="target" class="w-12 h-12 text-[var(--pink)] mx-auto mb-4"></i>
+                                    <div class="text-white font-bold text-2xl mb-2">Confidence</div>
+                                    <div class="text-neutral-400 text-sm">Building Strength</div>
+                                </div>
+                                <div class="glass p-8 text-center">
+                                    <i data-lucide="shield" class="w-12 h-12 text-[var(--pink)] mx-auto mb-4"></i>
+                                    <div class="text-white font-bold text-2xl mb-2">Safe Space</div>
+                                    <div class="text-neutral-400 text-sm">Welcoming Environment</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Why Choose Us Section -->
+                <section id="why-choose" class="py-32 px-8 bg-white/5">
+                    <div class="max-w-7xl mx-auto">
+                        <div class="mb-16">
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Your Advantage</span>
+                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">Why Choose Us.</h2>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-12">
+                            <div class="glass p-12 rounded-3xl">
+                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">Benefits</h3>
+                                <div class="space-y-6">
+                                    <div class="benefit-item">
+                                        <i data-lucide="users" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Women-friendly environment</div>
+                                            <div class="text-neutral-400 text-sm">Safe and comfortable space for all women</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="award" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Certified trainers</div>
+                                            <div class="text-neutral-400 text-sm">Professionally trained and experienced coaches</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="clock" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Flexible morning & evening batches</div>
+                                            <div class="text-neutral-400 text-sm">Convenient timing for working professionals</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="user" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Personal attention</div>
+                                            <div class="text-neutral-400 text-sm">Individualized guidance for each member</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="indian-rupee" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Affordable fees</div>
+                                            <div class="text-neutral-400 text-sm">Quality fitness at reasonable prices</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="glass p-12 rounded-3xl">
+                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">Timings & Locations</h3>
+                                
+                                <div class="mb-10">
+                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <i data-lucide="clock" class="w-5 h-5 text-[var(--pink)]"></i>
+                                        Timings
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="timing-card p-6 rounded-xl">
+                                            <div class="text-[var(--pink)] font-bold text-lg mb-2">Morning</div>
+                                            <div class="text-white text-xl font-bold">6:30 AM – 11:00 AM</div>
+                                        </div>
+                                        <div class="timing-card p-6 rounded-xl">
+                                            <div class="text-[var(--pink)] font-bold text-lg mb-2">Evening</div>
+                                            <div class="text-white text-xl font-bold">5:30 PM – 8:30 PM</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <i data-lucide="map-pin" class="w-5 h-5 text-[var(--pink)]"></i>
+                                        Locations
+                                    </h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-start gap-3">
+                                            <div class="bg-[var(--pink)] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">D</div>
+                                            <div>
+                                                <div class="text-white font-bold">Diamond Fitness – Surya Nagar, Madurai</div>
+                                                <div class="text-neutral-400 text-sm">Main fitness center with complete facilities</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <div class="bg-[var(--yellow)] text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">L</div>
+                                            <div>
+                                                <div class="text-white font-bold">Lion Fitness – Iyer Bungalow, Madurai</div>
+                                                <div class="text-neutral-400 text-sm">Convenient location with modern amenities</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
                 <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
                     <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
@@ -329,7 +667,10 @@
                                         <i data-lucide="external-link" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
                                         <span class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get Directions</span>
                                     </a>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 05:30 AM — 09:30 PM</div>
+                                    <div class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase">
+                                        <i data-lucide="clock" class="w-3 h-3"></i> 
+                                        Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
+                                    </div>
                                 </div>
                             </div>
                             <div class="glass overflow-hidden rounded-3xl">
@@ -343,7 +684,10 @@
                                         <i data-lucide="external-link" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
                                         <span class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get Directions</span>
                                     </a>
-                                    <div class="flex items-center gap-2 text-[10px] font-bold tracking-widest text-neutral-500 uppercase"><i data-lucide="clock" class="w-3 h-3"></i> 06:00 AM — 09:00 PM</div>
+                                    <div class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase">
+                                        <i data-lucide="clock" class="w-3 h-3"></i> 
+                                        Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -371,7 +715,11 @@
                             <a href="#"><i class="fa-brands fa-youtube text-3xl"></i></a>
                             <a href="https://wa.me/919585121321"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
                         </div>
-                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-center md:text-right">Madurai’s Home for Active Fitness<br>Surya Nagar & Iyer Bungalow</div>
+                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-center md:text-right">
+                            Madurai's Home for Active Fitness<br>
+                            Surya Nagar & Iyer Bungalow<br>
+                            Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
+                        </div>
                     </div>
                 </footer>
             </main>
@@ -407,24 +755,19 @@
 
         async function loadSupabaseData() {
             try {
-                // UPDATE: Fetching logic changed to look DIRECTLY at storage bucket
                 const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
-                    supabaseClient.storage.from('hero_video').list(), // Changed from table fetch to storage list
+                    supabaseClient.storage.from('hero_video').list(),
                     supabaseClient.from('service_assets').select('*'),
                     supabaseClient.storage.from('gallery').list(),
                     supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
                 ]);
 
-                // UPDATE: New Video Play Logic
                 const videoEl = document.getElementById('hero-video-bg');
                 
-                // Check if we found any files in the bucket
                 if (heroRes.data && heroRes.data.length > 0) {
-                    // Filter out system folders
                     const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
                     
                     if (validFiles.length > 0) {
-                        // Take the most recent file
                         const videoFile = validFiles[0]; 
                         const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
                         
@@ -565,13 +908,15 @@
                 container.innerHTML = `
                     <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
                         <img src="${trans.after_image_url}" class="w-full h-full object-cover">
-                        <div class="ba-after" id="baAfter"><img src="${trans.before_image_url}" class="absolute top-0 left-0 h-full object-cover" style="width: 1000px; max-width: none;"></div>
+                        <div class="ba-after" id="baAfter">
+                            <img src="${trans.before_image_url}" class="w-full h-full object-cover">
+                        </div>
                         <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
                     </div>
                     <div class="space-y-8">
                         <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
                         <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name} <br> <span class="text-[var(--pink)]">${trans.result_summary}</span></h2>
-                        <p class="text-2xl italic text-neutral-300 leading-relaxed font-light">"${trans.quote}"</p>
+                        <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote}"</p>
                     </div>
                 `;
                 if(window.lucide) lucide.createIcons(); 
@@ -586,20 +931,100 @@
         function initSliderLogic() {
             const container = document.querySelector('.ba-container');
             if (!container) return;
+            
+            // Fix: Ensure images have proper dimensions
+            const beforeImg = container.querySelector('.ba-after img');
+            const afterImg = container.querySelector('.ba-container > img');
+            
+            if (beforeImg && afterImg) {
+                beforeImg.style.width = '100%';
+                beforeImg.style.height = '100%';
+                beforeImg.style.objectFit = 'cover';
+                afterImg.style.width = '100%';
+                afterImg.style.height = '100%';
+                afterImg.style.objectFit = 'cover';
+            }
+            
             const update = (clientX) => {
                 const rect = container.getBoundingClientRect();
                 let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
                 let p = (x / rect.width) * 100;
-                document.getElementById('baAfter').style.width = p + '%';
-                document.getElementById('baHandle').style.left = p + '%';
+                
+                // Ensure the handle stays within bounds
+                p = Math.max(0, Math.min(100, p));
+                
+                const baAfter = document.getElementById('baAfter');
+                const baHandle = document.getElementById('baHandle');
+                
+                if (baAfter) baAfter.style.width = p + '%';
+                if (baHandle) baHandle.style.left = p + '%';
             };
-            container.addEventListener('mousemove', e => update(e.clientX));
-            container.addEventListener('touchmove', e => update(e.touches[0].clientX), {passive: true});
+            
+            // For desktop: mousemove over the container
+            let isMouseOver = false;
+            
+            container.addEventListener('mouseenter', () => {
+                isMouseOver = true;
+            });
+            
+            container.addEventListener('mouseleave', () => {
+                isMouseOver = false;
+            });
+            
+            container.addEventListener('mousemove', (e) => {
+                if (isMouseOver) {
+                    update(e.clientX);
+                }
+            });
+            
+            // For mobile: touch events
+            let isTouching = false;
+            
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    isTouching = true;
+                    update(e.touches[0].clientX);
+                    e.preventDefault(); // Prevent scrolling while touching slider
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchmove', (e) => {
+                if (isTouching && e.touches.length > 0) {
+                    update(e.touches[0].clientX);
+                    e.preventDefault(); // Prevent scrolling while dragging
+                }
+            }, { passive: false });
+            
+            container.addEventListener('touchend', () => {
+                isTouching = false;
+            });
+            
+            // Also allow click/tap to set position
+            container.addEventListener('click', (e) => {
+                update(e.clientX);
+            });
+            
+            // Initialize slider at 50%
+            const rect = container.getBoundingClientRect();
+            update(rect.left + rect.width / 2);
         }
 
         function initGSAPAnimations() {
             gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
             gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
+            
+            // Animate Lion & Diamond section
+            gsap.from("#lion-diamond h2", {
+                scrollTrigger: {
+                    trigger: "#lion-diamond",
+                    start: "top 80%",
+                    end: "top 50%",
+                    scrub: 1
+                },
+                opacity: 0,
+                y: 100,
+                duration: 1.5
+            });
             
             ScrollTrigger.matchMedia({
                 "(min-width: 1024px)": function() {
@@ -623,6 +1048,44 @@
 
             gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
         }
+
+        // WhatsApp Appointment Form Submission
+document.getElementById('lead-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Create WhatsApp message - plain details only
+    const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST
+
+Name: ${data.full_name}
+Phone: ${data.phone}
+Age: ${data.age || 'Not provided'}
+Branch: ${data.branch}
+Program: ${data.program}
+Preferred Time: ${data.preferred_time}
+Message: ${data.message || 'No additional message'}`;
+
+    // Encode the message for URL
+    const encodedMessage = encodeURIComponent(whatsappMessage);
+    const phoneNumber = '919585121321'; // Your WhatsApp number
+    
+    // Create WhatsApp URL
+    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    // Close modal first
+    closeModal('appointment-modal');
+    
+    // Open WhatsApp in a new tab after a short delay
+    setTimeout(() => {
+        window.open(whatsappURL, '_blank');
+    }, 300);
+    
+    // Reset form
+    this.reset();
+});
     </script>
 </body>
 </html>
