@@ -155,44 +155,244 @@
         opacity: 0.9;
     }
     
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {
-        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
-            font-size: 1.375rem !important; /* 22px on mobile */
+    /* ============================================= */
+    /* MOBILE RESPONSIVE FIXES - NEW ADDITIONS       */
+    /* ============================================= */
+    
+    /* Mobile navigation fix */
+    @media (max-width: 767px) {
+        nav {
+            padding: 1rem !important;
         }
         
-        .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
-            font-size: 1.375rem !important; /* 22px on mobile */
+        .logo-icon {
+            gap: 8px;
         }
         
-        .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
-            font-size: 1rem !important; /* 16px on mobile */
-            text-align: center !important;
-            margin-top: 0.5rem !important;
+        .brand-text {
+            font-size: clamp(10px, 2.5vw, 14px);
+            white-space: normal;
+            line-height: 1.2;
         }
         
-        /* Fix layout on mobile for Our Services section */
-        #programs .flex-col.md\:flex-row.justify-between.items-end {
-            align-items: flex-start !important;
+        /* Fix mobile menu text size */
+        #mobile-menu-overlay .mobile-nav-link {
+            font-size: 1.75rem !important;
+            text-align: center;
+            padding: 0.5rem 0;
+        }
+        
+        #mobile-menu-overlay .text-xl {
+            font-size: 1.5rem !important;
+        }
+        
+        /* Hero section mobile fixes */
+        #hero-section {
+            padding-top: 8rem !important;
+            min-height: 90vh;
+        }
+        
+        .hero-reveal.inline-block {
+            font-size: 0.5rem !important;
+            padding: 0.5rem 0.75rem !important;
+            margin-bottom: 2rem !important;
+        }
+        
+        .scroll-section {
+            min-height: 80vh;
+            padding: 2rem 1rem !important;
+        }
+        
+        /* Fix section headings for mobile */
+        h1.font-sync {
+            font-size: 3.5rem !important;
+            line-height: 1 !important;
+        }
+        
+        h2.font-sync {
+            font-size: 2.5rem !important;
+            line-height: 1.1 !important;
+        }
+        
+        .text-6xl, .text-5xl, .text-4xl {
+            font-size: 2.25rem !important;
+        }
+        
+        .text-8xl, .text-7xl {
+            font-size: 3rem !important;
+        }
+        
+        /* Fix button sizes */
+        button.bg-\[\#FF1493\], button.glass {
+            padding: 1rem 1.5rem !important;
+            font-size: 0.75rem !important;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .flex-col.sm\:flex-row.gap-6 {
+            gap: 1rem !important;
+            flex-direction: column;
+        }
+        
+        /* Fix statistics grid */
+        .grid.grid-cols-2.lg\:grid-cols-4.gap-4 {
+            gap: 0.5rem !important;
+        }
+        
+        .glass.p-8 {
+            padding: 1.5rem !important;
+        }
+        
+        /* Fix services grid layout */
+        #programs .grid.grid-cols-1.md\:grid-cols-12 {
+            display: flex !important;
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .md\:col-span-8, .md\:col-span-4 {
+            width: 100% !important;
+            height: 300px !important;
+            padding: 1.5rem !important;
+        }
+        
+        .glass.p-12 {
+            padding: 1.5rem !important;
+        }
+        
+        /* Fix gallery */
+        .gallery-item {
+            width: 85vw !important;
+            height: 400px !important;
+        }
+        
+        /* Fix modals for mobile */
+        .modal-container-inner {
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .glass.max-w-2xl {
+            padding: 1.5rem !important;
+            border-radius: 1rem !important;
+        }
+        
+        /* Fix form layout */
+        .grid.grid-cols-1.md\:grid-cols-2.gap-5 {
+            gap: 1rem !important;
+        }
+        
+        input, select, textarea {
+            padding: 0.75rem !important;
+            font-size: 1rem !important;
+        }
+        
+        /* Fix footer layout */
+        .footer-main-container {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .footer-social-container {
+            gap: 0.75rem;
+            justify-content: center;
+        }
+        
+        .social-link-item {
+            min-width: 60px;
+            max-width: 60px;
+        }
+        
+        .social-link-icon {
+            font-size: 1.25rem;
+        }
+        
+        .social-link-text {
+            font-size: 0.65rem;
+        }
+        
+        /* Fix map containers */
+        .h-\[400px\] {
+            height: 250px !important;
+        }
+        
+        /* Fix carousel navigation */
+        .slider-nav-btn {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .carousel-nav-container {
+            padding: 0 1rem;
+        }
+        
+        /* Fix timing cards */
+        .grid.grid-cols-2.gap-4 {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+        
+        /* Fix benefits section */
+        .grid.md\:grid-cols-2.gap-12 {
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        
+        /* Fix about section grid */
+        .grid.md\:grid-cols-2.gap-12.items-center {
+            grid-template-columns: 1fr !important;
             gap: 2rem !important;
         }
         
-        /* Lion & Diamond Section mobile adjustments */
-        .lion-diamond-section h2 {
-            font-size: 2.5rem !important;
-            line-height: 1.2 !important;
+        .grid.grid-cols-2.gap-6 {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
         }
         
-        .lion-diamond-section p {
+        /* Fix marquee text */
+        .marquee-track {
+            gap: 2rem !important;
+        }
+        
+        .font-sync.text-black.font-bold.uppercase.text-xl {
             font-size: 0.875rem !important;
-            max-width: 90% !important;
+        }
+    }
+    
+    /* Tablet responsive fixes */
+    @media (min-width: 768px) and (max-width: 1023px) {
+        .scroll-section {
+            padding: 2rem !important;
         }
         
-        /* Mobile-specific slider adjustments */
-        .ba-handle {
-            width: 40px;
-            height: 40px;
-            box-shadow: 0 0 15px var(--pink);
+        h1.font-sync {
+            font-size: 5rem !important;
+        }
+        
+        h2.font-sync {
+            font-size: 3.5rem !important;
+        }
+        
+        #programs .grid.grid-cols-1.md\:grid-cols-12 {
+            grid-template-columns: repeat(12, 1fr);
+        }
+        
+        .md\:col-span-8 {
+            grid-column: span 8;
+        }
+        
+        .md\:col-span-4 {
+            grid-column: span 4;
+        }
+        
+        .gallery-item {
+            width: 350px !important;
+        }
+        
+        .footer-social-container {
+            gap: 1.5rem;
         }
     }
     
@@ -225,6 +425,75 @@
         }
     }
     
+    /* ============================================= */
+    /* TOUCH-FRIENDLY IMPROVEMENTS                   */
+    /* ============================================= */
+    
+    /* Make buttons more touch-friendly */
+    button, .btn-premium-cta, .slider-nav-btn, .fab, .social-link-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improve touch targets for mobile */
+    @media (max-width: 767px) {
+        .mobile-nav-link {
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #mobile-book-btn {
+            min-height: 60px;
+        }
+        
+        /* Increase tap target sizes */
+        input, select, textarea, button[type="submit"] {
+            min-height: 50px;
+        }
+        
+        /* Gallery touch improvements */
+        .gallery-item {
+            cursor: pointer;
+        }
+    }
+    
+    /* Prevent horizontal scrolling on mobile */
+    @media (max-width: 767px) {
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .marquee-container {
+            overflow: hidden;
+        }
+    }
+    
+    /* Fix text readability on small screens */
+    @media (max-width: 767px) {
+        p, .text-lg, .text-xl, .text-2xl {
+            font-size: 1.125rem !important;
+            line-height: 1.6 !important;
+        }
+        
+        .text-xs, .text-sm {
+            font-size: 0.875rem !important;
+        }
+    }
+    
+    /* Fix modal scrolling on mobile */
+    @media (max-width: 767px) {
+        .modal-overlay {
+            padding: 10px;
+        }
+        
+        .modal-container-inner {
+            margin: 10px auto 50px auto;
+        }
+    }
+    
     /* New section styles */
     .benefit-item {
         display: flex;
@@ -241,6 +510,171 @@
     .timing-card {
         background: linear-gradient(135deg, rgba(255,20,147,0.1), rgba(255,215,0,0.05));
         border: 1px solid rgba(255,20,147,0.2);
+    }
+    
+    /* ============================================= */
+    /* SOCIAL MEDIA ICONS - FIXED FOR MOBILE & DESKTOP */
+    /* ============================================= */
+    
+    .footer-social-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+    
+    .social-link-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        min-width: 70px;
+    }
+    
+    .social-link-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .social-link-icon {
+        font-size: 1.5rem;
+        color: white;
+        transition: color 0.3s ease;
+        margin-bottom: 0.5rem;
+    }
+    
+    .social-link-text {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: rgba(255, 255, 255, 0.7);
+        transition: color 0.3s ease;
+        text-align: center;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+    
+    .social-link-item:hover .social-link-icon {
+        color: var(--pink);
+    }
+    
+    .social-link-item:hover .social-link-text {
+        color: white;
+    }
+    
+    /* Mobile specific social media styles */
+    @media (max-width: 768px) {
+        .footer-social-container {
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+            padding: 0 10px;
+        }
+        
+        .social-link-item {
+            min-width: 65px;
+            max-width: 65px;
+            flex: 0 0 auto;
+        }
+        
+        .social-link-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.4rem;
+        }
+        
+        .social-link-text {
+            font-size: 0.7rem;
+            line-height: 1.1;
+            white-space: normal;
+            word-break: break-word;
+            max-width: 65px;
+        }
+    }
+    
+    /* Tablet specific social media styles */
+    @media (min-width: 769px) and (max-width: 1023px) {
+        .footer-social-container {
+            gap: 2rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-link-item {
+            min-width: 75px;
+        }
+        
+        .social-link-icon {
+            font-size: 1.6rem;
+        }
+        
+        .social-link-text {
+            font-size: 0.8rem;
+        }
+    }
+    
+    /* Desktop specific social media styles */
+    @media (min-width: 1024px) {
+        .footer-social-container {
+            gap: 2.5rem;
+            margin: 0;
+            flex-wrap: nowrap;
+            width: auto;
+        }
+        
+        .social-link-item {
+            min-width: 85px;
+        }
+        
+        .social-link-icon {
+            font-size: 1.75rem;
+        }
+        
+        .social-link-text {
+            font-size: 0.85rem;
+        }
+    }
+    
+    /* Footer layout */
+    .footer-main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 2rem;
+        width: 100%;
+    }
+    
+    @media (min-width: 768px) {
+        .footer-main-container {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            text-align: left;
+        }
+        
+        .footer-social-container {
+            margin: 0;
+            order: 2;
+            flex: 0 0 auto;
+        }
+        
+        .logo-icon {
+            order: 1;
+            flex: 0 0 auto;
+        }
+        
+        .footer-text {
+            order: 3;
+            flex: 1 1 auto;
+            text-align: right;
+            min-width: 200px;
+        }
     }
 </style>
 </head>
@@ -705,17 +1139,36 @@
                 </section>
 
                 <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505] text-white">
-                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
-                        <div class="logo-icon">
+                    <div class="max-w-7xl mx-auto footer-main-container">
+                        <div class="logo-icon mb-6 md:mb-0">
                             <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
                             <div class="text-2xl font-sync font-bold italic uppercase leading-none">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
                         </div>
-                        <div class="flex gap-10 items-center">
-                            <a href="#"><i class="fa-brands fa-instagram text-3xl"></i></a>
-                            <a href="#"><i class="fa-brands fa-youtube text-3xl"></i></a>
-                            <a href="https://wa.me/919585121321"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+                        
+                        <div class="footer-social-container">
+                            <a href="https://www.instagram.com/diamond_.fitness?igsh=MTFhanA4cHliN3Z0Mw==" target="_blank" class="social-link-item">
+                                <i class="fa-brands fa-instagram social-link-icon"></i>
+                                <span class="social-link-text">Diamond Fitness</span>
+                            </a>
+                            <a href="https://www.instagram.com/lionfitness_madurai?igsh=MTAxdGFobHh2bTY0ag==" target="_blank" class="social-link-item">
+                                <i class="fa-brands fa-instagram social-link-icon"></i>
+                                <span class="social-link-text">Lion Fitness</span>
+                            </a>
+                            <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="social-link-item">
+                                <i class="fa-brands fa-youtube social-link-icon"></i>
+                                <span class="social-link-text">YouTube</span>
+                            </a>
+                            <a href="https://wa.me/919585121321" target="_blank" class="social-link-item">
+                                <i class="fa-brands fa-whatsapp social-link-icon"></i>
+                                <span class="social-link-text">WhatsApp</span>
+                            </a>
+                            <a href="https://www.facebook.com/diamondfitness.diamondfitness/" target="_blank" class="social-link-item">
+                                <i class="fa-brands fa-facebook social-link-icon"></i>
+                                <span class="social-link-text">Facebook</span>
+                            </a>
                         </div>
-                        <div class="text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 text-center md:text-right">
+                        
+                        <div class="footer-text text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 mt-6 md:mt-0">
                             Madurai's Home for Active Fitness<br>
                             Surya Nagar & Iyer Bungalow<br>
                             Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
@@ -1050,15 +1503,15 @@
         }
 
         // WhatsApp Appointment Form Submission
-document.getElementById('lead-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(this);
-    const data = Object.fromEntries(formData.entries());
-    
-    // Create WhatsApp message - plain details only
-    const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Create WhatsApp message - plain details only
+            const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST
 
 Name: ${data.full_name}
 Phone: ${data.phone}
@@ -1068,24 +1521,24 @@ Program: ${data.program}
 Preferred Time: ${data.preferred_time}
 Message: ${data.message || 'No additional message'}`;
 
-    // Encode the message for URL
-    const encodedMessage = encodeURIComponent(whatsappMessage);
-    const phoneNumber = '919585121321'; // Your WhatsApp number
-    
-    // Create WhatsApp URL
-    const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    
-    // Close modal first
-    closeModal('appointment-modal');
-    
-    // Open WhatsApp in a new tab after a short delay
-    setTimeout(() => {
-        window.open(whatsappURL, '_blank');
-    }, 300);
-    
-    // Reset form
-    this.reset();
-});
+            // Encode the message for URL
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const phoneNumber = '919585121321'; // Your WhatsApp number
+            
+            // Create WhatsApp URL
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            // Close modal first
+            closeModal('appointment-modal');
+            
+            // Open WhatsApp in a new tab after a short delay
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+            }, 300);
+            
+            // Reset form
+            this.reset();
+        });
     </script>
 </body>
 </html>
