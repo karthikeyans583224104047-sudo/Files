@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" style="overflow-x: hidden;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Events & News | DIAMOND & LION FITNESS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
+        body { 
+            background-color: var(--bg); 
+            color: white; 
+            font-family: 'Space Grotesk', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            overflow-x: hidden; 
+            font-size: 18px; 
+            line-height: 1.6; 
+        }
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+        
+        .nav-glass { background: rgba(5, 5, 5, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* Event Card Styling - Minimal */
+        .event-card { 
+            opacity: 0; 
+            transform: translateY(20px); 
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 20, 147, 0.3);
+        }
+
+        .event-image-container {
+            position: relative;
+            width: 100%;
+            height: clamp(250px, 40vh, 400px);
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .event-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .date-label {
+            background: white;
+            color: black;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        /* Simple description */
+        .description-text {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Simple scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 10px; }
+        
+        /* Loading animation */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--pink);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation - Minimal -->
+    <nav class="fixed top-0 left-0 w-full z-50 px-4 md:px-10 py-5 md:py-6 flex justify-between items-center nav-glass">
+        <a href="index.html" class="flex items-center gap-2 text-sm font-bold uppercase bg-white text-black px-6 py-3 rounded-full hover:bg-[var(--pink)] hover:text-white transition-all">
+            <i data-lucide="chevron-left" class="w-5 h-5"></i> Back to Home
+        </a>
+        <div class="text-base font-sync font-bold uppercase italic text-white tracking-tighter">
+            Events <span class="text-[var(--pink)]">&</span> Updates
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 md:pt-48 pb-24 px-6 md:px-12 max-w-4xl mx-auto">
+        <!-- Header - Minimal -->
+        <header class="mb-16 md:mb-20 text-center">
+            <h1 class="text-5xl md:text-7xl font-sync font-bold uppercase italic leading-[0.9] tracking-tighter mb-6">Latest<br>News<span class="text-[var(--pink)]">.</span></h1>
+            <p class="text-white text-xl md:text-2xl">See what is happening at Diamond & Lion Fitness.</p>
+        </header>
+
+        <!-- Events Container -->
+        <div id="events-feed" class="space-y-16">
+            <!-- Loading message -->
+            <div class="text-center py-20">
+                <div class="loading-spinner mb-4"></div>
+                <p class="uppercase tracking-widest text-sm opacity-50">Loading updates...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer - Minimal -->
+    <footer class="py-16 border-t border-white/10 bg-black text-center">
+        <div class="flex items-center justify-center gap-4 mb-6">
+            <div class="text-2xl font-sync font-bold italic uppercase text-white">Diamond & Lion Fitness</div>
+        </div>
+        <p class="text-neutral-400 text-sm uppercase tracking-widest">Madurai's Best Fitness Center</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        window.addEventListener('load', () => {
+            // Simple smooth scrolling
+            function smoothScroll() {
+                const currentScroll = window.pageYOffset;
+                window.scrollTo({
+                    top: currentScroll + 1,
+                    behavior: 'smooth'
+                });
+                if (currentScroll < document.body.scrollHeight - window.innerHeight) {
+                    requestAnimationFrame(smoothScroll);
+                }
+            }
+            
+            // Initialize icons
+            if(window.lucide) lucide.createIcons();
+            
+            // Load events
+            loadEvents();
+        });
+
+        async function loadEvents() {
+            const feed = document.getElementById('events-feed');
+            
+            try {
+                const { data: events, error } = await supabaseClient
+                    .from('events')
+                    .select('*')
+                    .eq('is_active', true)
+                    .order('event_date', { ascending: false });
+
+                if (error) throw error;
+
+                if (events && events.length > 0) {
+                    feed.innerHTML = events.map((event) => {
+                        const dateObj = new Date(event.event_date);
+                        const formattedDate = event.event_date ? dateObj.toLocaleDateString('en-US', {
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric'
+                        }) : 'Recent Update';
+
+                        return `
+                            <article class="event-card">
+                                <div class="event-image-container">
+                                    <img src="${event.image_url || 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80'}" 
+                                         alt="${event.title}"
+                                         loading="lazy">
+                                </div>
+                                <div>
+                                    <div class="date-label">${formattedDate}</div>
+                                    <h2 class="text-3xl md:text-4xl font-sync font-bold uppercase italic text-white mb-6 leading-tight">
+                                        ${event.title}
+                                    </h2>
+                                    <p class="description-text">
+                                        ${event.description}
+                                    </p>
+                                </div>
+                            </article>
+                        `;
+                    }).join('');
+
+                    // Simple fade-in animation
+                    setTimeout(() => {
+                        const cards = document.querySelectorAll('.event-card');
+                        cards.forEach((card, index) => {
+                            setTimeout(() => {
+                                card.style.opacity = '1';
+                                card.style.transform = 'translateY(0)';
+                            }, index * 100);
+                        });
+                    }, 100);
+                    
+                } else {
+                    feed.innerHTML = `
+                        <div class="text-center py-40">
+                            <div class="text-white text-xl opacity-50 uppercase mb-4">No events at the moment</div>
+                            <p class="text-neutral-500">Check back soon for updates</p>
+                        </div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                feed.innerHTML = `
+                    <div class="text-center py-40">
+                        <div class="text-red-400 mb-4">Unable to load events</div>
+                        <button onclick="loadEvents()" class="text-sm text-neutral-400 hover:text-white transition-colors">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Make function global for retry
+        window.loadEvents = loadEvents;
+    </script>
+</body>
+</html>
