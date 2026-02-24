@@ -347,12 +347,14 @@
             content: "" !important;
         }
         
-        /* Target the "Live Powerful" line specifically */
+        /* Target the "Live Powerful" line specifically - reduce font size of POWERFUL by 50% */
         h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] .powerful-fix,
         h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\] {
             display: inline-block !important;
-            padding-left: 5px !important; /* Push the L to the right */
-            margin-left: 2px !important;   /* Extra safety margin */
+            padding-left: 5px !important;
+            margin-left: 2px !important;
+            font-size: 1.6rem !important; /* 50% of 3.2rem = 1.6rem */
+            vertical-align: middle !important;
         }
         
         /* Add left padding to the entire heading container to prevent L from being cut */
@@ -401,6 +403,13 @@
             width: 100% !important;
             display: block !important;
             padding: 0 10px !important;
+        }
+        
+        /* Reduce font size of "Powerful" by 50% */
+        h1.hero-reveal span.text-\[\#FF1493\]:last-of-type {
+            font-size: 1.75rem !important; /* 50% of 3.5rem */
+            display: inline-block !important;
+            vertical-align: middle !important;
         }
         
         /* Ensure the span inside heading is inline */
@@ -511,6 +520,43 @@
         .font-sync.text-black.font-bold.uppercase.text-xl { font-size: 0.9rem !important; }
         p, .text-lg, .text-xl, .text-2xl { font-size: 1rem !important; line-height: 1.6 !important; }
         .text-xs, .text-sm { font-size: 0.85rem !important; }
+        
+        /* ============================================= */
+        /* ADD LINE SPACING FOR LION & DIAMOND BOXES     */
+        /* ============================================= */
+        #lion-diamond h2 {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 2rem !important; /* Increased line spacing between the two lines */
+        }
+        
+        #lion-diamond h2 span.block.mt-8.md\:mt-12 {
+            margin-top: 3rem !important; /* Additional spacing for the second line */
+        }
+        
+        /* Style for the black box (Lion) */
+        #lion-diamond h2 span.bg-black {
+            display: inline-block !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        /* Style for the white box (Diamond) */
+        #lion-diamond h2 span.bg-white {
+            display: inline-block !important;
+            margin-top: 1rem !important;
+        }
+        
+        /* Ensure proper spacing between the two lines */
+        #lion-diamond h2 br {
+            display: none !important; /* Hide the existing br */
+        }
+        
+        /* Force the two lines to have proper spacing */
+        #lion-diamond h2 .block {
+            margin-top: 2.5rem !important;
+            line-height: 2.2 !important;
+        }
     }
     
     /* Tablet responsive fixes */
