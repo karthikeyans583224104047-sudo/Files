@@ -366,7 +366,13 @@
     /* ============================================= */
     /* MOBILE FIXES                                   */
     /* ============================================= */
-    
+    /* Increase paragraph font by 50% on mobile only */
+@media (max-width: 767px) {
+    .hero-reveal.mt-16.lg\:mt-20.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+        font-size: 1.8rem !important;
+        line-height: 1.5 !important;
+    }
+}
     @media (max-width: 767px) {
         /* Target the "Powerful" text specifically - 50% smaller */
         h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\]:last-of-type {
@@ -764,7 +770,7 @@
     <span style="display: inline-block; padding-left: 3px;">Live</span> 
     <span class="text-[var(--pink)]" style="display: inline-block; padding-left: 3px; font-size: 9.9vw !important;" onload="this.style.fontSize=window.innerWidth < 768 ? '9.9vw' : ''">Powerful.</span>
 </h1>
-                    <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-2xl md:text-3xl leading-relaxed" style="margin-top: 4rem !important; font-size: clamp(1.8rem, 5vw, 2.5rem) !important;">
+                    <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed" style="margin-top: 4rem !important;">
     Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
 </p>
                     <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-6 justify-center px-4">
