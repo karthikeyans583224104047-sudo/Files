@@ -323,67 +323,64 @@
     .lion-diamond-section p { color: black !important; font-weight: 600; opacity: 0.9; }
     
     /* ============================================= */
-    /* CRITICAL FIXES FOR ISSUE 1 & 2                */
+    /* CRITICAL FIXES FOR MOBILE VIEW                */
     /* ============================================= */
     
-    /* ISSUE 1 FIX: Ensure "POWERFUL" L is fully visible on mobile */
+    /* ISSUE 1: Reduce "Powerful" font size by 50% on mobile */
     @media (max-width: 767px) {
-        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] {
-            font-size: 3.2rem !important;
-            line-height: 1.1 !important;
-            letter-spacing: -0.02em !important;
-            margin-bottom: 1.5rem !important;
-            text-align: center !important;
-            width: 100% !important;
-            display: block !important;
-            padding: 0 5px !important;
-            word-break: break-word !important;
-            white-space: normal !important;
-        }
-        
-        /* Force the second line to have proper padding */
-        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] br {
-            display: block !important;
-            content: "" !important;
-        }
-        
-        /* Target the "Live Powerful" line specifically - reduce font size of POWERFUL by 50% */
-        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] .powerful-fix,
-        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\] {
+        /* Target the "Powerful" text specifically */
+        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\]:last-of-type {
+            font-size: 1.75rem !important; /* 50% of 3.5rem */
             display: inline-block !important;
-            padding-left: 5px !important;
-            margin-left: 2px !important;
-            font-size: 1.6rem !important; /* 50% of 3.2rem = 1.6rem */
             vertical-align: middle !important;
         }
         
-        /* Add left padding to the entire heading container to prevent L from being cut */
-        #hero-section {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
+        /* Ensure the first part (Live) remains normal size */
+        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span:not(.text-\[\#FF1493\]) {
+            font-size: 3.5rem !important;
+        }
+        
+        /* ISSUE 2: Add line spacing between Lion and Diamond boxes */
+        #lion-diamond h2 {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 2.5rem !important;
+        }
+        
+        /* Hide the existing br tag */
+        #lion-diamond h2 br {
+            display: none !important;
+        }
+        
+        /* Style for the Lion line */
+        #lion-diamond h2 span:first-of-type {
+            margin-bottom: 1rem !important;
+            display: inline-block !important;
+        }
+        
+        /* Style for the Diamond line */
+        #lion-diamond h2 span.block {
+            margin-top: 1rem !important;
+            display: inline-block !important;
+        }
+        
+        /* Ensure proper spacing between the two lines */
+        #lion-diamond h2 span.block.mt-8.md\:mt-12 {
+            margin-top: 0 !important;
+        }
+        
+        /* Force the Lion box to have proper spacing */
+        #lion-diamond h2 .bg-black {
+            margin-bottom: 1rem !important;
+        }
+        
+        /* Force the Diamond box to have proper spacing */
+        #lion-diamond h2 .bg-white {
+            margin-top: 1rem !important;
         }
     }
     
-    /* ISSUE 2 FIX: Add line space before Lion & Diamond text */
-    #hero-section + section .hero-reveal.mt-10.lg\:mt-14,
-    .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
-        margin-top: 3rem !important;      /* Increased spacing */
-        margin-bottom: 1rem !important;
-        padding-top: 0.5rem !important;
-        border-top: 1px solid rgba(255,255,255,0.1); /* Optional subtle separator */
-    }
-    
-    /* Additional spacing for the text that contains "Welcome to Lion and Diamond Fitness" */
-    p:contains("Welcome to Lion and Diamond Fitness") {
-        margin-top: 2.5rem !important;
-    }
-    
-    /* Ensure the text has proper spacing from previous elements */
-    .hero-reveal.mt-10.lg\:mt-14 {
-        margin-top: 3.5rem !important;
-    }
-    
-    /* CRITICAL MOBILE FIXES - IMPROVED HERO ALIGNMENT */
+    /* Additional mobile fixes */
     @media (max-width: 767px) {
         #hero-section { 
             padding-top: 100px !important; 
@@ -393,7 +390,7 @@
             align-items: center !important;
         }
         
-        /* Hero heading fix - proper alignment and spacing */
+        /* Hero heading base size */
         h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] { 
             font-size: 3.5rem !important; 
             line-height: 1.1 !important; 
@@ -403,18 +400,6 @@
             width: 100% !important;
             display: block !important;
             padding: 0 10px !important;
-        }
-        
-        /* Reduce font size of "Powerful" by 50% */
-        h1.hero-reveal span.text-\[\#FF1493\]:last-of-type {
-            font-size: 1.75rem !important; /* 50% of 3.5rem */
-            display: inline-block !important;
-            vertical-align: middle !important;
-        }
-        
-        /* Ensure the span inside heading is inline */
-        h1.hero-reveal span {
-            display: inline !important;
         }
         
         /* Subheading fix */
@@ -428,12 +413,12 @@
             line-height: 1.4 !important;
         }
         
-        /* Description text - FIXED WITH EXTRA TOP MARGIN */
+        /* Description text */
         .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { 
             font-size: 1.2rem !important; 
             line-height: 1.7 !important; 
             padding: 0 20px !important; 
-            margin-top: 3rem !important;      /* INCREASED SPACING */
+            margin-top: 3rem !important;
             margin-bottom: 1.5rem !important; 
             max-width: 100% !important;
         }
@@ -520,43 +505,6 @@
         .font-sync.text-black.font-bold.uppercase.text-xl { font-size: 0.9rem !important; }
         p, .text-lg, .text-xl, .text-2xl { font-size: 1rem !important; line-height: 1.6 !important; }
         .text-xs, .text-sm { font-size: 0.85rem !important; }
-        
-        /* ============================================= */
-        /* ADD LINE SPACING FOR LION & DIAMOND BOXES     */
-        /* ============================================= */
-        #lion-diamond h2 {
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 2rem !important; /* Increased line spacing between the two lines */
-        }
-        
-        #lion-diamond h2 span.block.mt-8.md\:mt-12 {
-            margin-top: 3rem !important; /* Additional spacing for the second line */
-        }
-        
-        /* Style for the black box (Lion) */
-        #lion-diamond h2 span.bg-black {
-            display: inline-block !important;
-            margin-bottom: 1rem !important;
-        }
-        
-        /* Style for the white box (Diamond) */
-        #lion-diamond h2 span.bg-white {
-            display: inline-block !important;
-            margin-top: 1rem !important;
-        }
-        
-        /* Ensure proper spacing between the two lines */
-        #lion-diamond h2 br {
-            display: none !important; /* Hide the existing br */
-        }
-        
-        /* Force the two lines to have proper spacing */
-        #lion-diamond h2 .block {
-            margin-top: 2.5rem !important;
-            line-height: 2.2 !important;
-        }
     }
     
     /* Tablet responsive fixes */
@@ -815,12 +763,11 @@
                     <div class="hero-reveal inline-block px-6 lg:px-8 py-3 bg-white text-black text-[13.5px] lg:text-lg font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
-                    <!-- FIX 1: Added extra span wrapper and padding to ensure "POWERFUL" L is visible -->
+                    <!-- FIX 1: "Powerful" will be 50% smaller on mobile via CSS -->
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white" style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
                         Move <span class="text-[var(--pink)]">Strong.</span><br>
                         <span style="display: inline-block; padding-left: 3px;">Live</span> <span class="text-[var(--pink)]" style="display: inline-block; padding-left: 3px;">Powerful.</span>
                     </h1>
-                    <!-- FIX 2: Added extra top margin to create line space before Lion & Diamond text -->
                     <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed" style="margin-top: 4rem !important;">
                         Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
                     </p>
@@ -856,7 +803,7 @@
                     </div>
                 </div>
 
-                <!-- Train Like a Lion Section - FIXED WITH PROPER SPACING -->
+                <!-- Train Like a Lion Section - FIX 2: Line spacing added via CSS for mobile -->
                 <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
                     <div class="max-w-7xl mx-auto px-8 text-center">
                         <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
