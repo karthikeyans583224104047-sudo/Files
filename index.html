@@ -317,20 +317,75 @@
     .ba-container .ba-after img { width: 100% !important; height: 100% !important; object-fit: cover !important; max-width: none !important; position: absolute !important; top: 0 !important; left: 0 !important; }
     .ba-container img:first-child { width: 100% !important; height: 100% !important; object-fit: cover !important; }
     
-    /* Train Like a Lion Section - SIMPLIFIED */
+    /* Train Like a Lion Section - FIXED WITH PROPER SPACING */
     .lion-diamond-section { background: linear-gradient(135deg, var(--pink) 0%, #ff6b9d 50%, #ff4081 100%); position: relative; overflow: hidden; }
     .lion-diamond-section h2 { color: black !important; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .lion-diamond-section p { color: black !important; font-weight: 600; opacity: 0.9; }
     
-    /* CRITICAL MOBILE FIXES - URGENT */
+    /* CRITICAL MOBILE FIXES - IMPROVED HERO ALIGNMENT */
     @media (max-width: 767px) {
-        #hero-section { padding-top: 120px !important; padding-bottom: 40px; min-height: 85vh !important; }
-        h1.font-sync { font-size: 3rem !important; line-height: 1 !important; margin-top: 0 !important; padding: 0 10px; }
-        .hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] { font-size: 2.8rem !important; line-height: 0.9 !important; letter-spacing: -0.02em !important; }
-        .hero-reveal.inline-block { font-size: 0.5rem !important; padding: 8px 12px !important; margin-bottom: 2rem !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; display: inline-block; }
-        .flex-col.sm\:flex-row.gap-6 { flex-direction: column !important; gap: 1rem !important; margin-top: 2rem !important; }
-        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { font-size: 1.1rem !important; line-height: 1.6 !important; padding: 0 10px; margin-top: 1.5rem !important; }
-        button.bg-\[\#FF1493\], button.glass { width: 100% !important; max-width: 280px !important; margin: 0 auto !important; padding: 16px 20px !important; font-size: 0.8rem !important; }
+        #hero-section { 
+            padding-top: 100px !important; 
+            padding-bottom: 60px; 
+            min-height: 90vh !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        
+        /* Hero heading fix - proper alignment and spacing */
+        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] { 
+            font-size: 3.5rem !important; 
+            line-height: 1.1 !important; 
+            letter-spacing: -0.02em !important;
+            margin-bottom: 1.5rem !important;
+            text-align: center !important;
+            width: 100% !important;
+            display: block !important;
+            padding: 0 10px !important;
+        }
+        
+        /* Ensure the span inside heading is inline */
+        h1.hero-reveal span {
+            display: inline !important;
+        }
+        
+        /* Subheading fix */
+        .hero-reveal.inline-block { 
+            font-size: 0.65rem !important; 
+            padding: 8px 16px !important; 
+            margin-bottom: 2.5rem !important; 
+            white-space: normal !important;
+            max-width: 90% !important;
+            display: inline-block !important;
+            line-height: 1.4 !important;
+        }
+        
+        /* Description text */
+        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { 
+            font-size: 1.2rem !important; 
+            line-height: 1.7 !important; 
+            padding: 0 20px !important; 
+            margin: 1.5rem auto !important; 
+            max-width: 100% !important;
+        }
+        
+        /* Button container */
+        .flex-col.sm\:flex-row.gap-6 { 
+            flex-direction: column !important; 
+            gap: 1rem !important; 
+            margin-top: 2rem !important; 
+            width: 100% !important;
+            align-items: center !important;
+        }
+        
+        /* Buttons */
+        button.bg-\[\#FF1493\], button.glass { 
+            width: 100% !important; 
+            max-width: 300px !important; 
+            margin: 0 auto !important; 
+            padding: 16px 24px !important; 
+            font-size: 0.9rem !important; 
+        }
         
         /* FIX NAVIGATION BAR */
         nav { padding: 15px 20px !important; height: 70px !important; }
@@ -423,14 +478,31 @@
     .benefit-icon { color: var(--pink); flex-shrink: 0; }
     .timing-card { background: linear-gradient(135deg, rgba(255,20,147,0.1), rgba(255,215,0,0.05)); border: 1px solid rgba(255,20,147,0.2); }
     
-    /* SOCIAL MEDIA ICONS - FIXED FOR MOBILE & DESKTOP */
+    /* SOCIAL MEDIA ICONS - UPDATED WITH BRAND COLORS (icons only) */
     .footer-social-container { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem; margin: 1.5rem 0; width: 100%; }
     .social-link-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; min-width: 70px; }
     .social-link-item:hover { transform: translateY(-5px); }
-    .social-link-icon { font-size: 1.5rem; color: white; transition: color 0.3s ease; margin-bottom: 0.5rem; }
+    .social-link-icon { font-size: 1.5rem; margin-bottom: 0.5rem; transition: color 0.3s ease; }
     .social-link-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.7); transition: color 0.3s ease; text-align: center; line-height: 1.2; white-space: nowrap; }
-    .social-link-item:hover .social-link-icon { color: var(--pink); }
     .social-link-item:hover .social-link-text { color: white; }
+    
+    /* Brand colors for icons */
+    .social-link-item[data-brand="instagram-diamond"] .social-link-icon,
+    .social-link-item[data-brand="instagram-lion"] .social-link-icon {
+        background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    .social-link-item[data-brand="youtube"] .social-link-icon { color: #FF0000; }
+    .social-link-item[data-brand="whatsapp"] .social-link-icon { color: #25D366; }
+    .social-link-item[data-brand="facebook"] .social-link-icon { color: #1877F2; }
+    
+    /* Hover effects keep brand colors, no whitewash */
+    .social-link-item:hover .social-link-icon { 
+        filter: brightness(1.2); 
+        transform: scale(1.1);
+    }
     
     @media (max-width: 768px) {
         .footer-social-container { gap: 1.25rem; margin: 1.5rem 0; justify-content: center; padding: 0 10px; }
@@ -634,7 +706,7 @@
             
             <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
                 <div class="text-center w-full px-4">
-                    <div class="hero-reveal inline-block px-4 lg:px-6 py-2 bg-white text-black text-[9px] lg:text-xs font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
+                    <div class="hero-reveal inline-block px-6 lg:px-8 py-3 bg-white text-black text-[13.5px] lg:text-lg font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white">
@@ -675,14 +747,15 @@
                     </div>
                 </div>
 
-                <!-- Train Like a Lion Section - SIMPLIFIED -->
+                <!-- Train Like a Lion Section - FIXED WITH PROPER SPACING -->
                 <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
                     <div class="max-w-7xl mx-auto px-8 text-center">
-                        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-none mb-12">
-                            Train Like a <span class="bg-black text-white px-4 py-2 rounded-lg shadow-2xl">Lion.</span><br>
-                            Shine Like a <span class="bg-white text-black px-4 py-2 rounded-lg shadow-2xl">Diamond.</span>
+                        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
+                            Train Like a <span class="bg-black text-white px-4 py-2 rounded-lg shadow-2xl">Lion.</span>
+                            <br class="my-4">
+                            <span class="block mt-8 md:mt-12">Shine Like a <span class="bg-white text-black px-4 py-2 rounded-lg shadow-2xl">Diamond.</span></span>
                         </h2>
-                        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90">
+                        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
                             Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
                         </p>
                     </div>
@@ -977,6 +1050,7 @@
                     </div>
                 </section>
 
+                <!-- FOOTER WITH BRAND-COLORED SOCIAL ICONS -->
                 <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505] text-white">
                     <div class="max-w-7xl mx-auto footer-main-container">
                         <div class="logo-icon mb-6 md:mb-0">
@@ -984,24 +1058,25 @@
                             <div class="text-2xl font-sync font-bold italic uppercase leading-none">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
                         </div>
                         
+                        <!-- Social media links with brand colors via data attributes -->
                         <div class="footer-social-container">
-                            <a href="https://www.instagram.com/diamond_.fitness?igsh=MTFhanA4cHliN3Z0Mw==" target="_blank" class="social-link-item">
+                            <a href="https://www.instagram.com/diamond_.fitness?igsh=MTFhanA4cHliN3Z0Mw==" target="_blank" class="social-link-item" data-brand="instagram-diamond">
                                 <i class="fa-brands fa-instagram social-link-icon"></i>
                                 <span class="social-link-text">Diamond Fitness</span>
                             </a>
-                            <a href="https://www.instagram.com/lionfitness_madurai?igsh=MTAxdGFobHh2bTY0ag==" target="_blank" class="social-link-item">
+                            <a href="https://www.instagram.com/lionfitness_madurai?igsh=MTAxdGFobHh2bTY0ag==" target="_blank" class="social-link-item" data-brand="instagram-lion">
                                 <i class="fa-brands fa-instagram social-link-icon"></i>
                                 <span class="social-link-text">Lion Fitness</span>
                             </a>
-                            <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="social-link-item">
+                            <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="social-link-item" data-brand="youtube">
                                 <i class="fa-brands fa-youtube social-link-icon"></i>
                                 <span class="social-link-text">YouTube</span>
                             </a>
-                            <a href="https://wa.me/919585121321" target="_blank" class="social-link-item">
+                            <a href="https://wa.me/919585121321" target="_blank" class="social-link-item" data-brand="whatsapp">
                                 <i class="fa-brands fa-whatsapp social-link-icon"></i>
                                 <span class="social-link-text">WhatsApp</span>
                             </a>
-                            <a href="https://www.facebook.com/diamondfitness.diamondfitness/" target="_blank" class="social-link-item">
+                            <a href="https://www.facebook.com/diamondfitness.diamondfitness/" target="_blank" class="social-link-item" data-brand="facebook">
                                 <i class="fa-brands fa-facebook social-link-icon"></i>
                                 <span class="social-link-text">Facebook</span>
                             </a>
