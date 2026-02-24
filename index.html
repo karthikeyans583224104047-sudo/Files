@@ -317,10 +317,51 @@
     .ba-container .ba-after img { width: 100% !important; height: 100% !important; object-fit: cover !important; max-width: none !important; position: absolute !important; top: 0 !important; left: 0 !important; }
     .ba-container img:first-child { width: 100% !important; height: 100% !important; object-fit: cover !important; }
     
-    /* Train Like a Lion Section - FIXED WITH PROPER SPACING */
+    /* Train Like a Lion Section - FIXED WITH PROPER SPACING AND SMALLER BLACK BOXES */
     .lion-diamond-section { background: linear-gradient(135deg, var(--pink) 0%, #ff6b9d 50%, #ff4081 100%); position: relative; overflow: hidden; }
     .lion-diamond-section h2 { color: black !important; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .lion-diamond-section p { color: black !important; font-weight: 600; opacity: 0.9; }
+    
+    /* FIXED: Smaller black boxes and proper spacing between lines */
+    .lion-word-box {
+        display: inline-block;
+        background: black;
+        color: white;
+        padding: 8px 24px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        font-size: inherit;
+        line-height: 1.4;
+        margin: 0 10px;
+    }
+    
+    .diamond-word-box {
+        display: inline-block;
+        background: white;
+        color: black;
+        padding: 8px 24px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        font-size: inherit;
+        line-height: 1.4;
+        margin: 0 10px;
+    }
+    
+    /* Desktop spacing */
+    .lion-diamond-heading {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; /* Reduced from large gap to 20px */
+        align-items: center;
+    }
+    
+    .lion-diamond-line {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+    }
     
     /* ============================================= */
     /* MOBILE FIXES                                   */
@@ -344,34 +385,14 @@
         /* ============================================= */
         /* CORRECTED LINE SPACING FOR LION & DIAMOND     */
         /* ============================================= */
-        #lion-diamond h2 {
-            display: flex !important;
-            flex-direction: column !important;
-            gap: 1rem !important; /* Reduced from 2.5rem to 1rem for proper spacing */
+        #lion-diamond .lion-diamond-heading {
+            gap: 15px !important; /* Proper spacing on mobile */
         }
         
-        /* Hide the existing br tag */
-        #lion-diamond h2 br {
-            display: none !important;
-        }
-        
-        /* Style for the Lion line */
-        #lion-diamond h2 span:first-of-type {
-            margin-bottom: 0 !important;
-        }
-        
-        /* Style for the Diamond line */
-        #lion-diamond h2 span.block {
-            margin-top: 0 !important;
-        }
-        
-        /* Ensure the boxes have proper spacing */
-        #lion-diamond h2 .bg-black {
-            margin-bottom: 0 !important;
-        }
-        
-        #lion-diamond h2 .bg-white {
-            margin-top: 0 !important;
+        .lion-word-box, .diamond-word-box {
+            padding: 6px 16px !important; /* Smaller boxes on mobile */
+            font-size: 1.8rem !important;
+            margin: 0 5px !important;
         }
         
         /* Keep the rest of your existing mobile styles */
@@ -478,6 +499,11 @@
         #hero-section { padding-top: 150px !important; }
         h1.font-sync { font-size: 4.5rem !important; line-height: 0.9 !important; }
         .hero-reveal.inline-block { font-size: 0.7rem !important; padding: 10px 15px !important; }
+        
+        .lion-word-box, .diamond-word-box {
+            padding: 8px 20px !important;
+            font-size: 2.5rem !important;
+        }
     }
     
     /* Desktop optimization */
@@ -488,6 +514,11 @@
         .text-neutral-300.mt-4.max-w-md.text-sm.font-medium,
         .text-neutral-300.text-sm.mt-4.leading-relaxed.font-medium { font-size: 1.125rem !important; }
         .text-neutral-300.text-xs.mt-3.font-medium { font-size: 1rem !important; }
+        
+        .lion-word-box, .diamond-word-box {
+            padding: 12px 32px !important;
+            font-size: 3.5rem !important;
+        }
     }
     
     /* TOUCH-FRIENDLY IMPROVEMENTS */
@@ -767,13 +798,20 @@
                     </div>
                 </div>
 
-                <!-- Train Like a Lion Section - CORRECTED SPACING -->
+                <!-- Train Like a Lion Section - FIXED with smaller black boxes and proper spacing -->
                 <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
                     <div class="max-w-7xl mx-auto px-8 text-center">
                         <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
-                            Train Like a <span class="bg-black text-white px-4 py-2 rounded-lg shadow-2xl">Lion.</span>
-                            <br class="my-4">
-                            <span class="block mt-8 md:mt-12">Shine Like a <span class="bg-white text-black px-4 py-2 rounded-lg shadow-2xl">Diamond.</span></span>
+                            <div class="lion-diamond-heading">
+                                <div class="lion-diamond-line">
+                                    <span>Train Like a</span>
+                                    <span class="lion-word-box">Lion.</span>
+                                </div>
+                                <div class="lion-diamond-line">
+                                    <span>Shine Like a</span>
+                                    <span class="diamond-word-box">Diamond.</span>
+                                </div>
+                            </div>
                         </h2>
                         <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
                             Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
