@@ -41,8 +41,21 @@
     .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
     .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
     .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
-    .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: zoom-in; }
+    .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: pointer; }
     @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; width: auto !important; } }
+    
+    /* Video play fixes */
+    .gallery-item video {
+        pointer-events: auto;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .gallery-item video:hover {
+        opacity: 0.9;
+    }
     
     /* ============================================= */
     /* REDESIGNED MOBILE MENU - CLEAN & ELEGANT      */
@@ -322,36 +335,11 @@
     .lion-diamond-section h2 { color: black !important; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
     .lion-diamond-section p { color: black !important; font-weight: 600; opacity: 0.9; }
     
-    /* FIXED: Smaller black boxes and proper spacing between lines */
-    .lion-word-box {
-        display: inline-block;
-        background: black;
-        color: white;
-        padding: 8px 24px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        font-size: inherit;
-        line-height: 1.4;
-        margin: 0 10px;
-    }
-    
-    .diamond-word-box {
-        display: inline-block;
-        background: white;
-        color: black;
-        padding: 8px 24px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        font-size: inherit;
-        line-height: 1.4;
-        margin: 0 10px;
-    }
-    
     /* Desktop spacing */
     .lion-diamond-heading {
         display: flex;
         flex-direction: column;
-        gap: 20px; /* Reduced from large gap to 20px */
+        gap: 20px;
         align-items: center;
     }
     
@@ -367,16 +355,15 @@
     /* MOBILE FIXES                                   */
     /* ============================================= */
     /* Increase paragraph font by 50% on mobile only */
-@media (max-width: 767px) {
-    .hero-reveal.mt-16.lg\:mt-20.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
-        font-size: 1.8rem !important;
-        line-height: 1.5 !important;
-    }
-}
     @media (max-width: 767px) {
-        /* Target the "Powerful" text specifically - 50% smaller */
+        .hero-reveal.mt-16.lg\:mt-20.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+            font-size: 1.8rem !important;
+            line-height: 1.5 !important;
+        }
+        
+        /* Target the "Powerful" text specifically - 10% smaller on mobile */
         h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\]:last-of-type {
-            font-size: 1.75rem !important;
+            font-size: 9.9vw !important;
             display: inline-block !important;
             vertical-align: middle !important;
         }
@@ -392,16 +379,9 @@
         /* CORRECTED LINE SPACING FOR LION & DIAMOND     */
         /* ============================================= */
         #lion-diamond .lion-diamond-heading {
-            gap: 15px !important; /* Proper spacing on mobile */
+            gap: 15px !important;
         }
         
-        .lion-word-box, .diamond-word-box {
-            padding: 6px 16px !important; /* Smaller boxes on mobile */
-            font-size: 1.8rem !important;
-            margin: 0 5px !important;
-        }
-        
-        /* Keep the rest of your existing mobile styles */
         #hero-section { 
             padding-top: 100px !important; 
             padding-bottom: 60px; 
@@ -418,15 +398,6 @@
             max-width: 90% !important;
             display: inline-block !important;
             line-height: 1.4 !important;
-        }
-        
-        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { 
-            font-size: 1.2rem !important; 
-            line-height: 1.7 !important; 
-            padding: 0 20px !important; 
-            margin-top: 3rem !important;
-            margin-bottom: 1.5rem !important; 
-            max-width: 100% !important;
         }
         
         .flex-col.sm\:flex-row.gap-6 { 
@@ -498,6 +469,12 @@
         .font-sync.text-black.font-bold.uppercase.text-xl { font-size: 0.9rem !important; }
         p, .text-lg, .text-xl, .text-2xl { font-size: 1rem !important; line-height: 1.6 !important; }
         .text-xs, .text-sm { font-size: 0.85rem !important; }
+        
+        /* Train Like a Lion boxes on mobile */
+        #lion-diamond .bg-black, #lion-diamond .bg-white {
+            padding: 6px 16px !important;
+            font-size: 1.8rem !important;
+        }
     }
     
     /* Tablet responsive fixes */
@@ -505,23 +482,34 @@
         #hero-section { padding-top: 150px !important; }
         h1.font-sync { font-size: 4.5rem !important; line-height: 0.9 !important; }
         .hero-reveal.inline-block { font-size: 0.7rem !important; padding: 10px 15px !important; }
-        
-        .lion-word-box, .diamond-word-box {
-            padding: 8px 20px !important;
-            font-size: 2.5rem !important;
-        }
     }
     
-    /* Desktop optimization */
+    /* Desktop optimization - Live and Powerful on same line */
     @media (min-width: 1024px) {
         .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { font-size: 1.75rem !important; max-width: 48rem !important; }
         .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 { font-size: 1.75rem !important; }
         .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest { font-size: 1rem !important; max-width: 20rem !important; text-align: right !important; margin-top: 0 !important; }
-        .text-neutral-300.mt-4.max-w-md.text-sm.font-medium,
-        .text-neutral-300.text-sm.mt-4.leading-relaxed.font-medium { font-size: 1.125rem !important; }
-        .text-neutral-300.text-xs.mt-3.font-medium { font-size: 1rem !important; }
         
-        .lion-word-box, .diamond-word-box {
+        /* Force Live and Powerful on same line */
+        h1.hero-reveal .flex {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 1.5rem !important;
+            white-space: nowrap !important;
+            width: 100% !important;
+        }
+        
+        h1.hero-reveal .flex span {
+            display: inline-block !important;
+            font-size: inherit !important;
+            white-space: nowrap !important;
+        }
+        
+        /* Train Like a Lion boxes on desktop */
+        #lion-diamond .bg-black, #lion-diamond .bg-white {
             padding: 12px 32px !important;
             font-size: 3.5rem !important;
         }
@@ -766,13 +754,15 @@
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white" style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
-    Move <span class="text-[var(--pink)]">Strong.</span><br>
-    <span style="display: inline-block; padding-left: 3px;">Live</span> 
-    <span class="text-[var(--pink)]" style="display: inline-block; padding-left: 3px; font-size: 9.9vw !important;" onload="this.style.fontSize=window.innerWidth < 768 ? '9.9vw' : ''">Powerful.</span>
-</h1>
+                        Move <span class="text-[var(--pink)]">Strong.</span><br>
+                        <span class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 lg:flex-nowrap lg:gap-6">
+                            <span style="display: inline-block;">Live</span> 
+                            <span class="text-[var(--pink)]" style="display: inline-block;">Powerful.</span>
+                        </span>
+                    </h1>
                     <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed" style="margin-top: 4rem !important;">
-    Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
-</p>
+                        Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
+                    </p>
                     <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-6 justify-center px-4">
                         <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl">Join Today</button>
                         <button onclick="openModal('appointment-modal')" class="glass text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book an Appointment</button>
@@ -807,24 +797,24 @@
 
                 <!-- Train Like a Lion Section - FIXED with smaller black boxes and proper spacing -->
                 <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
-    <div class="max-w-7xl mx-auto px-8 text-center">
-        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
-            <div class="flex flex-col items-center gap-4 md:gap-6">
-                <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-                    <span>Train Like a</span>
-                    <span class="bg-black text-white px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Lion.</span>
-                </div>
-                <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
-                    <span>Shine Like a</span>
-                    <span class="bg-white text-black px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Diamond.</span>
-                </div>
-            </div>
-        </h2>
-        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
-            Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
-        </p>
-    </div>
-</section>
+                    <div class="max-w-7xl mx-auto px-8 text-center">
+                        <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
+                            <div class="flex flex-col items-center gap-4 md:gap-6">
+                                <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
+                                    <span>Train Like a</span>
+                                    <span class="bg-black text-white px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Lion.</span>
+                                </div>
+                                <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
+                                    <span>Shine Like a</span>
+                                    <span class="bg-white text-black px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Diamond.</span>
+                                </div>
+                            </div>
+                        </h2>
+                        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
+                            Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
+                        </p>
+                    </div>
+                </section>
 
                 <!-- About Us Section -->
                 <section id="about-details" class="py-32 px-8 max-w-7xl mx-auto">
@@ -1037,7 +1027,8 @@
                     </div>
                     <div class="gallery-wrapper">
                         <div class="gallery-container" id="supabase-gallery">
-                            </div>
+                            <!-- Gallery items will be loaded here -->
+                        </div>
                     </div>
                 </section>
 
@@ -1056,7 +1047,8 @@
 
                     <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
                         <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10" id="featured-transformation-container">
-                            </div>
+                            <!-- Transformation content will be loaded here -->
+                        </div>
                     </div>
                 </section>
 
@@ -1324,8 +1316,8 @@
 
                         if (isVideo) {
                             item.innerHTML = `
-                                <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
-                                <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-none"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                                <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
+                                <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-auto" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
                             `;
                         } else {
                             item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
