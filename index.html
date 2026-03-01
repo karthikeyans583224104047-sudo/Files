@@ -1,363 +1,1364 @@
 <!DOCTYPE html>
 <html lang="en" style="overflow-x: hidden;">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DIAMOND & LION FITNESS | Women & Youth Fitness Madurai</title>
-    
-    <!-- CSP Meta for mobile -->
-    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * self 'unsafe-inline' 'unsafe-eval' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://rvoupfsoghdkpyawelgq.supabase.co">
 
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-    :root { --pink: #FF1493; --yellow: #FFD700; --bg: #050505; }
-    html { background-color: var(--bg); }
-    body { background-color: transparent; color: white; font-family: 'Space Grotesk', sans-serif; margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: relative; }
-    .font-sync { font-family: 'Syncopate', sans-serif; }
-    .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .logo-icon { display: flex; align-items: center; gap: 12px; }
-    .icon-svg { width: clamp(28px, 5vw, 36px); height: clamp(28px, 5vw, 36px); fill: var(--pink); filter: drop-shadow(0 0 8px var(--pink)); animation: breathe 3s ease-in-out infinite; }
-    @keyframes breathe { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.15); opacity: 1; } }
-    .fab-container { position: fixed; bottom: 30px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 15px; }
-    .fab { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 15px 35px rgba(0,0,0,0.4); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-    .fab-whatsapp { background: #25D366; color: white; }
-    .fab-call { background: var(--pink); color: white; }
-    #hero-video-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; object-fit: cover; z-index: -1; filter: brightness(0.4) contrast(1.1); background-color: var(--bg); transition: opacity 1.5s ease-in; opacity: 0; }
-    .scroll-section { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 0 5%; width: 100%; box-sizing: border-box; }
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.96); backdrop-filter: blur(15px); z-index: 5000; display: none; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; overscroll-behavior: contain; }
-    .modal-overlay.active { display: block; }
-    .modal-container-inner { margin: 20px auto 100px auto; position: relative; }
-    .nav-gradient { background: linear-gradient(to bottom, rgba(5,5,5,1) 0%, rgba(5,5,5,0.8) 50%, transparent 100%); }
-    .gallery-wrapper { width: 100%; overflow: hidden; position: relative; }
-    .gallery-container { display: flex; gap: 1.5rem; padding: 2rem 0; width: max-content; will-change: transform; }
-    .gallery-item { width: clamp(280px, 75vw, 400px); height: clamp(400px, 60vh, 550px); flex-shrink: 0; border-radius: 12px; overflow: hidden; position: relative; background: #111; cursor: pointer; }
-    .gallery-item img, .gallery-item video { min-width: 100%; min-height: 100%; object-fit: cover; }
-    @media (max-width: 1023px) { .gallery-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; } .gallery-wrapper::-webkit-scrollbar { display: none; } .gallery-container { padding: 1rem 5% !important; width: auto !important; } }
-    
-    /* Video play fixes */
-    .gallery-item video {
-        pointer-events: auto;
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    
-    .gallery-item video:hover {
-        opacity: 0.9;
-    }
-    
-    /* Mobile Menu */
-    #mobile-menu-overlay {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(145deg, rgba(10,10,10,0.98) 0%, rgba(0,0,0,0.99) 100%);
-        backdrop-filter: blur(20px);
-        z-index: 4000;
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-        padding: 100px 20px 60px;
-        opacity: 0;
-        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .mobile-menu-header {
-        position: absolute;
-        top: 30px;
-        left: 20px;
-        right: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: calc(100% - 40px);
-    }
-
-    .mobile-menu-brand {
-        font-family: 'Syncopate', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: white;
-    }
-
-    .mobile-menu-brand span { color: var(--pink); }
-
-    #close-menu {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        transition: all 0.3s ease;
-        position: static !important;
-    }
-
-    #close-menu:hover { background: var(--pink); transform: rotate(90deg); }
-
-    .mobile-menu-content {
-        width: 100%;
-        max-width: 400px;
-        margin: 40px auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .mobile-nav-link {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 24px;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        color: white;
-        font-size: 1.2rem !important;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    .mobile-nav-link:hover { background: rgba(255, 20, 147, 0.1); border-color: var(--pink); transform: translateX(8px); }
-    .mobile-nav-link i { color: var(--pink); }
-
-    .mobile-menu-footer {
-        width: 100%;
-        max-width: 400px;
-        margin-top: 30px;
-        padding-top: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        text-align: center;
-    }
-
-    .mobile-menu-hours {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-        color: rgba(255, 255, 255, 0.5);
-        margin-bottom: 20px;
-        line-height: 1.8;
-    }
-
-    .mobile-menu-hours span { color: var(--pink); font-weight: 700; }
-
-    .mobile-menu-social {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-top: 20px;
-    }
-
-    .mobile-social-link {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.3rem;
-        transition: all 0.3s ease;
-    }
-
-    .mobile-social-link:hover { background: var(--pink); transform: translateY(-5px); }
-
-    #mobile-book-btn {
-        width: 100%;
-        padding: 18px 24px;
-        background: var(--pink);
-        border: none;
-        border-radius: 16px;
-        color: white;
-        font-size: 0.9rem !important;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.2em;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        margin-top: 20px;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    #mobile-book-btn:hover { background: white; color: black; }
-    #mobile-book-btn:hover i { color: black; }
-
-    @media (max-width: 767px) {
-        .mobile-nav-link { padding: 16px 20px; font-size: 1rem !important; }
-        .mobile-menu-content { gap: 10px; }
-        .mobile-menu-brand { font-size: 0.8rem; }
-    }
-    
-    /* Rest of your styles */
-    .btn-premium-cta { background-color: white; color: black; border: 2px solid black; position: relative; z-index: 1; overflow: hidden; transition: all 0.5s ease; }
-    .btn-premium-cta::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background-color: var(--pink); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.6s ease, height 0.6s ease; z-index: -1; }
-    .btn-premium-cta:hover { color: white; border-color: var(--pink); box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4); }
-    .btn-premium-cta:hover::before { width: 300%; height: 600%; }
-    
-    .ba-container { position: relative; overflow: hidden; border-radius: 8px; width: 100%; touch-action: none; cursor: ew-resize; user-select: none; }
-    .ba-after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--pink); }
-    .ba-handle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: ew-resize; z-index: 10; box-shadow: 0 0 20px var(--pink); color: black; pointer-events: none; }
-    .marquee-container { width: 100%; overflow: hidden; display: flex; white-space: nowrap; background: white; padding: 1.5rem 0; }
-    .marquee-track { display: flex; flex-shrink: 0; gap: 5rem; width: max-content; align-items: center; }
-    .brand-text { font-size: clamp(12px, 3.2vw, 24px); line-height: 1.1; }
-    #loader { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; pointer-events: none; }
-    .carousel-nav-container { position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); pointer-events: none; z-index: 50; padding: 0 5%; }
-    .slider-nav-btn { width: 65px; height: 65px; border-radius: 50%; background: rgba(255, 20, 147, 0.15); border: 1px solid rgba(255, 20, 147, 0.4); display: flex; align-items: center; justify-content: center; color: var(--pink); transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1); cursor: pointer; pointer-events: auto; backdrop-filter: blur(12px); }
-    .slider-nav-btn:hover { background: var(--pink); color: white; scale: 1.15; box-shadow: 0 0 30px rgba(255, 20, 147, 0.3); }
-    #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
-    #lightbox.active { display: flex; }
-    #lightbox-img, #lightbox-video { max-width: 90%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
-    #lightbox-video { display: none; }
-    
-    /* Train Like a Lion Section */
-    .lion-diamond-section { background: linear-gradient(135deg, var(--pink) 0%, #ff6b9d 50%, #ff4081 100%); position: relative; overflow: hidden; }
-    .lion-diamond-section h2 { color: black !important; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .lion-diamond-section p { color: black !important; font-weight: 600; opacity: 0.9; }
-    
-    /* Social Media Icons */
-    .footer-social-container { display: flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem; margin: 1.5rem 0; width: 100%; }
-    .social-link-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s ease; min-width: 70px; }
-    .social-link-item:hover { transform: translateY(-5px); }
-    .social-link-icon { font-size: 1.5rem; margin-bottom: 0.5rem; transition: color 0.3s ease; }
-    .social-link-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255, 255, 255, 0.7); transition: color 0.3s ease; text-align: center; line-height: 1.2; white-space: nowrap; }
-    .social-link-item:hover .social-link-text { color: white; }
-    
-    /* Brand colors for icons */
-    .social-link-item[data-brand="instagram-diamond"] .social-link-icon,
-    .social-link-item[data-brand="instagram-lion"] .social-link-icon {
-        background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
-    .social-link-item[data-brand="youtube"] .social-link-icon { color: #FF0000; }
-    .social-link-item[data-brand="whatsapp"] .social-link-icon { color: #25D366; }
-    .social-link-item[data-brand="facebook"] .social-link-icon { color: #1877F2; }
-    
-    .social-link-item:hover .social-link-icon { filter: brightness(1.2); transform: scale(1.1); }
-    
-    .footer-main-container { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2rem; width: 100%; }
-    @media (min-width: 768px) {
-        .footer-main-container { flex-direction: row; justify-content: space-between; align-items: center; gap: 1.5rem; text-align: left; }
-        .footer-social-container { margin: 0; order: 2; flex: 0 0 auto; }
-        .logo-icon { order: 1; flex: 0 0 auto; }
-        .footer-text { order: 3; flex: 1 1 auto; text-align: right; min-width: 200px; }
-    }
-    
-    /* Mobile fixes */
-    @media (max-width: 767px) {
-        #hero-section { padding-top: 140px !important; padding-bottom: 40px; min-height: 85vh !important; }
-        h1.font-sync { font-size: 3.2rem !important; line-height: 1 !important; }
-        .hero-reveal.mt-16.lg\:mt-20.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed { font-size: 1.4rem !important; line-height: 1.6 !important; font-weight: 700 !important; }
-        nav { padding: 15px 20px !important; height: 70px !important; }
-        .brand-text { font-size: 0.85rem !important; }
-        .footer-social-container { gap: 1.5rem; }
-        .social-link-item { min-width: 70px; }
-        .social-link-icon { font-size: 2rem !important; }
-        .gallery-item { width: 85vw !important; height: 350px !important; }
-        
-        /* Fixed hero heading for mobile */
-        h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\] {
-            display: inline !important;
+    <style>
+        :root {
+            --pink: #FF1493;
+            --yellow: #FFD700;
+            --bg: #050505;
         }
-    }
-    
-    /* Mobile debug panel */
-    #mobile-debug {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: black;
-        color: #0f0;
-        font-size: 10px;
-        padding: 5px;
-        z-index: 9999;
-        display: none;
-        max-height: 100px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-        word-break: break-all;
-    }
-</style>
-</head>
-<body>
-    <!-- Mobile debug panel (hidden by default) -->
-    <div id="mobile-debug"></div>
 
-    <div id="loader"><div class="logo-icon scale-150"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg></div></div>
+        html {
+            background-color: var(--bg);
+        }
+
+        body {
+            background-color: transparent;
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .font-sync {
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo-icon {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-svg {
+            width: clamp(28px, 5vw, 36px);
+            height: clamp(28px, 5vw, 36px);
+            fill: var(--pink);
+            filter: drop-shadow(0 0 8px var(--pink));
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .fab {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fab-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .fab-call {
+            background: var(--pink);
+            color: white;
+        }
+
+        #hero-video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.4) contrast(1.1);
+            background-color: var(--bg);
+            transition: opacity 1.5s ease-in;
+            opacity: 0;
+        }
+
+        .scroll-section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5%;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(15px);
+            z-index: 5000;
+            display: none;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px;
+            overscroll-behavior: contain;
+        }
+
+        .modal-overlay.active {
+            display: block;
+        }
+
+        .modal-container-inner {
+            margin: 20px auto 100px auto;
+            position: relative;
+        }
+
+        .nav-gradient {
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 1) 0%, rgba(5, 5, 5, 0.8) 50%, transparent 100%);
+        }
+
+        .gallery-wrapper {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .gallery-container {
+            display: flex;
+            gap: 1.5rem;
+            padding: 2rem 0;
+            width: max-content;
+            will-change: transform;
+        }
+
+        .gallery-item {
+            width: clamp(280px, 75vw, 400px);
+            height: clamp(400px, 60vh, 550px);
+            flex-shrink: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            background: #111;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1023px) {
+            .gallery-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .gallery-wrapper::-webkit-scrollbar {
+                display: none;
+            }
+
+            .gallery-container {
+                padding: 1rem 5% !important;
+                width: auto !important;
+            }
+        }
+
+        /* Video play fixes */
+        .gallery-item video {
+            pointer-events: auto;
+            cursor: pointer;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item video:hover {
+            opacity: 0.9;
+        }
+
+        /* ============================================= */
+        /* REDESIGNED MOBILE MENU - CLEAN & ELEGANT      */
+        /* ============================================= */
+        #mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(145deg, rgba(10, 10, 10, 0.98) 0%, rgba(0, 0, 0, 0.99) 100%);
+            backdrop-filter: blur(20px);
+            z-index: 4000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 100px 20px 60px;
+            opacity: 0;
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .mobile-menu-header {
+            position: absolute;
+            top: 30px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: calc(100% - 40px);
+        }
+
+        .mobile-menu-brand {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: white;
+        }
+
+        .mobile-menu-brand span {
+            color: var(--pink);
+        }
+
+        #close-menu {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            position: static !important;
+        }
+
+        #close-menu:hover,
+        #close-menu:active {
+            background: var(--pink);
+            border-color: var(--pink);
+            transform: rotate(90deg);
+        }
+
+        .mobile-menu-content {
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .mobile-nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            color: white;
+            font-size: 1.2rem !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .mobile-nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--pink);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav-link:hover,
+        .mobile-nav-link:active {
+            background: rgba(255, 20, 147, 0.1);
+            border-color: var(--pink);
+            transform: translateX(8px);
+        }
+
+        .mobile-nav-link:hover::before,
+        .mobile-nav-link:active::before {
+            opacity: 1;
+        }
+
+        .mobile-nav-link i {
+            color: var(--pink);
+            font-size: 1.2rem;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-nav-link:hover i {
+            opacity: 1;
+        }
+
+        .mobile-menu-footer {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .mobile-menu-hours {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .mobile-menu-hours span {
+            color: var(--pink);
+            font-weight: 700;
+        }
+
+        .mobile-menu-social {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .mobile-social-link {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-social-link:hover,
+        .mobile-social-link:active {
+            background: var(--pink);
+            border-color: var(--pink);
+            transform: translateY(-5px);
+        }
+
+        #mobile-book-btn {
+            width: 100%;
+            padding: 18px 24px;
+            background: var(--pink);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 0.9rem !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        #mobile-book-btn:hover,
+        #mobile-book-btn:active {
+            background: white;
+            color: black;
+            transform: scale(1.02);
+        }
+
+        #mobile-book-btn i {
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        #mobile-book-btn:hover i,
+        #mobile-book-btn:active i {
+            color: black;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-nav-link {
+                padding: 16px 20px;
+                font-size: 1rem !important;
+            }
+
+            .mobile-menu-content {
+                gap: 10px;
+            }
+
+            .mobile-menu-brand {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Rest of your existing styles remain exactly the same */
+        .btn-premium-cta {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .btn-premium-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: var(--pink);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+            z-index: -1;
+        }
+
+        .btn-premium-cta:hover {
+            color: white;
+            border-color: var(--pink);
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
+        }
+
+        .btn-premium-cta:hover::before {
+            width: 300%;
+            height: 600%;
+        }
+
+        .ba-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            width: 100%;
+            touch-action: none;
+            cursor: ew-resize;
+            user-select: none;
+        }
+
+        .ba-after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            border-right: 3px solid var(--pink);
+        }
+
+        .ba-handle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: ew-resize;
+            z-index: 10;
+            box-shadow: 0 0 20px var(--pink);
+            color: black;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+            background: white;
+            padding: 1.5rem 0;
+        }
+
+        .marquee-track {
+            display: flex;
+            flex-shrink: 0;
+            gap: 5rem;
+            width: max-content;
+            align-items: center;
+        }
+
+        .brand-text {
+            font-size: clamp(12px, 3.2vw, 24px);
+            line-height: 1.1;
+        }
+
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .carousel-nav-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 50;
+            padding: 0 5%;
+        }
+
+        .slider-nav-btn {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            background: rgba(255, 20, 147, 0.15);
+            border: 1px solid rgba(255, 20, 147, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pink);
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            cursor: pointer;
+            pointer-events: auto;
+            backdrop-filter: blur(12px);
+        }
+
+        .slider-nav-btn:hover {
+            background: var(--pink);
+            color: white;
+            scale: 1.15;
+            box-shadow: 0 0 30px rgba(255, 20, 147, 0.3);
+        }
+
+        #lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 6000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            cursor: zoom-out;
+        }
+
+        #lightbox.active {
+            display: flex;
+        }
+
+        #lightbox-img,
+        #lightbox-video {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+
+        #lightbox-video {
+            display: none;
+        }
+
+        /* Updated description styles - optimized for senior readability */
+        .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+            color: white !important;
+            font-size: clamp(1.25rem, 4vw, 1.75rem) !important;
+            line-height: 1.9 !important;
+            font-weight: 400 !important;
+            letter-spacing: 0.02em !important;
+        }
+
+        .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
+            color: white !important;
+            font-size: clamp(1.25rem, 4vw, 1.75rem) !important;
+            line-height: 1.9 !important;
+            font-weight: 400 !important;
+            letter-spacing: 0.02em !important;
+        }
+
+        .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
+            color: white !important;
+            font-size: 1.125rem !important;
+            line-height: 1.8 !important;
+            font-weight: 400 !important;
+            letter-spacing: 0.1em !important;
+            text-transform: uppercase;
+            max-width: none !important;
+            width: 100% !important;
+            text-align: left !important;
+            margin-top: 1rem !important;
+        }
+
+        .text-neutral-300.mt-4.max-w-md.text-sm.font-medium,
+        .text-neutral-300.text-sm.mt-4.leading-relaxed.font-medium,
+        .text-neutral-300.text-xs.mt-3.font-medium {
+            color: white !important;
+            font-size: 1.125rem !important;
+            line-height: 1.7 !important;
+            font-weight: 400 !important;
+        }
+
+        .text-lg.md\:text-2xl.text-neutral-300.leading-relaxed,
+        p.text-neutral-300,
+        p.text-neutral-400,
+        .text-neutral-400,
+        .text-neutral-300 {
+            color: white !important;
+            font-size: 1.125rem !important;
+            line-height: 1.8 !important;
+            font-weight: 400 !important;
+            letter-spacing: 0.02em !important;
+        }
+
+        /* Before/After slider fix */
+        .ba-container .ba-after img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            max-width: none !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
+
+        .ba-container img:first-child {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* Train Like a Lion Section - FIXED WITH PROPER SPACING AND SMALLER BLACK BOXES */
+        .lion-diamond-section {
+            background: linear-gradient(135deg, var(--pink) 0%, #ff6b9d 50%, #ff4081 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lion-diamond-section h2 {
+            color: black !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .lion-diamond-section p {
+            color: black !important;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        /* Desktop spacing */
+        .lion-diamond-heading {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .lion-diamond-line {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* ============================================= */
+        /* MOBILE FIXES                                   */
+        /* ============================================= */
+        /* Increase paragraph font by 50% on mobile only */
+        @media (max-width: 767px) {
+            .hero-reveal.mt-16.lg\:mt-20.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+                font-size: 1.8rem !important;
+                line-height: 1.5 !important;
+            }
+
+            /* Target the "Powerful" text specifically - 10% smaller on mobile */
+            h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\]:last-of-type {
+                font-size: 9.9vw !important;
+                display: inline-block !important;
+                vertical-align: middle !important;
+            }
+
+            /* Hero heading base size */
+            h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] {
+                font-size: 3.5rem !important;
+                line-height: 1.1 !important;
+                margin-bottom: 1.5rem !important;
+            }
+
+            /* ============================================= */
+            /* CORRECTED LINE SPACING FOR LION & DIAMOND     */
+            /* ============================================= */
+            #lion-diamond .lion-diamond-heading {
+                gap: 15px !important;
+            }
+
+            #hero-section {
+                padding-top: 100px !important;
+                padding-bottom: 60px;
+                min-height: 90vh !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+
+            .hero-reveal.inline-block {
+                font-size: 0.65rem !important;
+                padding: 8px 16px !important;
+                margin-bottom: 2.5rem !important;
+                white-space: normal !important;
+                max-width: 90% !important;
+                display: inline-block !important;
+                line-height: 1.4 !important;
+            }
+
+            .flex-col.sm\:flex-row.gap-6 {
+                flex-direction: column !important;
+                gap: 1rem !important;
+                margin-top: 2rem !important;
+                width: 100% !important;
+                align-items: center !important;
+            }
+
+            button.bg-\[\#FF1493\],
+            button.glass {
+                width: 100% !important;
+                max-width: 300px !important;
+                margin: 0 auto !important;
+                padding: 16px 24px !important;
+                font-size: 0.9rem !important;
+            }
+
+            nav {
+                padding: 15px 20px !important;
+                height: 70px !important;
+            }
+
+            .logo-icon {
+                gap: 8px !important;
+            }
+
+            .brand-text {
+                font-size: 0.85rem !important;
+                line-height: 1.2 !important;
+                white-space: normal !important;
+                max-width: 120px !important;
+            }
+
+            #open-menu {
+                padding: 8px !important;
+            }
+
+            #open-menu i {
+                width: 24px !important;
+                height: 24px !important;
+            }
+
+            h2.font-sync {
+                font-size: 2.2rem !important;
+                line-height: 1.1 !important;
+                padding: 0 10px !important;
+            }
+
+            .text-5xl,
+            .text-6xl,
+            .text-7xl,
+            .text-8xl {
+                font-size: 2.2rem !important;
+                line-height: 1.1 !important;
+            }
+
+            .text-4xl {
+                font-size: 1.8rem !important;
+            }
+
+            .text-3xl {
+                font-size: 1.5rem !important;
+            }
+
+            .scroll-section {
+                padding: 60px 20px !important;
+                min-height: auto !important;
+            }
+
+            section.py-32 {
+                padding-top: 60px !important;
+                padding-bottom: 60px !important;
+            }
+
+            #programs .grid.grid-cols-1.md\:grid-cols-12 {
+                display: flex !important;
+                flex-direction: column;
+                gap: 20px !important;
+            }
+
+            .md\:col-span-8,
+            .md\:col-span-4 {
+                width: 100% !important;
+                height: 300px !important;
+                min-height: 300px !important;
+                padding: 20px !important;
+                margin: 0 !important;
+            }
+
+            .glass.p-12 {
+                padding: 20px !important;
+            }
+
+            .text-5xl.font-sync,
+            .text-4xl.font-sync,
+            .text-3xl.font-sync {
+                font-size: 1.8rem !important;
+                margin-bottom: 10px !important;
+            }
+
+            .modal-overlay {
+                padding: 10px !important;
+            }
+
+            .glass.max-w-2xl {
+                padding: 20px !important;
+                border-radius: 15px !important;
+                max-width: 95% !important;
+            }
+
+            .grid.grid-cols-1.md\:grid-cols-2.gap-5 {
+                gap: 15px !important;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 14px !important;
+                font-size: 16px !important;
+                min-height: 50px !important;
+            }
+
+            button[type="submit"] {
+                padding: 18px !important;
+                font-size: 0.9rem !important;
+            }
+
+            .footer-main-container {
+                flex-direction: column !important;
+                gap: 25px !important;
+                text-align: center !important;
+            }
+
+            .footer-social-container {
+                gap: 15px !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+            }
+
+            .social-link-item {
+                min-width: 60px !important;
+                max-width: 60px !important;
+            }
+
+            .social-link-icon {
+                font-size: 1.3rem !important;
+            }
+
+            .social-link-text {
+                font-size: 0.65rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .footer-text {
+                font-size: 0.7rem !important;
+                line-height: 1.4 !important;
+                text-align: center !important;
+                margin-top: 15px !important;
+            }
+
+            .gallery-item {
+                width: 85vw !important;
+                height: 350px !important;
+                min-height: 350px !important;
+            }
+
+            .gallery-container {
+                gap: 15px !important;
+                padding: 15px 20px !important;
+            }
+
+            .ba-container {
+                height: 400px !important;
+            }
+
+            .ba-handle {
+                width: 40px !important;
+                height: 40px !important;
+            }
+
+            .space-y-8 {
+                margin-top: 30px !important;
+            }
+
+            .h-\[400px\] {
+                height: 250px !important;
+            }
+
+            .grid.md\:grid-cols-2.gap-10 {
+                grid-template-columns: 1fr !important;
+                gap: 30px !important;
+            }
+
+            .grid.grid-cols-2.gap-4 {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+
+            .timing-card {
+                padding: 20px !important;
+            }
+
+            .grid.grid-cols-2.lg\:grid-cols-4.gap-4 {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .glass.p-8 {
+                padding: 15px !important;
+            }
+
+            html,
+            body {
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            .marquee-container {
+                overflow: hidden;
+            }
+
+            .marquee-track {
+                gap: 2rem !important;
+            }
+
+            .font-sync.text-black.font-bold.uppercase.text-xl {
+                font-size: 0.9rem !important;
+            }
+
+            p,
+            .text-lg,
+            .text-xl,
+            .text-2xl {
+                font-size: 1rem !important;
+                line-height: 1.6 !important;
+            }
+
+            .text-xs,
+            .text-sm {
+                font-size: 0.85rem !important;
+            }
+
+            /* Train Like a Lion boxes on mobile */
+            #lion-diamond .bg-black,
+            #lion-diamond .bg-white {
+                padding: 6px 16px !important;
+                font-size: 1.8rem !important;
+            }
+        }
+
+        /* Tablet responsive fixes */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            #hero-section {
+                padding-top: 150px !important;
+            }
+
+            h1.font-sync {
+                font-size: 4.5rem !important;
+                line-height: 0.9 !important;
+            }
+
+            .hero-reveal.inline-block {
+                font-size: 0.7rem !important;
+                padding: 10px 15px !important;
+            }
+        }
+
+        /* Desktop optimization - Live and Powerful on same line */
+        @media (min-width: 1024px) {
+            .hero-reveal.mt-10.lg\:mt-14.max-w-2xl.mx-auto.text-neutral-400.text-lg.md\:text-xl.leading-relaxed {
+                font-size: 1.75rem !important;
+                max-width: 48rem !important;
+            }
+
+            .text-xl.md\:text-2xl.text-neutral-300.leading-relaxed.max-w-3xl.mb-14 {
+                font-size: 1.75rem !important;
+            }
+
+            .text-neutral-500.text-sm.max-w-xs.leading-relaxed.uppercase.tracking-widest {
+                font-size: 1rem !important;
+                max-width: 20rem !important;
+                text-align: right !important;
+                margin-top: 0 !important;
+            }
+
+            /* Force Live and Powerful on same line */
+            h1.hero-reveal .flex {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                justify-content: center !important;
+                align-items: center !important;
+                gap: 1.5rem !important;
+                white-space: nowrap !important;
+                width: 100% !important;
+            }
+
+            h1.hero-reveal .flex span {
+                display: inline-block !important;
+                font-size: inherit !important;
+                white-space: nowrap !important;
+            }
+
+            /* Train Like a Lion boxes on desktop */
+            #lion-diamond .bg-black,
+            #lion-diamond .bg-white {
+                padding: 12px 32px !important;
+                font-size: 3.5rem !important;
+            }
+        }
+
+        /* TOUCH-FRIENDLY IMPROVEMENTS */
+        button,
+        .btn-premium-cta,
+        .slider-nav-btn,
+        .fab,
+        .social-link-item {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .benefit-icon {
+            color: var(--pink);
+            flex-shrink: 0;
+        }
+
+        .timing-card {
+            background: linear-gradient(135deg, rgba(255, 20, 147, 0.1), rgba(255, 215, 0, 0.05));
+            border: 1px solid rgba(255, 20, 147, 0.2);
+        }
+
+        /* SOCIAL MEDIA ICONS - UPDATED WITH BRAND COLORS (icons only) */
+        .footer-social-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+
+        .social-link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            min-width: 70px;
+        }
+
+        .social-link-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-link-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-link-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.7);
+            transition: color 0.3s ease;
+            text-align: center;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .social-link-item:hover .social-link-text {
+            color: white;
+        }
+
+        /* Brand colors for icons */
+        .social-link-item[data-brand="instagram-diamond"] .social-link-icon,
+        .social-link-item[data-brand="instagram-lion"] .social-link-icon {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .social-link-item[data-brand="youtube"] .social-link-icon {
+            color: #FF0000;
+        }
+
+        .social-link-item[data-brand="whatsapp"] .social-link-icon {
+            color: #25D366;
+        }
+
+        .social-link-item[data-brand="facebook"] .social-link-icon {
+            color: #1877F2;
+        }
+
+        /* Hover effects keep brand colors, no whitewash */
+        .social-link-item:hover .social-link-icon {
+            filter: brightness(1.2);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .footer-social-container {
+                gap: 1.25rem;
+                margin: 1.5rem 0;
+                justify-content: center;
+                padding: 0 10px;
+            }
+
+            .social-link-item {
+                min-width: 65px;
+                max-width: 65px;
+                flex: 0 0 auto;
+            }
+
+            .social-link-icon {
+                font-size: 1.4rem;
+                margin-bottom: 0.4rem;
+            }
+
+            .social-link-text {
+                font-size: 0.7rem;
+                line-height: 1.1;
+                white-space: normal;
+                word-break: break-word;
+                max-width: 65px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1023px) {
+            .footer-social-container {
+                gap: 2rem;
+                margin: 1.5rem 0;
+            }
+
+            .social-link-item {
+                min-width: 75px;
+            }
+
+            .social-link-icon {
+                font-size: 1.6rem;
+            }
+
+            .social-link-text {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .footer-social-container {
+                gap: 2.5rem;
+                margin: 0;
+                flex-wrap: nowrap;
+                width: auto;
+            }
+
+            .social-link-item {
+                min-width: 85px;
+            }
+
+            .social-link-icon {
+                font-size: 1.75rem;
+            }
+
+            .social-link-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        .footer-main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .footer-main-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1.5rem;
+                text-align: left;
+            }
+
+            .footer-social-container {
+                margin: 0;
+                order: 2;
+                flex: 0 0 auto;
+            }
+
+            .logo-icon {
+                order: 1;
+                flex: 0 0 auto;
+            }
+
+            .footer-text {
+                order: 3;
+                flex: 1 1 auto;
+                text-align: right;
+                min-width: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader">
+        <div class="logo-icon scale-150"><svg class="icon-svg" viewBox="0 0 24 24">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z" />
+            </svg></div>
+    </div>
 
     <div id="lightbox" onclick="closeLightbox()">
         <img id="lightbox-img" src="">
         <video id="lightbox-video" src="" controls playsinline></video>
-        <button class="absolute top-10 right-10 text-white opacity-50 hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-10 h-10"></i></button>
+        <button class="absolute top-10 right-10 text-white opacity-50 hover:opacity-100 transition-opacity"><i
+                data-lucide="x" class="w-10 h-10"></i></button>
     </div>
 
     <div id="appointment-modal" class="modal-overlay">
         <div class="glass max-w-2xl w-full p-8 lg:p-12 rounded-3xl text-white modal-container-inner">
-            <button onclick="closeModal('appointment-modal')" class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <button onclick="closeModal('appointment-modal')"
+                class="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"><i data-lucide="x"
+                    class="w-8 h-8"></i></button>
             <div class="text-center mb-8">
-                <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic text-[var(--pink)]">Appointment Form</h3>
-                <p class="text-neutral-500 text-[11px] mt-2 tracking-[0.2em] uppercase font-bold">Appoinment Book Pannunga</p>
+                <h3 class="text-2xl lg:text-3xl font-sync font-bold uppercase italic text-[var(--pink)]">Appointment
+                    Form</h3>
+                <p class="text-neutral-500 text-[11px] mt-2 tracking-[0.2em] uppercase font-bold">Appoinment Book
+                    Pannunga</p>
             </div>
             <form id="lead-form" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Full Name / பெயர்</label>
-                    <input type="text" name="full_name" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Full Name /
+                        பெயர்</label>
+                    <input type="text" name="full_name" required
+                        class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Mobile Number / மொபைல் எண்</label>
-                    <input type="tel" name="phone" required class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Mobile Number /
+                        மொபைல் எண்</label>
+                    <input type="tel" name="phone" required
+                        class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Age / வயது (optional)</label>
-                    <input type="number" name="age" class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Age / வயது
+                        (optional)</label>
+                    <input type="number" name="age"
+                        class="w-full bg-white/5 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Select Branch / கிளை தேர்வு</label>
-                    <select name="branch" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Select Branch /
+                        கிளை தேர்வு</label>
+                    <select name="branch"
+                        class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                         <option>Diamond Fitness - Surya Nagar</option>
                         <option>Lion Fitness - Iyer Bungalow</option>
                     </select>
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Interested Program / பயிற்சி</label>
-                    <select id="program-select" name="program" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Interested
+                        Program / பயிற்சி</label>
+                    <select id="program-select" name="program"
+                        class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                         <option value="Weight Loss">Weight Loss</option>
                         <option value="Yoga">Yoga</option>
                         <option value="Zumba">Zumba</option>
@@ -369,62 +1370,112 @@
                     </select>
                 </div>
                 <div class="md:col-span-1">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Preferred Time / விருப்ப நேரம்</label>
-                    <select name="preferred_time" class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Preferred Time
+                        / விருப்ப நேரம்</label>
+                    <select name="preferred_time"
+                        class="w-full bg-neutral-900 border border-white/10 p-4 outline-none focus:border-[var(--pink)] rounded-lg">
                         <option>Morning (6:30 AM - 11:00 AM)</option>
                         <option>Evening (5:30 PM - 8:30 PM)</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Message (optional)</label>
-                    <textarea name="message" class="w-full bg-white/5 border border-white/10 p-4 h-20 outline-none focus:border-[var(--pink)] rounded-lg"></textarea>
+                    <label class="block text-[10px] uppercase tracking-widest mb-1 opacity-50 font-bold">Message
+                        (optional)</label>
+                    <textarea name="message"
+                        class="w-full bg-white/5 border border-white/10 p-4 h-20 outline-none focus:border-[var(--pink)] rounded-lg"></textarea>
                 </div>
-                <button type="submit" class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Send via WhatsApp</button>
+                <button type="submit"
+                    class="md:col-span-2 w-full bg-[var(--pink)] p-5 font-bold uppercase tracking-widest rounded-lg text-white shadow-xl shadow-pink-900/30">Send
+                    via WhatsApp</button>
             </form>
         </div>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- ============================================= -->
+    <!-- REDESIGNED MOBILE MENU - CLEAN & ELEGANT      -->
+    <!-- ============================================= -->
     <div id="mobile-menu-overlay">
         <div class="mobile-menu-header">
             <span class="mobile-menu-brand">DIAMOND <span>&</span> LION</span>
-            <button id="close-menu"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button id="close-menu">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
         </div>
+
         <div class="mobile-menu-content">
-            <a href="events.html" class="mobile-nav-link"><span>Events</span><i data-lucide="arrow-up-right"></i></a>
-            <a href="#programs" class="mobile-nav-link"><span>Programs</span><i data-lucide="dumbbell"></i></a>
-            <a href="#why-choose" class="mobile-nav-link"><span>Why Choose Us</span><i data-lucide="star"></i></a>
-            <a href="#about-details" class="mobile-nav-link"><span>About Us</span><i data-lucide="users"></i></a>
-            <a href="#lion-diamond" class="mobile-nav-link"><span>Our Philosophy</span><i data-lucide="diamond"></i></a>
-            <a href="gallery.html" class="mobile-nav-link"><span>Gallery</span><i data-lucide="images"></i></a>
-            <a href="results.html" class="mobile-nav-link"><span>Results</span><i data-lucide="trending-up"></i></a>
+            <a href="events.html" class="mobile-nav-link">
+                <span>Events</span>
+                <i data-lucide="arrow-up-right"></i>
+            </a>
+            <a href="#programs" class="mobile-nav-link">
+                <span>Programs</span>
+                <i data-lucide="dumbbell"></i>
+            </a>
+            <a href="#why-choose" class="mobile-nav-link">
+                <span>Why Choose Us</span>
+                <i data-lucide="star"></i>
+            </a>
+            <a href="#about-details" class="mobile-nav-link">
+                <span>About Us</span>
+                <i data-lucide="users"></i>
+            </a>
+            <a href="#lion-diamond" class="mobile-nav-link">
+                <span>Our Philosophy</span>
+                <i data-lucide="diamond"></i>
+            </a>
+            <a href="gallery.html" class="mobile-nav-link">
+                <span>Gallery</span>
+                <i data-lucide="images"></i>
+            </a>
+            <a href="results.html" class="mobile-nav-link">
+                <span>Results</span>
+                <i data-lucide="trending-up"></i>
+            </a>
         </div>
+
         <div class="mobile-menu-footer">
             <div class="mobile-menu-hours">
                 <span>Diamond Fitness</span> • Surya Nagar<br>
                 <span>Lion Fitness</span> • Iyer Bungalow<br>
                 6:30 AM – 11:00 AM • 5:30 PM – 8:30 PM
             </div>
-            <button id="mobile-book-btn"><i data-lucide="calendar"></i>Book Appointment</button>
+
+            <button id="mobile-book-btn">
+                <i data-lucide="calendar"></i>
+                Book Appointment
+            </button>
+
             <div class="mobile-menu-social">
-                <a href="https://www.instagram.com/diamond_.fitness" target="_blank" class="mobile-social-link"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://www.instagram.com/lionfitness_madurai" target="_blank" class="mobile-social-link"><i class="fa-brands fa-instagram"></i></a>
-                <a href="https://wa.me/919585121321" target="_blank" class="mobile-social-link"><i class="fa-brands fa-whatsapp"></i></a>
-                <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="mobile-social-link"><i class="fa-brands fa-youtube"></i></a>
+                <a href="https://www.instagram.com/diamond_.fitness" target="_blank" class="mobile-social-link">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://www.instagram.com/lionfitness_madurai" target="_blank" class="mobile-social-link">
+                    <i class="fa-brands fa-instagram"></i>
+                </a>
+                <a href="https://wa.me/919585121321" target="_blank" class="mobile-social-link">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="mobile-social-link">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
             </div>
         </div>
     </div>
 
     <div class="fab-container">
         <a href="tel:+919585121321" class="fab fab-call" title="Call Us"><i class="fa-solid fa-phone"></i></a>
-        <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+        <a href="https://wa.me/919585121321" target="_blank" class="fab fab-whatsapp" title="WhatsApp Us"><i
+                class="fa-brands fa-whatsapp text-3xl"></i></a>
     </div>
 
     <video muted loop playsinline preload="auto" id="hero-video-bg"></video>
 
-    <nav class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
+    <nav
+        class="fixed top-0 left-0 w-full z-50 px-4 lg:px-14 py-8 lg:py-10 flex justify-between items-center nav-gradient">
         <div class="logo-icon flex-shrink-0">
-            <svg class="icon-svg flex-shrink-0" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
+            <svg class="icon-svg flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z" />
+            </svg>
             <div class="brand-text font-bold tracking-tighter uppercase font-sync italic text-white whitespace-nowrap">
                 DIAMOND <span class="text-[var(--pink)]">&</span> LION <span class="text-[var(--pink)]">FITNESS</span>
             </div>
@@ -439,50 +1490,74 @@
             <a href="results.html" class="hover:text-[var(--pink)] transition-colors">Results</a>
         </div>
         <div class="flex items-center gap-4">
-            <button onclick="openModal('appointment-modal')" class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">Book Appointment</button>
-            <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors"><i data-lucide="menu" class="w-9 h-9"></i></button>
+            <button onclick="openModal('appointment-modal')"
+                class="hidden sm:block glass px-10 py-4 text-[10px] font-bold uppercase tracking-widest rounded-full hover:bg-white hover:text-black transition-all text-white">Book
+                Appointment</button>
+            <button id="open-menu" class="lg:hidden p-2 text-white hover:text-[var(--pink)] transition-colors"><i
+                    data-lucide="menu" class="w-9 h-9"></i></button>
         </div>
     </nav>
 
     <div id="smooth-wrapper">
         <div id="smooth-content">
-            
+
             <section class="scroll-section pt-48 lg:pt-64" id="hero-section">
                 <div class="text-center w-full px-4">
-                    <div class="hero-reveal inline-block px-6 lg:px-8 py-3 bg-white text-black text-[13.5px] lg:text-lg font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
+                    <div
+                        class="hero-reveal inline-block px-6 lg:px-8 py-3 bg-white text-black text-[13.5px] lg:text-lg font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
-                    
-                    <!-- FIXED HERO HEADING - Live Powerful stays together -->
-                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white" style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
+                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white"
+                        style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
                         Move <span class="text-[var(--pink)]">Strong.</span><br>
                         Live <span class="text-[var(--pink)] whitespace-nowrap">Powerful.</span>
                     </h1>
-                    
-                    <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed" style="margin-top: 4rem !important;">
-                        Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
+                    <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed"
+                        style="margin-top: 4rem !important;">
+                        Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance,
+                        and discipline. No machines. No heavy weights. Just your body, and your energy.
                     </p>
                     <div class="hero-reveal mt-10 lg:mt-14 flex flex-col sm:flex-row gap-6 justify-center px-4">
-                        <button onclick="openModal('appointment-modal')" class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl">Join Today</button>
-                        <button onclick="openModal('appointment-modal')" class="glass text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book an Appointment</button>
+                        <button onclick="openModal('appointment-modal')"
+                            class="bg-[var(--pink)] text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:scale-105 shadow-xl">Join
+                            Today</button>
+                        <button onclick="openModal('appointment-modal')"
+                            class="glass text-white px-10 lg:px-12 py-5 font-bold uppercase italic text-sm tracking-[0.2em] transition-all hover:bg-white/10">Book
+                            an Appointment</button>
                     </div>
                 </div>
             </section>
 
             <section class="scroll-section" id="events-section">
                 <div class="max-w-5xl px-4 text-center lg:text-left">
-                    <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">Fitness Beyond Machines</span>
-                    <h2 class="text-6xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-12 text-white">
+                    <span class="text-[var(--yellow)] text-xs font-bold uppercase tracking-[0.4em]">Fitness Beyond
+                        Machines</span>
+                    <h2
+                        class="text-6xl md:text-8xl font-sync font-bold uppercase italic leading-[0.9] mt-8 mb-12 text-white">
                         Master Your<br><span class="text-[var(--pink)]">Body.</span>
                     </h2>
                     <p class="text-xl md:text-2xl text-neutral-300 leading-relaxed max-w-3xl mb-14">
-                        We believe real fitness comes from mastering your own body. Located in the heart of Madurai, we are a no-equipment fitness center focused on activities that improve strength, flexibility, endurance, and mental well-being for the women and youth of Madurai.
+                        We believe real fitness comes from mastering your own body. Located in the heart of Madurai, we
+                        are a no-equipment fitness center focused on activities that improve strength, flexibility,
+                        endurance, and mental well-being for the women and youth of Madurai.
                     </p>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 w-full">
-                        <div class="glass p-8 text-center"><div class="text-[var(--pink)] font-bold text-3xl mb-2 font-sync">0%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Weights</div></div>
-                        <div class="glass p-8 text-center"><div class="text-white font-bold text-3xl mb-2 font-sync">100%</div><div class="text-[10px] uppercase tracking-widest opacity-50">Natural</div></div>
-                        <div class="glass p-8 text-center"><div class="text-[var(--yellow)] font-bold text-3xl mb-2 font-sync">24/7</div><div class="text-[10px] uppercase tracking-widest opacity-50">Support</div></div>
-                        <div class="glass p-8 text-center"><div class="text-white font-bold text-3xl mb-2 font-sync">SAFE</div><div class="text-[10px] uppercase tracking-widest opacity-50">Studio</div></div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-[var(--pink)] font-bold text-3xl mb-2 font-sync">0%</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Weights</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-white font-bold text-3xl mb-2 font-sync">100%</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Natural</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-[var(--yellow)] font-bold text-3xl mb-2 font-sync">24/7</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Support</div>
+                        </div>
+                        <div class="glass p-8 text-center">
+                            <div class="text-white font-bold text-3xl mb-2 font-sync">SAFE</div>
+                            <div class="text-[10px] uppercase tracking-widest opacity-50">Studio</div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -490,27 +1565,32 @@
             <main class="bg-[#050505] relative z-10 border-t border-white/5">
                 <div class="bg-white py-6 marquee-container border-b border-white/10">
                     <div class="marquee-track font-sync text-black font-bold uppercase text-xl lg:text-2xl italic">
-                        <span>No Equipment • Women-friendly environment • Certified trainers • High-Energy Sessions • Beginners Welcome • Fun Workouts • No Intimidation • Positive Vibes • </span>
+                        <span>No Equipment • Women-friendly environment • Certified trainers • High-Energy Sessions •
+                            Beginners Welcome • Fun Workouts • No Intimidation • Positive Vibes • </span>
                     </div>
                 </div>
 
-                <!-- Train Like a Lion Section -->
+                <!-- Train Like a Lion Section - FIXED with smaller black boxes and proper spacing -->
                 <section id="lion-diamond" class="py-32 lg:py-40 lion-diamond-section relative z-10">
                     <div class="max-w-7xl mx-auto px-8 text-center">
                         <h2 class="text-4xl md:text-7xl font-sync font-bold uppercase italic leading-relaxed mb-12">
                             <div class="flex flex-col items-center gap-4 md:gap-6">
                                 <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
                                     <span>Train Like a</span>
-                                    <span class="bg-black text-white px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Lion.</span>
+                                    <span
+                                        class="bg-black text-white px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Lion.</span>
                                 </div>
                                 <div class="flex flex-wrap items-center justify-center gap-2 md:gap-4">
                                     <span>Shine Like a</span>
-                                    <span class="bg-white text-black px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Diamond.</span>
+                                    <span
+                                        class="bg-white text-black px-6 md:px-10 py-2 md:py-3 rounded-lg text-3xl md:text-6xl inline-block">Diamond.</span>
                                 </div>
                             </div>
                         </h2>
-                        <p class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
-                            Every session is about consistency, confidence, and progress—not perfection. We build the strength of the beast and the discipline of the gem.
+                        <p
+                            class="text-lg md:text-xl font-bold uppercase tracking-[0.2em] max-w-2xl mx-auto opacity-90 mt-8">
+                            Every session is about consistency, confidence, and progress—not perfection. We build the
+                            strength of the beast and the discipline of the gem.
                         </p>
                     </div>
                 </section>
@@ -519,17 +1599,24 @@
                 <section id="about-details" class="py-32 px-8 max-w-7xl mx-auto">
                     <div class="mb-16">
                         <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Our Mission</span>
-                        <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">About Us.</h2>
+                        <h2
+                            class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">
+                            About Us.</h2>
                     </div>
                     <div class="glass p-12 rounded-3xl">
                         <div class="grid md:grid-cols-2 gap-12 items-center">
                             <div>
-                                <h3 class="text-3xl font-sync font-bold uppercase italic text-[var(--pink)] mb-6">Diamond & Lion Fitness</h3>
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-[var(--pink)] mb-6">
+                                    Diamond & Lion Fitness</h3>
                                 <p class="text-white text-lg leading-relaxed mb-6">
-                                    Diamond & Lion Fitness are dedicated fitness centres focused on women, youth, and overall wellness. Our goal is simple: help you become stronger, healthier, and more confident.
+                                    Diamond & Lion Fitness are dedicated fitness centres focused on women, youth, and
+                                    overall wellness. Our goal is simple: help you become stronger, healthier, and more
+                                    confident.
                                 </p>
                                 <p class="text-white text-lg leading-relaxed">
-                                    With branches in Surya Nagar and Iyer Bungalow, we provide a safe, welcoming environment where everyone can achieve their fitness goals through natural body movements, disciplined training, and positive community support.
+                                    With branches in Surya Nagar and Iyer Bungalow, we provide a safe, welcoming
+                                    environment where everyone can achieve their fitness goals through natural body
+                                    movements, disciplined training, and positive community support.
                                 </p>
                             </div>
                             <div class="grid grid-cols-2 gap-6">
@@ -562,35 +1649,109 @@
                 <section id="why-choose" class="py-32 px-8 bg-white/5">
                     <div class="max-w-7xl mx-auto">
                         <div class="mb-16">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Your Advantage</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">Why Choose Us.</h2>
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Your
+                                Advantage</span>
+                            <h2
+                                class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">
+                                Why Choose Us.</h2>
                         </div>
                         <div class="grid md:grid-cols-2 gap-12">
                             <div class="glass p-12 rounded-3xl">
-                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">Benefits</h3>
+                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">
+                                    Benefits</h3>
                                 <div class="space-y-6">
-                                    <div class="benefit-item"><i data-lucide="users" class="w-6 h-6 benefit-icon"></i><div><div class="text-white font-bold">Women-friendly environment</div><div class="text-neutral-400 text-sm">Safe and comfortable space for all women</div></div></div>
-                                    <div class="benefit-item"><i data-lucide="award" class="w-6 h-6 benefit-icon"></i><div><div class="text-white font-bold">Certified trainers</div><div class="text-neutral-400 text-sm">Professionally trained and experienced coaches</div></div></div>
-                                    <div class="benefit-item"><i data-lucide="clock" class="w-6 h-6 benefit-icon"></i><div><div class="text-white font-bold">Flexible morning & evening batches</div><div class="text-neutral-400 text-sm">Convenient timing for working professionals</div></div></div>
-                                    <div class="benefit-item"><i data-lucide="user" class="w-6 h-6 benefit-icon"></i><div><div class="text-white font-bold">Personal attention</div><div class="text-neutral-400 text-sm">Individualized guidance for each member</div></div></div>
-                                    <div class="benefit-item"><i data-lucide="indian-rupee" class="w-6 h-6 benefit-icon"></i><div><div class="text-white font-bold">Affordable fees</div><div class="text-neutral-400 text-sm">Quality fitness at reasonable prices</div></div></div>
-                                </div>
-                            </div>
-                            
-                            <div class="glass p-12 rounded-3xl">
-                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">Timings & Locations</h3>
-                                <div class="mb-10">
-                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="clock" class="w-5 h-5 text-[var(--pink)]"></i>Timings</h4>
-                                    <div class="grid grid-cols-2 gap-4">
-                                        <div class="timing-card p-6 rounded-xl"><div class="text-[var(--pink)] font-bold text-lg mb-2">Morning</div><div class="text-white text-xl font-bold">6:30 AM – 11:00 AM</div></div>
-                                        <div class="timing-card p-6 rounded-xl"><div class="text-[var(--pink)] font-bold text-lg mb-2">Evening</div><div class="text-white text-xl font-bold">5:30 PM – 8:30 PM</div></div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="users" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Women-friendly environment</div>
+                                            <div class="text-neutral-400 text-sm">Safe and comfortable space for all
+                                                women</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="award" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Certified trainers</div>
+                                            <div class="text-neutral-400 text-sm">Professionally trained and experienced
+                                                coaches</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="clock" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Flexible morning & evening batches</div>
+                                            <div class="text-neutral-400 text-sm">Convenient timing for working
+                                                professionals</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="user" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Personal attention</div>
+                                            <div class="text-neutral-400 text-sm">Individualized guidance for each
+                                                member</div>
+                                        </div>
+                                    </div>
+                                    <div class="benefit-item">
+                                        <i data-lucide="indian-rupee" class="w-6 h-6 benefit-icon"></i>
+                                        <div>
+                                            <div class="text-white font-bold">Affordable fees</div>
+                                            <div class="text-neutral-400 text-sm">Quality fitness at reasonable prices
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="glass p-12 rounded-3xl">
+                                <h3 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-8">
+                                    Timings & Locations</h3>
+
+                                <div class="mb-10">
+                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <i data-lucide="clock" class="w-5 h-5 text-[var(--pink)]"></i>
+                                        Timings
+                                    </h4>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="timing-card p-6 rounded-xl">
+                                            <div class="text-[var(--pink)] font-bold text-lg mb-2">Morning</div>
+                                            <div class="text-white text-xl font-bold">6:30 AM – 11:00 AM</div>
+                                        </div>
+                                        <div class="timing-card p-6 rounded-xl">
+                                            <div class="text-[var(--pink)] font-bold text-lg mb-2">Evening</div>
+                                            <div class="text-white text-xl font-bold">5:30 PM – 8:30 PM</div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div>
-                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i data-lucide="map-pin" class="w-5 h-5 text-[var(--pink)]"></i>Locations</h4>
+                                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <i data-lucide="map-pin" class="w-5 h-5 text-[var(--pink)]"></i>
+                                        Locations
+                                    </h4>
                                     <div class="space-y-4">
-                                        <div class="flex items-start gap-3"><div class="bg-[var(--pink)] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">D</div><div><div class="text-white font-bold">Diamond Fitness – Surya Nagar, Madurai</div><div class="text-neutral-400 text-sm">Main fitness center with complete facilities</div></div></div>
-                                        <div class="flex items-start gap-3"><div class="bg-[var(--yellow)] text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">L</div><div><div class="text-white font-bold">Lion Fitness – Iyer Bungalow, Madurai</div><div class="text-neutral-400 text-sm">Convenient location with modern amenities</div></div></div>
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="bg-[var(--pink)] text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">
+                                                D</div>
+                                            <div>
+                                                <div class="text-white font-bold">Diamond Fitness – Surya Nagar, Madurai
+                                                </div>
+                                                <div class="text-neutral-400 text-sm">Main fitness center with complete
+                                                    facilities</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <div
+                                                class="bg-[var(--yellow)] text-black rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold mt-1">
+                                                L</div>
+                                            <div>
+                                                <div class="text-white font-bold">Lion Fitness – Iyer Bungalow, Madurai
+                                                </div>
+                                                <div class="text-neutral-400 text-sm">Convenient location with modern
+                                                    amenities</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -601,8 +1762,11 @@
                 <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
                     <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
                         <div class="max-w-xl">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Expertly Curated</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-tight">Our Services.</h2>
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Expertly
+                                Curated</span>
+                            <h2
+                                class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-tight">
+                                Our Services.</h2>
                         </div>
                         <p class="text-neutral-500 text-sm max-w-xs leading-relaxed uppercase tracking-widest">
                             Built for Madurai's elite community. Click a service to start your protocol today.
@@ -610,55 +1774,113 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
-                        <div onclick="openBookingWithService('Zumba')" class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
-                            <img id="img-zumba" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                        <div onclick="openBookingWithService('Zumba')"
+                            class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
+                            <img id="img-zumba" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
-                                <span class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block tracking-widest">Core Cardio</span>
-                                <h3 class="text-5xl font-sync font-bold uppercase italic text-white leading-none">Zumba</h3>
-                                <p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dance your way to fat loss with high-energy music and fun choreography.</p>
+                                <span
+                                    class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block tracking-widest">Core
+                                    Cardio</span>
+                                <h3 class="text-5xl font-sync font-bold uppercase italic text-white leading-none">Zumba
+                                </h3>
+                                <p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dance your way to fat loss
+                                    with high-energy music and fun choreography.</p>
                             </div>
                         </div>
-                        <div onclick="openBookingWithService('Yoga')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
-                            <img id="img-yoga" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-4xl font-sync font-bold uppercase italic text-white">Yoga</h3><p class="text-neutral-300 text-sm mt-4 leading-relaxed font-medium">Improve wellness, flexibility, and inner calm through guided sessions.</p></div>
+                        <div onclick="openBookingWithService('Yoga')"
+                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
+                            <img id="img-yoga" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Yoga</h3>
+                                <p class="text-neutral-300 text-sm mt-4 leading-relaxed font-medium">Improve wellness,
+                                    flexibility, and inner calm through guided sessions.</p>
+                            </div>
                         </div>
-                        <div onclick="openBookingWithService('Aerobics')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-aerobics" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-3xl font-sync font-bold uppercase italic text-white">Aerobics</h3><p class="text-neutral-300 text-xs mt-3 font-medium">Boost cardiovascular health with rhythmic aerobic exercise.</p></div>
+                        <div onclick="openBookingWithService('Aerobics')"
+                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-aerobics" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Aerobics</h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Boost cardiovascular health with
+                                    rhythmic aerobic exercise.</p>
+                            </div>
                         </div>
-                        <div onclick="openBookingWithService('Personal Training')" class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-personal_training" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-4xl font-sync font-bold uppercase italic text-white">Personal Training</h3><p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dedicated one-on-one attention to crush your specific fitness goals.</p></div>
+                        <div onclick="openBookingWithService('Personal Training')"
+                            class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-personal_training" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Personal Training
+                                </h3>
+                                <p class="text-neutral-300 mt-4 max-w-md text-sm font-medium">Dedicated one-on-one
+                                    attention to crush your specific fitness goals.</p>
+                            </div>
                         </div>
-                        <div onclick="openBookingWithService('Cardio Exercise')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-cardio" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-3xl font-sync font-bold uppercase italic text-white">Cardio Exercise</h3><p class="text-neutral-300 text-xs mt-3 font-medium">High-stamina training for maximum calorie burn and heart health.</p></div>
+                        <div onclick="openBookingWithService('Cardio Exercise')"
+                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-cardio" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Cardio Exercise
+                                </h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">High-stamina training for maximum
+                                    calorie burn and heart health.</p>
+                            </div>
                         </div>
-                        <div onclick="openBookingWithService('Circuit Training')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-circuit" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-3xl font-sync font-bold uppercase italic text-white">Circuit Training</h3><p class="text-neutral-300 text-xs mt-3 font-medium">Targeted full-body routines using natural bodyweight resistance.</p></div>
+                        <div onclick="openBookingWithService('Circuit Training')"
+                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-circuit" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Circuit Training
+                                </h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Targeted full-body routines using
+                                    natural bodyweight resistance.</p>
+                            </div>
                         </div>
-                        <div onclick="openBookingWithService('Nutrition Guidance')" class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-nutrition" src="" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10"><h3 class="text-3xl font-sync font-bold uppercase italic text-white">Nutrition Guidance</h3><p class="text-neutral-300 text-xs mt-3 font-medium">Expert advice on fuel and recovery to complement your physical training.</p></div>
+                        <div onclick="openBookingWithService('Nutrition Guidance')"
+                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
+                            <img id="img-nutrition" src=""
+                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
+                            <div class="relative z-10">
+                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Nutrition Guidance
+                                </h3>
+                                <p class="text-neutral-300 text-xs mt-3 font-medium">Expert advice on fuel and recovery
+                                    to complement your physical training.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section id="gallery" class="py-32 overflow-hidden bg-white/5 relative z-10">
                     <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
-                        <div><span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual Journey</span><h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">The Portfolio.</h2></div>
-                        <a href="gallery.html" class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View All Portfolio <i data-lucide="arrow-right"></i></a>
+                        <div><span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Visual
+                                Journey</span>
+                            <h2
+                                class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">
+                                The Portfolio.</h2>
+                        </div>
+                        <a href="gallery.html"
+                            class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View
+                            All Portfolio <i data-lucide="arrow-right"></i></a>
                     </div>
                     <div class="gallery-wrapper">
-                        <div class="gallery-container" id="supabase-gallery"></div>
+                        <div class="gallery-container" id="supabase-gallery">
+                            <!-- Gallery items will be loaded here -->
+                        </div>
                     </div>
                 </section>
 
                 <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible">
                     <div class="mb-16">
-                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Evidence of Change</span>
-                        <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic text-white mt-4 leading-none">Elite Success.</h2>
+                        <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Evidence of
+                            Change</span>
+                        <h2
+                            class="text-5xl md:text-7xl font-sync font-bold uppercase italic text-white mt-4 leading-none">
+                            Elite Success.</h2>
                     </div>
 
                     <div class="carousel-nav-container">
@@ -669,39 +1891,75 @@
                     </div>
 
                     <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
-                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10" id="featured-transformation-container"></div>
+                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
+                            id="featured-transformation-container">
+                            <!-- Transformation content will be loaded here -->
+                        </div>
                     </div>
                 </section>
 
                 <section id="arenas" class="py-32 px-8 bg-black relative border-t border-white/5">
                     <div class="max-w-7xl mx-auto">
                         <div class="mb-16">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Locate Our Centers</span>
-                            <h2 class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">Our Arenas.</h2>
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Locate Our
+                                Centers</span>
+                            <h2
+                                class="text-5xl md:text-7xl font-sync font-bold uppercase italic mt-4 text-white leading-none">
+                                Our Arenas.</h2>
                         </div>
                         <div class="grid md:grid-cols-2 gap-10">
                             <div class="glass overflow-hidden rounded-3xl">
                                 <div class="h-[400px] w-full relative">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.294019200129!2d78.15657687503067!3d9.964230690139386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c783d619eaab%3A0x445d0f640794743b!2sDiamond%20fitness%20centre!5e1!3m2!1sen!2sin!4v1770390040431!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    <iframe
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.294019200129!2d78.15657687503067!3d9.964230690139386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c783d619eaab%3A0x445d0f640794743b!2sDiamond%20fitness%20centre!5e1!3m2!1sen!2sin!4v1770390040431!5m2!1sen!2sin"
+                                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                                        referrerpolicy="no-referrer-when-downgrade"></iframe>
                                 </div>
                                 <div class="p-8">
-                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--pink)] mb-4">Diamond Fitness</h4>
-                                    <a href="https://www.google.com/maps/search/?api=1&query=Diamond+Fitness+Surya+Nagar+Madurai" target="_blank" class="block text-neutral-400 text-sm mb-6 uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 group">
-                                        Surya Nagar, Madurai, Tamil Nadu <i data-lucide="external-link" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i><span class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get Directions</span>
+                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--pink)] mb-4">
+                                        Diamond Fitness</h4>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Diamond+Fitness+Surya+Nagar+Madurai"
+                                        target="_blank"
+                                        class="block text-neutral-400 text-sm mb-6 uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 group">
+                                        Surya Nagar, Madurai, Tamil Nadu
+                                        <i data-lucide="external-link"
+                                            class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+                                        <span
+                                            class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get
+                                            Directions</span>
                                     </a>
-                                    <div class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase"><i data-lucide="clock" class="w-3 h-3"></i> Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM</div>
+                                    <div
+                                        class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase">
+                                        <i data-lucide="clock" class="w-3 h-3"></i>
+                                        Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
+                                    </div>
                                 </div>
                             </div>
                             <div class="glass overflow-hidden rounded-3xl">
                                 <div class="h-[400px] w-full relative">
-                                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.257182086398!2d78.13340807583273!3d9.966714973604937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c79c203815d9%3A0xe92feb75291fb904!2sLion%20Fitness%20Madurai!5e1!3m2!1sen!2sin!4v1770390146350!5m2!1sen!2sin" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                    <iframe
+                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.257182086398!2d78.13340807583273!3d9.966714973604937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c79c203815d9%3A0xe92feb75291fb904!2sLion%20Fitness%20Madurai!5e1!3m2!1sen!2sin!4v1770390146350!5m2!1sen!2sin"
+                                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                                        referrerpolicy="no-referrer-when-downgrade"></iframe>
                                 </div>
                                 <div class="p-8">
-                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-4">Lion Fitness</h4>
-                                    <a href="https://www.google.com/maps/search/?api=1&query=Lion+Fitness+Iyer+Bungalow+Madurai" target="_blank" class="block text-neutral-400 text-sm mb-6 uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 group">
-                                        Iyer Bungalow, Madurai, Tamil Nadu <i data-lucide="external-link" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i><span class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get Directions</span>
+                                    <h4 class="text-2xl font-sync font-bold uppercase italic text-[var(--yellow)] mb-4">
+                                        Lion Fitness</h4>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Lion+Fitness+Iyer+Bungalow+Madurai"
+                                        target="_blank"
+                                        class="block text-neutral-400 text-sm mb-6 uppercase tracking-wider hover:text-white transition-colors flex items-center gap-2 group">
+                                        Iyer Bungalow, Madurai, Tamil Nadu
+                                        <i data-lucide="external-link"
+                                            class="w-4 h-4 opacity-50 group-hover:opacity-100"></i>
+                                        <span
+                                            class="text-[10px] text-[var(--pink)] ml-2 border border-[var(--pink)] px-2 py-1 rounded-full">Get
+                                            Directions</span>
                                     </a>
-                                    <div class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase"><i data-lucide="clock" class="w-3 h-3"></i> Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM</div>
+                                    <div
+                                        class="flex items-center gap-2 text-white text-[10px] font-bold tracking-widest uppercase">
+                                        <i data-lucide="clock" class="w-3 h-3"></i>
+                                        Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -710,30 +1968,61 @@
 
                 <section id="booking" class="py-48 px-8 bg-white text-black text-center relative overflow-hidden">
                     <div class="max-w-4xl mx-auto relative z-10 text-black">
-                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic mb-10 text-black">No Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
+                        <h2 class="text-5xl md:text-8xl font-sync font-bold uppercase italic mb-10 text-black">No
+                            Machines.<br><span class="text-[var(--pink)]">No Excuses.</span></h2>
                         <div class="flex flex-col sm:flex-row gap-6 justify-center">
-                            <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Join Today</button>
-                            <button onclick="openModal('appointment-modal')" class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Contact Us</button>
+                            <button onclick="openModal('appointment-modal')"
+                                class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Join
+                                Today</button>
+                            <button onclick="openModal('appointment-modal')"
+                                class="btn-premium-cta px-12 py-7 font-sync font-bold uppercase italic text-lg rounded-sm shadow-2xl">Contact
+                                Us</button>
                         </div>
                     </div>
                 </section>
 
+                <!-- FOOTER WITH BRAND-COLORED SOCIAL ICONS -->
                 <footer class="py-20 px-8 border-t border-white/5 relative z-10 bg-[#050505] text-white">
                     <div class="max-w-7xl mx-auto footer-main-container">
                         <div class="logo-icon mb-6 md:mb-0">
-                            <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z"/></svg>
-                            <div class="text-2xl font-sync font-bold italic uppercase leading-none">DIAMOND <span class="text-[var(--pink)]">&</span> LION</div>
+                            <svg class="icon-svg w-8 h-8" viewBox="0 0 24 24">
+                                <path d="M12 2L2 12l10 10 10-10L12 2zM5.5 12L12 5.5l6.5 6.5-6.5 6.5L5.5 12z" />
+                            </svg>
+                            <div class="text-2xl font-sync font-bold italic uppercase leading-none">DIAMOND <span
+                                    class="text-[var(--pink)]">&</span> LION</div>
                         </div>
-                        
+
+                        <!-- Social media links with brand colors via data attributes -->
                         <div class="footer-social-container">
-                            <a href="https://www.instagram.com/diamond_.fitness?igsh=MTFhanA4cHliN3Z0Mw==" target="_blank" class="social-link-item" data-brand="instagram-diamond"><i class="fa-brands fa-instagram social-link-icon"></i><span class="social-link-text">Diamond Fitness</span></a>
-                            <a href="https://www.instagram.com/lionfitness_madurai?igsh=MTAxdGFobHh2bTY0ag==" target="_blank" class="social-link-item" data-brand="instagram-lion"><i class="fa-brands fa-instagram social-link-icon"></i><span class="social-link-text">Lion Fitness</span></a>
-                            <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="social-link-item" data-brand="youtube"><i class="fa-brands fa-youtube social-link-icon"></i><span class="social-link-text">YouTube</span></a>
-                            <a href="https://wa.me/919585121321" target="_blank" class="social-link-item" data-brand="whatsapp"><i class="fa-brands fa-whatsapp social-link-icon"></i><span class="social-link-text">WhatsApp</span></a>
-                            <a href="https://www.facebook.com/diamondfitness.diamondfitness/" target="_blank" class="social-link-item" data-brand="facebook"><i class="fa-brands fa-facebook social-link-icon"></i><span class="social-link-text">Facebook</span></a>
+                            <a href="https://www.instagram.com/diamond_.fitness?igsh=MTFhanA4cHliN3Z0Mw=="
+                                target="_blank" class="social-link-item" data-brand="instagram-diamond">
+                                <i class="fa-brands fa-instagram social-link-icon"></i>
+                                <span class="social-link-text">Diamond Fitness</span>
+                            </a>
+                            <a href="https://www.instagram.com/lionfitness_madurai?igsh=MTAxdGFobHh2bTY0ag=="
+                                target="_blank" class="social-link-item" data-brand="instagram-lion">
+                                <i class="fa-brands fa-instagram social-link-icon"></i>
+                                <span class="social-link-text">Lion Fitness</span>
+                            </a>
+                            <a href="https://www.youtube.com/@nisha-f4c5c" target="_blank" class="social-link-item"
+                                data-brand="youtube">
+                                <i class="fa-brands fa-youtube social-link-icon"></i>
+                                <span class="social-link-text">YouTube</span>
+                            </a>
+                            <a href="https://wa.me/919585121321" target="_blank" class="social-link-item"
+                                data-brand="whatsapp">
+                                <i class="fa-brands fa-whatsapp social-link-icon"></i>
+                                <span class="social-link-text">WhatsApp</span>
+                            </a>
+                            <a href="https://www.facebook.com/diamondfitness.diamondfitness/" target="_blank"
+                                class="social-link-item" data-brand="facebook">
+                                <i class="fa-brands fa-facebook social-link-icon"></i>
+                                <span class="social-link-text">Facebook</span>
+                            </a>
                         </div>
-                        
-                        <div class="footer-text text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 mt-6 md:mt-0">
+
+                        <div
+                            class="footer-text text-[9px] font-bold uppercase tracking-[0.5em] opacity-40 mt-6 md:mt-0">
                             Madurai's Home for Active Fitness<br>
                             Surya Nagar & Iyer Bungalow<br>
                             Morning: 6:30 AM – 11:00 AM • Evening: 5:30 PM – 8:30 PM
@@ -749,72 +2038,41 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Mobile debug function
-        function debugMobile(message) {
-            const debug = document.getElementById('mobile-debug');
-            if (debug && /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                debug.style.display = 'block';
-                debug.innerHTML = new Date().toLocaleTimeString() + ': ' + message + '<br>' + debug.innerHTML;
-                console.log('[MOBILE DEBUG]', message);
-            }
-        }
-
-        // Timeout wrapper for mobile
-        async function fetchWithTimeout(promise, timeoutMs = 10000) {
-            let timeoutHandle;
-            const timeoutPromise = new Promise((_, reject) => {
-                timeoutHandle = setTimeout(() => reject(new Error('Request timeout on mobile')), timeoutMs);
-            });
-            
-            return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutHandle));
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
-            debugMobile('Page loaded');
-            
             const loader = document.getElementById('loader');
-            if(loader) {
+            if (loader) {
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 300);
             }
 
-            // Initialize Lenis with mobile optimization
-            const lenis = new Lenis({ 
-                duration: 1.2, 
-                smoothWheel: true,
-                smoothTouch: false // Disable on touch devices for better performance
-            });
-            
-            function raf(time) { 
-                lenis.raf(time); 
-                requestAnimationFrame(raf); 
-            }
+            const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
             requestAnimationFrame(raf);
-            
-            if(window.gsap && window.ScrollTrigger && window.lucide) {
+
+            if (window.gsap && window.ScrollTrigger && window.lucide) {
                 gsap.registerPlugin(ScrollTrigger);
                 lucide.createIcons();
             }
-            
+
             // Load all data from Supabase
             loadSupabaseData();
-            
+
             // Mobile menu animations
             const openMenuBtn = document.getElementById('open-menu');
             const closeMenuBtn = document.getElementById('close-menu');
             const mobileMenu = document.getElementById('mobile-menu-overlay');
-            
+
             if (openMenuBtn) {
                 openMenuBtn.addEventListener('click', () => {
                     mobileMenu.style.display = 'flex';
                     setTimeout(() => {
                         mobileMenu.style.opacity = '1';
                         if (window.gsap) {
-                            gsap.fromTo(".mobile-nav-link", 
+                            gsap.fromTo(".mobile-nav-link",
                                 { y: 30, opacity: 0 },
                                 { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: "power3.out" }
                             );
-                            gsap.fromTo("#mobile-book-btn, .mobile-menu-footer", 
+                            gsap.fromTo("#mobile-book-btn, .mobile-menu-footer",
                                 { y: 20, opacity: 0 },
                                 { y: 0, opacity: 1, delay: 0.4, duration: 0.6, ease: "power3.out" }
                             );
@@ -823,11 +2081,11 @@
                     if (window.lenis) window.lenis.stop();
                 });
             }
-            
+
             if (closeMenuBtn) {
                 closeMenuBtn.addEventListener('click', closeMenuFunc);
             }
-            
+
             function closeMenuFunc() {
                 mobileMenu.style.opacity = '0';
                 setTimeout(() => {
@@ -835,13 +2093,14 @@
                 }, 400);
                 if (window.lenis) window.lenis.start();
             }
-            
+
             // Mobile menu link clicks
             document.querySelectorAll('.mobile-nav-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const href = link.getAttribute('href');
-                    
+
+                    // Handle internal anchor links
                     if (href && href.startsWith('#')) {
                         const target = document.querySelector(href);
                         if (target) {
@@ -851,11 +2110,12 @@
                             }, 400);
                         }
                     } else if (href && !href.startsWith('#')) {
+                        // Handle external links
                         window.location.href = href;
                     }
                 });
             });
-            
+
             // Mobile book button
             const mobileBookBtn = document.getElementById('mobile-book-btn');
             if (mobileBookBtn) {
@@ -868,24 +2128,24 @@
             }
 
             // WhatsApp Form Submission
-            document.getElementById('lead-form').addEventListener('submit', function(e) {
+            document.getElementById('lead-form').addEventListener('submit', function (e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const data = Object.fromEntries(formData.entries());
-                
+
                 const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST\n\nName: ${data.full_name}\nPhone: ${data.phone}\nAge: ${data.age || 'Not provided'}\nBranch: ${data.branch}\nProgram: ${data.program}\nPreferred Time: ${data.preferred_time}\nMessage: ${data.message || 'No additional message'}`;
-                
+
                 const encodedMessage = encodeURIComponent(whatsappMessage);
                 const phoneNumber = '919585121321';
                 const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-                
+
                 closeModal('appointment-modal');
-                
+
                 setTimeout(() => {
                     window.open(whatsappURL, '_blank');
                 }, 300);
-                
+
                 this.reset();
             });
         });
@@ -895,150 +2155,121 @@
 
         async function loadSupabaseData() {
             try {
-                debugMobile('Starting Supabase load...');
-                
-                // Check if supabase client exists
+                console.log("Loading Supabase data...");
+
+                // Check if supabase client is initialized
                 if (!supabaseClient) {
-                    debugMobile('ERROR: Supabase client missing');
                     console.error("Supabase client not initialized");
                     return;
                 }
 
-                // Test connection first
-                try {
-                    const testConnection = await fetchWithTimeout(
-                        supabaseClient.from('service_assets').select('count', { count: 'exact', head: true }),
-                        5000
-                    );
-                    debugMobile('Connection test: ' + (testConnection.error ? 'FAIL' : 'OK'));
-                } catch (e) {
-                    debugMobile('Connection failed: ' + e.message);
-                }
-
-                // Fetch all data with timeouts
-                const fetchPromises = [
-                    fetchWithTimeout(supabaseClient.storage.from('hero_video').list(), 8000),
-                    fetchWithTimeout(supabaseClient.from('service_assets').select('*'), 8000),
-                    fetchWithTimeout(supabaseClient.storage.from('gallery').list(), 8000),
-                    fetchWithTimeout(supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true), 8000)
-                ];
-
-                const results = await Promise.allSettled(fetchPromises);
-                
-                results.forEach((result, index) => {
-                    debugMobile(`Request ${index}: ${result.status}`);
-                });
+                // Fetch all data with individual error handling
+                const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
+                    supabaseClient.storage.from('hero_video').list(),
+                    supabaseClient.from('service_assets').select('*'),
+                    supabaseClient.storage.from('gallery').list(),
+                    supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
+                ]);
 
                 // Handle hero video
-                if (results[0].status === 'fulfilled' && results[0].value.data) {
-                    debugMobile('Hero files: ' + results[0].value.data.length);
-                    const videoEl = document.getElementById('hero-video-bg');
-                    const validFiles = results[0].value.data.filter(f => f.name !== '.emptyFolderPlaceholder');
-                    
-                    if (validFiles.length > 0 && videoEl) {
+                const videoEl = document.getElementById('hero-video-bg');
+
+                if (heroRes && heroRes.data && heroRes.data.length > 0) {
+                    const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+
+                    if (validFiles.length > 0) {
                         const videoFile = validFiles[0];
                         const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
-                        
-                        if (vidUrl?.publicUrl) {
+
+                        if (vidUrl && vidUrl.publicUrl) {
                             videoEl.src = vidUrl.publicUrl;
+                            videoEl.muted = true;
+                            videoEl.playsInline = true;
                             videoEl.load();
-                            
-                            // Try to play
-                            videoEl.play().then(() => {
-                                videoEl.style.opacity = '1';
-                                debugMobile('Video playing');
-                            }).catch(e => {
-                                debugMobile('Video play failed: ' + e.message);
-                                // Set opacity anyway so content is visible
-                                videoEl.style.opacity = '1';
-                            });
+
+                            const attemptPlay = () => {
+                                const playPromise = videoEl.play();
+                                if (playPromise !== undefined) {
+                                    playPromise
+                                        .then(() => {
+                                            videoEl.style.opacity = 1;
+                                        })
+                                        .catch(err => {
+                                            console.warn("Autoplay prevented:", err);
+                                            // Add interaction handler
+                                            const unlockVideo = () => {
+                                                videoEl.play().then(() => {
+                                                    videoEl.style.opacity = 1;
+                                                }).catch(() => { });
+                                                document.removeEventListener('touchstart', unlockVideo);
+                                                document.removeEventListener('click', unlockVideo);
+                                            };
+                                            document.addEventListener('touchstart', unlockVideo, { once: true });
+                                            document.addEventListener('click', unlockVideo, { once: true });
+                                        });
+                                }
+                            };
+
+                            if (videoEl.readyState >= 3) {
+                                attemptPlay();
+                            } else {
+                                videoEl.addEventListener('loadeddata', attemptPlay);
+                            }
                         }
-                    } else {
-                        // No video, just show background
-                        document.getElementById('hero-video-bg').style.opacity = '1';
                     }
-                } else {
-                    document.getElementById('hero-video-bg').style.opacity = '1';
                 }
 
                 // Handle service images
-                if (results[1].status === 'fulfilled' && results[1].value.data) {
-                    debugMobile('Services: ' + results[1].value.data.length);
-                    results[1].value.data.forEach(asset => {
+                if (servRes && servRes.data) {
+                    servRes.data.forEach(asset => {
                         const id = asset.id.replace('service_', '');
                         const img = document.getElementById(`img-${id}`);
-                        if(img && asset.image_url) {
+                        if (img && asset.image_url) {
                             img.src = asset.image_url;
-                            debugMobile('Set image: ' + id);
                         }
                     });
                 }
 
                 // Handle gallery
-                if (results[2].status === 'fulfilled' && results[2].value.data) {
-                    debugMobile('Gallery files: ' + results[2].value.data.length);
-                    const galleryContainer = document.getElementById('supabase-gallery');
-                    const files = results[2].value.data.filter(f => f.name !== '.emptyFolderPlaceholder');
-                    
-                    if (galleryContainer) {
-                        galleryContainer.innerHTML = '';
-                        
-                        if (files.length > 0) {
-                            files.forEach((file, i) => {
-                                const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
-                                if (url?.publicUrl) {
-                                    const item = document.createElement('div');
-                                    item.className = 'gallery-item group';
-                                    const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
+                const galleryContainer = document.getElementById('supabase-gallery');
+                if (galleryRes && galleryRes.data && galleryContainer) {
+                    galleryContainer.innerHTML = '';
 
-                                    if (isVideo) {
-                                        item.innerHTML = `
-                                            <video src="${url.publicUrl}" class="w-full h-full object-cover" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
-                                            <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
-                                        `;
-                                    } else {
-                                        item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover" onclick="openLightbox('${url.publicUrl}', 'image')">`;
-                                    }
-                                    galleryContainer.appendChild(item);
-                                    
-                                    if (i === 0) debugMobile('First gallery item added');
+                    const files = galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+
+                    if (files.length > 0) {
+                        files.forEach(file => {
+                            const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                            if (url && url.publicUrl) {
+                                const item = document.createElement('div');
+                                item.className = 'gallery-item group';
+                                const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
+
+                                if (isVideo) {
+                                    item.innerHTML = `
+                                        <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
+                                        <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-auto" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                                    `;
+                                } else {
+                                    item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
                                 }
-                            });
-                            
-                            if(window.lucide) lucide.createIcons();
-                        } else {
-                            // Fallback content
-                            galleryContainer.innerHTML = '<div class="text-white p-4">Gallery coming soon</div>';
-                        }
+                                galleryContainer.appendChild(item);
+                            }
+                        });
+                        if (window.lucide) lucide.createIcons();
                     }
                 }
 
                 // Handle transformations
-                if (results[3].status === 'fulfilled' && results[3].value.data && results[3].value.data.length > 0) { 
-                    featuredResults = results[3].value.data; 
-                    debugMobile('Transformations: ' + featuredResults.length);
-                    renderSlide(0); 
-                } else {
-                    // Fallback transformation
-                    const container = document.getElementById('featured-transformation-container');
-                    if (container) {
-                        container.innerHTML = '<div class="text-white p-4">Success stories coming soon</div>';
-                        container.style.opacity = '1';
-                    }
+                if (transRes && transRes.data && transRes.data.length > 0) {
+                    featuredResults = transRes.data;
+                    renderSlide(0);
                 }
 
-                debugMobile('Load complete!');
                 console.log("Supabase data loaded successfully");
 
-            } catch (err) { 
-                console.error("Load error:", err); 
-                debugMobile('ERROR: ' + err.message);
-                
-                // Show fallback content
-                const galleryContainer = document.getElementById('supabase-gallery');
-                if (galleryContainer) {
-                    galleryContainer.innerHTML = '<div class="text-white p-4">Unable to load gallery. Please check connection.</div>';
-                }
+            } catch (err) {
+                console.error("Load error:", err);
             } finally {
                 // Initialize animations after data is loaded
                 setTimeout(() => {
@@ -1047,62 +2278,62 @@
             }
         }
 
-        function openLightbox(src, type) { 
+        function openLightbox(src, type) {
             const img = document.getElementById('lightbox-img');
             const vid = document.getElementById('lightbox-video');
             if (type === 'video') {
-                img.style.display = 'none'; 
-                vid.style.display = 'block'; 
-                vid.src = src; 
+                img.style.display = 'none';
+                vid.style.display = 'block';
+                vid.src = src;
                 vid.play();
             } else {
-                vid.style.display = 'none'; 
-                vid.pause(); 
-                img.style.display = 'block'; 
+                vid.style.display = 'none';
+                vid.pause();
+                img.style.display = 'block';
                 img.src = src;
             }
-            document.getElementById('lightbox').classList.add('active'); 
-            if(window.lenis) window.lenis.stop(); 
+            document.getElementById('lightbox').classList.add('active');
+            if (window.lenis) window.lenis.stop();
         }
 
-        function closeLightbox() { 
+        function closeLightbox() {
             const vid = document.getElementById('lightbox-video');
-            vid.pause(); 
-            document.getElementById('lightbox').classList.remove('active'); 
-            if(window.lenis) window.lenis.start(); 
+            vid.pause();
+            document.getElementById('lightbox').classList.remove('active');
+            if (window.lenis) window.lenis.start();
         }
 
-        function openBookingWithService(s) { 
-            document.getElementById('program-select').value = s; 
-            openModal('appointment-modal'); 
+        function openBookingWithService(s) {
+            document.getElementById('program-select').value = s;
+            openModal('appointment-modal');
         }
-        
-        function openModal(id) { 
-            document.getElementById(id).classList.add('active'); 
-            document.body.style.overflow = 'hidden'; 
-            if(window.lenis) window.lenis.stop(); 
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (window.lenis) window.lenis.stop();
         }
-        
-        function closeModal(id) { 
-            document.getElementById(id).classList.remove('active'); 
-            document.body.style.overflow = ''; 
-            if(window.lenis) window.lenis.start(); 
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            document.body.style.overflow = '';
+            if (window.lenis) window.lenis.start();
         }
-        
+
         function renderSlide(index) {
             if (!featuredResults || !featuredResults.length) return;
-            
+
             const trans = featuredResults[index];
             if (!trans) return;
-            
+
             const container = document.getElementById('featured-transformation-container');
-            if(!container) return;
-            
-            if(window.gsap) {
-                gsap.to(container, { 
-                    opacity: 0, 
-                    y: 20, 
-                    duration: 0.4, 
+            if (!container) return;
+
+            if (window.gsap) {
+                gsap.to(container, {
+                    opacity: 0,
+                    y: 20,
+                    duration: 0.4,
                     onComplete: () => {
                         container.innerHTML = `
                             <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
@@ -1118,8 +2349,8 @@
                                 <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote || ''}"</p>
                             </div>
                         `;
-                        if(window.lucide) lucide.createIcons(); 
-                        initSliderLogic(); 
+                        if (window.lucide) lucide.createIcons();
+                        initSliderLogic();
                         gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
                     }
                 });
@@ -1129,21 +2360,21 @@
         // Navigation for results slider
         const nextBtn = document.getElementById('next-result');
         const prevBtn = document.getElementById('prev-result');
-        
+
         if (nextBtn) {
-            nextBtn.onclick = () => { 
-                if(featuredResults.length > 0) {
-                    currentSlide = (currentSlide + 1) % featuredResults.length; 
-                    renderSlide(currentSlide); 
+            nextBtn.onclick = () => {
+                if (featuredResults.length > 0) {
+                    currentSlide = (currentSlide + 1) % featuredResults.length;
+                    renderSlide(currentSlide);
                 }
             };
         }
-        
+
         if (prevBtn) {
-            prevBtn.onclick = () => { 
-                if(featuredResults.length > 0) {
-                    currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length; 
-                    renderSlide(currentSlide); 
+            prevBtn.onclick = () => {
+                if (featuredResults.length > 0) {
+                    currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length;
+                    renderSlide(currentSlide);
                 }
             };
         }
@@ -1151,10 +2382,10 @@
         function initSliderLogic() {
             const container = document.querySelector('.ba-container');
             if (!container) return;
-            
+
             const beforeImg = container.querySelector('.ba-after img');
             const afterImg = container.querySelector('.ba-container > img');
-            
+
             if (beforeImg && afterImg) {
                 beforeImg.style.width = '100%';
                 beforeImg.style.height = '100%';
@@ -1163,32 +2394,32 @@
                 afterImg.style.height = '100%';
                 afterImg.style.objectFit = 'cover';
             }
-            
+
             const update = (clientX) => {
                 const rect = container.getBoundingClientRect();
                 let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
                 let p = (x / rect.width) * 100;
-                
+
                 p = Math.max(0, Math.min(100, p));
-                
+
                 const baAfter = document.getElementById('baAfter');
                 const baHandle = document.getElementById('baHandle');
-                
+
                 if (baAfter) baAfter.style.width = p + '%';
                 if (baHandle) baHandle.style.left = p + '%';
             };
-            
+
             let isMouseOver = false;
-            
+
             container.addEventListener('mouseenter', () => { isMouseOver = true; });
             container.addEventListener('mouseleave', () => { isMouseOver = false; });
-            
+
             container.addEventListener('mousemove', (e) => {
                 if (isMouseOver) update(e.clientX);
             });
-            
+
             let isTouching = false;
-            
+
             container.addEventListener('touchstart', (e) => {
                 if (e.touches.length > 0) {
                     isTouching = true;
@@ -1196,17 +2427,17 @@
                     e.preventDefault();
                 }
             }, { passive: false });
-            
+
             container.addEventListener('touchmove', (e) => {
                 if (isTouching && e.touches.length > 0) {
                     update(e.touches[0].clientX);
                     e.preventDefault();
                 }
             }, { passive: false });
-            
+
             container.addEventListener('touchend', () => { isTouching = false; });
             container.addEventListener('click', (e) => update(e.clientX));
-            
+
             // Set initial position to middle
             setTimeout(() => {
                 const rect = container.getBoundingClientRect();
@@ -1217,21 +2448,21 @@
         }
 
         function initGSAPAnimations() {
-            if(window.gsap && window.ScrollTrigger) {
+            if (window.gsap && window.ScrollTrigger) {
                 // Hero animations
                 gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
-                
+
                 // Parallax effect on hero
-                gsap.to("#hero-section", { 
-                    scrollTrigger: { 
-                        trigger: "#hero-section", 
-                        start: "top top", 
-                        scrub: true 
-                    }, 
-                    opacity: 0.5, 
-                    y: -100 
+                gsap.to("#hero-section", {
+                    scrollTrigger: {
+                        trigger: "#hero-section",
+                        start: "top top",
+                        scrub: true
+                    },
+                    opacity: 0.5,
+                    y: -100
                 });
-                
+
                 // Lion Diamond section animation
                 gsap.from("#lion-diamond h2", {
                     scrollTrigger: {
@@ -1244,37 +2475,38 @@
                     y: 100,
                     duration: 1.5
                 });
-                
+
                 // Gallery horizontal scroll (desktop only)
                 ScrollTrigger.matchMedia({
-                    "(min-width: 1024px)": function() {
+                    "(min-width: 1024px)": function () {
                         const gallery = document.querySelector('.gallery-container');
-                        if (gallery && gallery.children.length > 0) { 
-                            gsap.to(gallery, { 
-                                x: () => -(gallery.scrollWidth - window.innerWidth), 
-                                ease: "none", 
-                                scrollTrigger: { 
-                                    trigger: "#gallery", 
-                                    start: "top top", 
-                                    end: () => "+=" + (gallery.scrollWidth - window.innerWidth), 
-                                    scrub: 1, 
-                                    pin: true, 
-                                    anticipatePin: 1 
-                                } 
-                            }); 
+                        if (gallery && gallery.children.length > 0) {
+                            gsap.to(gallery, {
+                                x: () => -(gallery.scrollWidth - window.innerWidth),
+                                ease: "none",
+                                scrollTrigger: {
+                                    trigger: "#gallery",
+                                    start: "top top",
+                                    end: () => "+=" + (gallery.scrollWidth - window.innerWidth),
+                                    scrub: 1,
+                                    pin: true,
+                                    anticipatePin: 1
+                                }
+                            });
                         }
                     }
                 });
 
                 // Marquee animation
-                gsap.to(".marquee-track", { 
-                    xPercent: -50, 
-                    ease: "none", 
-                    duration: 30, 
-                    repeat: -1 
+                gsap.to(".marquee-track", {
+                    xPercent: -50,
+                    ease: "none",
+                    duration: 30,
+                    repeat: -1
                 });
             }
         }
     </script>
 </body>
+
 </html>
