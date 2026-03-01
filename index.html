@@ -2033,49 +2033,46 @@
         </div>
     </div>
 
-    <script>
+    
+<script>
         const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         document.addEventListener('DOMContentLoaded', () => {
             const loader = document.getElementById('loader');
-            if (loader) {
+            if(loader) {
                 loader.style.opacity = '0';
                 setTimeout(() => loader.style.display = 'none', 300);
             }
 
-            if (typeof Lenis !== 'undefined') {
-                const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-                window.lenis = lenis;
-                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-                requestAnimationFrame(raf);
-            }
-
-            if (window.gsap && window.ScrollTrigger && window.lucide) {
+            const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+            
+            if(window.gsap && window.ScrollTrigger && window.lucide) {
                 gsap.registerPlugin(ScrollTrigger);
                 lucide.createIcons();
             }
-
-            // Load all data from Supabase
+            
             loadSupabaseData();
-
+            
             // Mobile menu animations
             const openMenuBtn = document.getElementById('open-menu');
             const closeMenuBtn = document.getElementById('close-menu');
             const mobileMenu = document.getElementById('mobile-menu-overlay');
-
+            
             if (openMenuBtn) {
                 openMenuBtn.addEventListener('click', () => {
                     mobileMenu.style.display = 'flex';
                     setTimeout(() => {
                         mobileMenu.style.opacity = '1';
                         if (window.gsap) {
-                            gsap.fromTo(".mobile-nav-link",
+                            gsap.fromTo(".mobile-nav-link", 
                                 { y: 30, opacity: 0 },
                                 { y: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: "power3.out" }
                             );
-                            gsap.fromTo("#mobile-book-btn, .mobile-menu-footer",
+                            gsap.fromTo("#mobile-book-btn, .mobile-menu-footer", 
                                 { y: 20, opacity: 0 },
                                 { y: 0, opacity: 1, delay: 0.4, duration: 0.6, ease: "power3.out" }
                             );
@@ -2084,11 +2081,11 @@
                     if (window.lenis) window.lenis.stop();
                 });
             }
-
+            
             if (closeMenuBtn) {
                 closeMenuBtn.addEventListener('click', closeMenuFunc);
             }
-
+            
             function closeMenuFunc() {
                 mobileMenu.style.opacity = '0';
                 setTimeout(() => {
@@ -2096,13 +2093,13 @@
                 }, 400);
                 if (window.lenis) window.lenis.start();
             }
-
+            
             // Mobile menu link clicks
             document.querySelectorAll('.mobile-nav-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const href = link.getAttribute('href');
-
+                    
                     // Handle internal anchor links
                     if (href && href.startsWith('#')) {
                         const target = document.querySelector(href);
@@ -2118,7 +2115,7 @@
                     }
                 });
             });
-
+            
             // Mobile book button
             const mobileBookBtn = document.getElementById('mobile-book-btn');
             if (mobileBookBtn) {
@@ -2129,28 +2126,6 @@
                     }, 400);
                 });
             }
-
-            // WhatsApp Form Submission
-            document.getElementById('lead-form').addEventListener('submit', function (e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-                const data = Object.fromEntries(formData.entries());
-
-                const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST\n\nName: ${data.full_name}\nPhone: ${data.phone}\nAge: ${data.age || 'Not provided'}\nBranch: ${data.branch}\nProgram: ${data.program}\nPreferred Time: ${data.preferred_time}\nMessage: ${data.message || 'No additional message'}`;
-
-                const encodedMessage = encodeURIComponent(whatsappMessage);
-                const phoneNumber = '919585121321';
-                const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-                closeModal('appointment-modal');
-
-                setTimeout(() => {
-                    window.open(whatsappURL, '_blank');
-                }, 300);
-
-                this.reset();
-            });
         });
 
         let featuredResults = [];
@@ -2158,246 +2133,177 @@
 
         async function loadSupabaseData() {
             try {
-                console.log("Loading Supabase data...");
-
-                // Check if supabase client is initialized
-                if (!supabaseClient) {
-                    console.error("Supabase client not initialized");
-                    return;
-                }
-
-                // Safe fetch wrapper to avoid unhandled rejections blocking Promise.all
-                const safeFetch = async (prom) => {
-                    try { return await prom; } catch (e) { return { error: e }; }
-                };
-
-                // Fetch all data with individual error handling
                 const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
-                    safeFetch(supabaseClient.storage.from('hero_video').list()),
-                    safeFetch(supabaseClient.from('service_assets').select('*')),
-                    safeFetch(supabaseClient.storage.from('gallery').list()),
-                    safeFetch(supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true))
+                    supabaseClient.storage.from('hero_video').list(),
+                    supabaseClient.from('service_assets').select('*'),
+                    supabaseClient.storage.from('gallery').list(),
+                    supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
                 ]);
 
-                // Handle hero video
                 const videoEl = document.getElementById('hero-video-bg');
-
-                if (heroRes && heroRes.data && heroRes.data.length > 0) {
+                
+                if (heroRes.data && heroRes.data.length > 0) {
                     const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
-
+                    
                     if (validFiles.length > 0) {
-                        const videoFile = validFiles[0];
+                        const videoFile = validFiles[0]; 
                         const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
+                        
+                        videoEl.src = vidUrl.publicUrl;
+                        videoEl.muted = true;
+                        videoEl.playsInline = true;
+                        videoEl.load();
 
-                        if (vidUrl && vidUrl.publicUrl) {
-                            videoEl.src = vidUrl.publicUrl;
-                            videoEl.muted = true;
-                            videoEl.playsInline = true;
-                            videoEl.load();
-
-                            const attemptPlay = () => {
-                                const playPromise = videoEl.play();
-                                if (playPromise !== undefined) {
-                                    playPromise
-                                        .then(() => {
+                        const attemptPlay = () => {
+                            const playPromise = videoEl.play();
+                            if (playPromise !== undefined) {
+                                playPromise
+                                    .then(() => {
+                                        videoEl.style.opacity = 1;
+                                    })
+                                    .catch(err => {
+                                        console.warn("Autoplay fallback engaged");
+                                        const unlockVideo = () => {
+                                            videoEl.play();
                                             videoEl.style.opacity = 1;
-                                        })
-                                        .catch(err => {
-                                            console.warn("Autoplay prevented:", err);
-                                            const unlockVideo = () => {
-                                                const p = videoEl.play();
-                                                if (p !== undefined) {
-                                                    p.then(() => { videoEl.style.opacity = 1; }).catch(() => { });
-                                                } else {
-                                                    videoEl.style.opacity = 1;
-                                                }
-                                                document.removeEventListener('touchstart', unlockVideo);
-                                                document.removeEventListener('click', unlockVideo);
-                                            };
-                                            document.addEventListener('touchstart', unlockVideo, { once: true });
-                                            document.addEventListener('click', unlockVideo, { once: true });
-                                        });
-                                } else {
-                                    videoEl.style.opacity = 1;
-                                }
-                            };
-
-                            if (videoEl.readyState >= 3) {
-                                attemptPlay();
-                            } else {
-                                videoEl.addEventListener('loadeddata', attemptPlay);
+                                            document.removeEventListener('touchstart', unlockVideo);
+                                            document.removeEventListener('click', unlockVideo);
+                                        };
+                                        document.addEventListener('touchstart', unlockVideo, { once: true });
+                                        document.addEventListener('click', unlockVideo, { once: true });
+                                    });
                             }
+                        };
+
+                        if (videoEl.readyState >= 3) {
+                            attemptPlay();
+                        } else {
+                            videoEl.addEventListener('loadeddata', attemptPlay);
                         }
                     }
                 }
 
-                // Handle service images
-                if (servRes && servRes.data) {
-                    servRes.data.forEach(asset => {
-                        const id = asset.id.replace('service_', '');
-                        const img = document.getElementById(`img-${id}`);
-                        if (img && asset.image_url) {
-                            img.src = asset.image_url;
-                        }
-                    });
-                }
+                servRes.data?.forEach(asset => {
+                    const id = asset.id.replace('service_', '');
+                    const img = document.getElementById(`img-${id}`);
+                    if(img) img.src = asset.image_url;
+                });
 
-                // Handle gallery
                 const galleryContainer = document.getElementById('supabase-gallery');
-                if (galleryRes && galleryRes.data && galleryContainer) {
+                if(galleryRes.data) {
                     galleryContainer.innerHTML = '';
+                    galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
+                        const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item group';
+                        const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
 
-                    const files = galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
-
-                    if (files.length > 0) {
-                        files.forEach(file => {
-                            const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
-                            if (url && url.publicUrl) {
-                                const item = document.createElement('div');
-                                item.className = 'gallery-item group';
-                                const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
-
-                                if (isVideo) {
-                                    item.innerHTML = `
-                                        <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
-                                        <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-auto" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
-                                    `;
-                                } else {
-                                    item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
-                                }
-                                galleryContainer.appendChild(item);
-                            }
-                        });
-                        if (window.lucide) lucide.createIcons();
-                    }
+                        if (isVideo) {
+                            item.innerHTML = `
+                                <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
+                                <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-none"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                            `;
+                        } else {
+                            item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
+                        }
+                        galleryContainer.appendChild(item);
+                    });
+                    if(window.lucide) lucide.createIcons();
                 }
 
-                // Handle transformations
-                if (transRes && transRes.data && transRes.data.length > 0) {
-                    featuredResults = transRes.data;
-                    renderSlide(0);
+                if(transRes.data?.length) { 
+                    featuredResults = transRes.data; 
+                    renderSlide(0); 
                 }
 
-                console.log("Supabase data loaded successfully");
-
-            } catch (err) {
-                console.error("Load error:", err);
-            } finally {
-                // Initialize animations after data is loaded
-                setTimeout(() => {
-                    initGSAPAnimations();
-                }, 100);
+            } catch (err) { console.error("Load error:", err); }
+            finally {
+                initGSAPAnimations();
             }
         }
 
-        function openLightbox(src, type) {
+        function openLightbox(src, type) { 
             const img = document.getElementById('lightbox-img');
             const vid = document.getElementById('lightbox-video');
             if (type === 'video') {
-                img.style.display = 'none';
-                vid.style.display = 'block';
-                vid.src = src;
-                vid.play();
+                img.style.display = 'none'; vid.style.display = 'block'; vid.src = src; vid.play();
             } else {
-                vid.style.display = 'none';
-                vid.pause();
-                img.style.display = 'block';
-                img.src = src;
+                vid.style.display = 'none'; vid.pause(); img.style.display = 'block'; img.src = src;
             }
-            document.getElementById('lightbox').classList.add('active');
-            if (window.lenis) window.lenis.stop();
+            document.getElementById('lightbox').classList.add('active'); 
+            if(window.lenis) window.lenis.stop(); 
         }
 
-        function closeLightbox() {
+        function closeLightbox() { 
             const vid = document.getElementById('lightbox-video');
-            vid.pause();
-            document.getElementById('lightbox').classList.remove('active');
-            if (window.lenis) window.lenis.start();
+            vid.pause(); 
+            document.getElementById('lightbox').classList.remove('active'); 
+            if(window.lenis) window.lenis.start(); 
         }
 
-        function openBookingWithService(s) {
-            document.getElementById('program-select').value = s;
-            openModal('appointment-modal');
+        function openBookingWithService(s) { document.getElementById('program-select').value = s; openModal('appointment-modal'); }
+        
+        function openModal(id) { 
+            document.getElementById(id).classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+            if(window.lenis) window.lenis.stop(); 
         }
-
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
-            document.body.style.overflow = 'hidden';
-            if (window.lenis) window.lenis.stop();
+        
+        function closeModal(id) { 
+            document.getElementById(id).classList.remove('active'); 
+            document.body.style.overflow = ''; 
+            if(window.lenis) window.lenis.start(); 
         }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            document.body.style.overflow = '';
-            if (window.lenis) window.lenis.start();
-        }
-
+        
         function renderSlide(index) {
-            if (!featuredResults || !featuredResults.length) return;
-
             const trans = featuredResults[index];
-            if (!trans) return;
-
             const container = document.getElementById('featured-transformation-container');
-            if (!container) return;
-
-            if (window.gsap) {
-                gsap.to(container, {
-                    opacity: 0,
-                    y: 20,
-                    duration: 0.4,
-                    onComplete: () => {
-                        container.innerHTML = `
-                            <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
-                                <img src="${trans.after_image_url || ''}" class="w-full h-full object-cover">
-                                <div class="ba-after" id="baAfter">
-                                    <img src="${trans.before_image_url || ''}" class="w-full h-full object-cover">
-                                </div>
-                                <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
+            if(!container) return;
+            
+            if(window.gsap) {
+                gsap.to(container, { opacity: 0, y: 20, duration: 0.4, onComplete: () => {
+                    container.innerHTML = `
+                        <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
+                            <img src="${trans.after_image_url}" class="w-full h-full object-cover">
+                            <div class="ba-after" id="baAfter">
+                                <img src="${trans.before_image_url}" class="w-full h-full object-cover">
                             </div>
-                            <div class="space-y-8">
-                                <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
-                                <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name || ''} <br> <span class="text-[var(--pink)]">${trans.result_summary || ''}</span></h2>
-                                <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote || ''}"</p>
-                            </div>
-                        `;
-                        if (window.lucide) lucide.createIcons();
-                        initSliderLogic();
-                        gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
-                    }
-                });
+                            <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
+                        </div>
+                        <div class="space-y-8">
+                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
+                            <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name} <br> <span class="text-[var(--pink)]">${trans.result_summary}</span></h2>
+                            <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote}"</p>
+                        </div>
+                    `;
+                    if(window.lucide) lucide.createIcons(); 
+                    initSliderLogic(); 
+                    gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
+                }});
             }
         }
 
-        // Navigation for results slider
-        const nextBtn = document.getElementById('next-result');
-        const prevBtn = document.getElementById('prev-result');
-
-        if (nextBtn) {
-            nextBtn.onclick = () => {
-                if (featuredResults.length > 0) {
-                    currentSlide = (currentSlide + 1) % featuredResults.length;
-                    renderSlide(currentSlide);
-                }
-            };
-        }
-
-        if (prevBtn) {
-            prevBtn.onclick = () => {
-                if (featuredResults.length > 0) {
-                    currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length;
-                    renderSlide(currentSlide);
-                }
-            };
-        }
+        document.getElementById('next-result').onclick = () => { 
+            if(featuredResults.length > 0) {
+                currentSlide = (currentSlide + 1) % featuredResults.length; 
+                renderSlide(currentSlide); 
+            }
+        };
+        
+        document.getElementById('prev-result').onclick = () => { 
+            if(featuredResults.length > 0) {
+                currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length; 
+                renderSlide(currentSlide); 
+            }
+        };
 
         function initSliderLogic() {
             const container = document.querySelector('.ba-container');
             if (!container) return;
-
+            
             const beforeImg = container.querySelector('.ba-after img');
             const afterImg = container.querySelector('.ba-container > img');
-
+            
             if (beforeImg && afterImg) {
                 beforeImg.style.width = '100%';
                 beforeImg.style.height = '100%';
@@ -2406,32 +2312,32 @@
                 afterImg.style.height = '100%';
                 afterImg.style.objectFit = 'cover';
             }
-
+            
             const update = (clientX) => {
                 const rect = container.getBoundingClientRect();
                 let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
                 let p = (x / rect.width) * 100;
-
+                
                 p = Math.max(0, Math.min(100, p));
-
+                
                 const baAfter = document.getElementById('baAfter');
                 const baHandle = document.getElementById('baHandle');
-
+                
                 if (baAfter) baAfter.style.width = p + '%';
                 if (baHandle) baHandle.style.left = p + '%';
             };
-
+            
             let isMouseOver = false;
-
+            
             container.addEventListener('mouseenter', () => { isMouseOver = true; });
             container.addEventListener('mouseleave', () => { isMouseOver = false; });
-
+            
             container.addEventListener('mousemove', (e) => {
                 if (isMouseOver) update(e.clientX);
             });
-
+            
             let isTouching = false;
-
+            
             container.addEventListener('touchstart', (e) => {
                 if (e.touches.length > 0) {
                     isTouching = true;
@@ -2439,43 +2345,26 @@
                     e.preventDefault();
                 }
             }, { passive: false });
-
+            
             container.addEventListener('touchmove', (e) => {
                 if (isTouching && e.touches.length > 0) {
                     update(e.touches[0].clientX);
                     e.preventDefault();
                 }
             }, { passive: false });
-
+            
             container.addEventListener('touchend', () => { isTouching = false; });
             container.addEventListener('click', (e) => update(e.clientX));
-
-            // Set initial position to middle
-            setTimeout(() => {
-                const rect = container.getBoundingClientRect();
-                if (rect.width > 0) {
-                    update(rect.left + rect.width / 2);
-                }
-            }, 100);
+            
+            const rect = container.getBoundingClientRect();
+            update(rect.left + rect.width / 2);
         }
 
         function initGSAPAnimations() {
-            if (window.gsap && window.ScrollTrigger) {
-                // Hero animations
+            if(window.gsap) {
                 gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
-
-                // Parallax effect on hero
-                gsap.to("#hero-section", {
-                    scrollTrigger: {
-                        trigger: "#hero-section",
-                        start: "top top",
-                        scrub: true
-                    },
-                    opacity: 0.5,
-                    y: -100
-                });
-
-                // Lion Diamond section animation
+                gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
+                
                 gsap.from("#lion-diamond h2", {
                     scrollTrigger: {
                         trigger: "#lion-diamond",
@@ -2487,37 +2376,60 @@
                     y: 100,
                     duration: 1.5
                 });
-
-                // Gallery horizontal scroll (desktop only)
+                
                 ScrollTrigger.matchMedia({
-                    "(min-width: 1024px)": function () {
+                    "(min-width: 1024px)": function() {
                         const gallery = document.querySelector('.gallery-container');
-                        if (gallery && gallery.children.length > 0) {
-                            gsap.to(gallery, {
-                                x: () => -(gallery.scrollWidth - window.innerWidth),
-                                ease: "none",
-                                scrollTrigger: {
-                                    trigger: "#gallery",
-                                    start: "top top",
-                                    end: () => "+=" + (gallery.scrollWidth - window.innerWidth),
-                                    scrub: 1,
-                                    pin: true,
-                                    anticipatePin: 1
-                                }
-                            });
+                        if (gallery) { 
+                            gsap.to(gallery, { 
+                                x: () => -(gallery.scrollWidth - window.innerWidth), 
+                                ease: "none", 
+                                scrollTrigger: { 
+                                    trigger: "#gallery", 
+                                    start: "top top", 
+                                    end: () => "+=" + (gallery.scrollWidth - window.innerWidth), 
+                                    scrub: 1, 
+                                    pin: true, 
+                                    anticipatePin: 1 
+                                } 
+                            }); 
                         }
                     }
                 });
 
-                // Marquee animation
-                gsap.to(".marquee-track", {
-                    xPercent: -50,
-                    ease: "none",
-                    duration: 30,
-                    repeat: -1
-                });
+                gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
             }
         }
+
+        // WhatsApp Appointment Form Submission
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST
+
+Name: ${data.full_name}
+Phone: ${data.phone}
+Age: ${data.age || 'Not provided'}
+Branch: ${data.branch}
+Program: ${data.program}
+Preferred Time: ${data.preferred_time}
+Message: ${data.message || 'No additional message'}`;
+
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const phoneNumber = '919585121321';
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+            
+            closeModal('appointment-modal');
+            
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+            }, 300);
+            
+            this.reset();
+        });
     </script>
 </body>
 
