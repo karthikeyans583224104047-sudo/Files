@@ -2045,9 +2045,12 @@
                 setTimeout(() => loader.style.display = 'none', 300);
             }
 
-            const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-            requestAnimationFrame(raf);
+            if (typeof Lenis !== 'undefined') {
+                const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
+                window.lenis = lenis;
+                function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+                requestAnimationFrame(raf);
+            }
 
             if (window.gsap && window.ScrollTrigger && window.lucide) {
                 gsap.registerPlugin(ScrollTrigger);
@@ -2163,12 +2166,17 @@
                     return;
                 }
 
+                // Safe fetch wrapper to avoid unhandled rejections blocking Promise.all
+                const safeFetch = async (prom) => {
+                    try { return await prom; } catch (e) { return { error: e }; }
+                };
+
                 // Fetch all data with individual error handling
                 const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
-                    supabaseClient.storage.from('hero_video').list(),
-                    supabaseClient.from('service_assets').select('*'),
-                    supabaseClient.storage.from('gallery').list(),
-                    supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
+                    safeFetch(supabaseClient.storage.from('hero_video').list()),
+                    safeFetch(supabaseClient.from('service_assets').select('*')),
+                    safeFetch(supabaseClient.storage.from('gallery').list()),
+                    safeFetch(supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true))
                 ]);
 
                 // Handle hero video
@@ -2196,17 +2204,21 @@
                                         })
                                         .catch(err => {
                                             console.warn("Autoplay prevented:", err);
-                                            // Add interaction handler
                                             const unlockVideo = () => {
-                                                videoEl.play().then(() => {
+                                                const p = videoEl.play();
+                                                if (p !== undefined) {
+                                                    p.then(() => { videoEl.style.opacity = 1; }).catch(() => { });
+                                                } else {
                                                     videoEl.style.opacity = 1;
-                                                }).catch(() => { });
+                                                }
                                                 document.removeEventListener('touchstart', unlockVideo);
                                                 document.removeEventListener('click', unlockVideo);
                                             };
                                             document.addEventListener('touchstart', unlockVideo, { once: true });
                                             document.addEventListener('click', unlockVideo, { once: true });
                                         });
+                                } else {
+                                    videoEl.style.opacity = 1;
                                 }
                             };
 
