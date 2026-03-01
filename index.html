@@ -754,12 +754,9 @@
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white" style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
-                        Move <span class="text-[var(--pink)]">Strong.</span><br>
-                        <span class="flex flex-wrap items-center justify-center gap-2 sm:gap-4 lg:flex-nowrap lg:gap-6">
-                            <span style="display: inline-block;">Live</span> 
-                            <span class="text-[var(--pink)]" style="display: inline-block;">Powerful.</span>
-                        </span>
-                    </h1>
+    Move <span class="text-[var(--pink)]">Strong.</span><br>
+    Live <span class="text-[var(--pink)] whitespace-nowrap">Powerful.</span>
+</h1>
                     <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed" style="margin-top: 4rem !important;">
                         Welcome to Lion and Diamond Fitness — where fitness is built through movement, rhythm, balance, and discipline. No machines. No heavy weights. Just your body, and your energy.
                     </p>
@@ -1171,6 +1168,7 @@
                 lucide.createIcons();
             }
             
+            // Load all data from Supabase
             loadSupabaseData();
             
             // Mobile menu animations
@@ -1242,6 +1240,28 @@
                     }, 400);
                 });
             }
+
+            // WhatsApp Form Submission
+            document.getElementById('lead-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const data = Object.fromEntries(formData.entries());
+                
+                const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST\n\nName: ${data.full_name}\nPhone: ${data.phone}\nAge: ${data.age || 'Not provided'}\nBranch: ${data.branch}\nProgram: ${data.program}\nPreferred Time: ${data.preferred_time}\nMessage: ${data.message || 'No additional message'}`;
+                
+                const encodedMessage = encodeURIComponent(whatsappMessage);
+                const phoneNumber = '919585121321';
+                const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+                
+                closeModal('appointment-modal');
+                
+                setTimeout(() => {
+                    window.open(whatsappURL, '_blank');
+                }, 300);
+                
+                this.reset();
+            });
         });
 
         let featuredResults = [];
@@ -1249,92 +1269,126 @@
 
         async function loadSupabaseData() {
             try {
-                const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
+                console.log("Loading Supabase data...");
+                
+                // Check if supabase client is initialized
+                if (!supabaseClient) {
+                    console.error("Supabase client not initialized");
+                    return;
+                }
+
+                // Fetch all data with individual error handling
+                const [heroRes, servRes, galleryRes, transRes] = await Promise.allSettled([
                     supabaseClient.storage.from('hero_video').list(),
                     supabaseClient.from('service_assets').select('*'),
                     supabaseClient.storage.from('gallery').list(),
                     supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
                 ]);
 
+                // Handle hero video
                 const videoEl = document.getElementById('hero-video-bg');
                 
-                if (heroRes.data && heroRes.data.length > 0) {
-                    const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+                if (heroRes.status === 'fulfilled' && heroRes.value.data && heroRes.value.data.length > 0) {
+                    const validFiles = heroRes.value.data.filter(f => f.name !== '.emptyFolderPlaceholder');
                     
                     if (validFiles.length > 0) {
                         const videoFile = validFiles[0]; 
                         const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
                         
-                        videoEl.src = vidUrl.publicUrl;
-                        videoEl.muted = true;
-                        videoEl.playsInline = true;
-                        videoEl.load();
+                        if (vidUrl && vidUrl.publicUrl) {
+                            videoEl.src = vidUrl.publicUrl;
+                            videoEl.muted = true;
+                            videoEl.playsInline = true;
+                            videoEl.load();
 
-                        const attemptPlay = () => {
-                            const playPromise = videoEl.play();
-                            if (playPromise !== undefined) {
-                                playPromise
-                                    .then(() => {
-                                        videoEl.style.opacity = 1;
-                                    })
-                                    .catch(err => {
-                                        console.warn("Autoplay fallback engaged");
-                                        const unlockVideo = () => {
-                                            videoEl.play();
+                            const attemptPlay = () => {
+                                const playPromise = videoEl.play();
+                                if (playPromise !== undefined) {
+                                    playPromise
+                                        .then(() => {
                                             videoEl.style.opacity = 1;
-                                            document.removeEventListener('touchstart', unlockVideo);
-                                            document.removeEventListener('click', unlockVideo);
-                                        };
-                                        document.addEventListener('touchstart', unlockVideo, { once: true });
-                                        document.addEventListener('click', unlockVideo, { once: true });
-                                    });
-                            }
-                        };
+                                        })
+                                        .catch(err => {
+                                            console.warn("Autoplay prevented:", err);
+                                            // Add interaction handler
+                                            const unlockVideo = () => {
+                                                videoEl.play().then(() => {
+                                                    videoEl.style.opacity = 1;
+                                                }).catch(() => {});
+                                                document.removeEventListener('touchstart', unlockVideo);
+                                                document.removeEventListener('click', unlockVideo);
+                                            };
+                                            document.addEventListener('touchstart', unlockVideo, { once: true });
+                                            document.addEventListener('click', unlockVideo, { once: true });
+                                        });
+                                }
+                            };
 
-                        if (videoEl.readyState >= 3) {
-                            attemptPlay();
-                        } else {
-                            videoEl.addEventListener('loadeddata', attemptPlay);
+                            if (videoEl.readyState >= 3) {
+                                attemptPlay();
+                            } else {
+                                videoEl.addEventListener('loadeddata', attemptPlay);
+                            }
                         }
                     }
                 }
 
-                servRes.data?.forEach(asset => {
-                    const id = asset.id.replace('service_', '');
-                    const img = document.getElementById(`img-${id}`);
-                    if(img) img.src = asset.image_url;
-                });
-
-                const galleryContainer = document.getElementById('supabase-gallery');
-                if(galleryRes.data) {
-                    galleryContainer.innerHTML = '';
-                    galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
-                        const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
-                        const item = document.createElement('div');
-                        item.className = 'gallery-item group';
-                        const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
-
-                        if (isVideo) {
-                            item.innerHTML = `
-                                <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
-                                <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-auto" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
-                            `;
-                        } else {
-                            item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
+                // Handle service images
+                if (servRes.status === 'fulfilled' && servRes.value.data) {
+                    servRes.value.data.forEach(asset => {
+                        const id = asset.id.replace('service_', '');
+                        const img = document.getElementById(`img-${id}`);
+                        if(img && asset.image_url) {
+                            img.src = asset.image_url;
                         }
-                        galleryContainer.appendChild(item);
                     });
-                    if(window.lucide) lucide.createIcons();
                 }
 
-                if(transRes.data?.length) { 
-                    featuredResults = transRes.data; 
+                // Handle gallery
+                const galleryContainer = document.getElementById('supabase-gallery');
+                if (galleryRes.status === 'fulfilled' && galleryRes.value.data && galleryContainer) {
+                    galleryContainer.innerHTML = '';
+                    
+                    const files = galleryRes.value.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+                    
+                    if (files.length > 0) {
+                        files.forEach(file => {
+                            const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                            if (url && url.publicUrl) {
+                                const item = document.createElement('div');
+                                item.className = 'gallery-item group';
+                                const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
+
+                                if (isVideo) {
+                                    item.innerHTML = `
+                                        <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted playsinline preload="auto" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
+                                        <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-auto" onclick="event.stopPropagation(); openLightbox('${url.publicUrl}', 'video')"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                                    `;
+                                } else {
+                                    item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
+                                }
+                                galleryContainer.appendChild(item);
+                            }
+                        });
+                        if(window.lucide) lucide.createIcons();
+                    }
+                }
+
+                // Handle transformations
+                if (transRes.status === 'fulfilled' && transRes.value.data && transRes.value.data.length > 0) { 
+                    featuredResults = transRes.value.data; 
                     renderSlide(0); 
                 }
 
-            } catch (err) { console.error("Load error:", err); }
-            finally {
-                initGSAPAnimations();
+                console.log("Supabase data loaded successfully");
+
+            } catch (err) { 
+                console.error("Load error:", err); 
+            } finally {
+                // Initialize animations after data is loaded
+                setTimeout(() => {
+                    initGSAPAnimations();
+                }, 100);
             }
         }
 
@@ -1342,9 +1396,15 @@
             const img = document.getElementById('lightbox-img');
             const vid = document.getElementById('lightbox-video');
             if (type === 'video') {
-                img.style.display = 'none'; vid.style.display = 'block'; vid.src = src; vid.play();
+                img.style.display = 'none'; 
+                vid.style.display = 'block'; 
+                vid.src = src; 
+                vid.play();
             } else {
-                vid.style.display = 'none'; vid.pause(); img.style.display = 'block'; img.src = src;
+                vid.style.display = 'none'; 
+                vid.pause(); 
+                img.style.display = 'block'; 
+                img.src = src;
             }
             document.getElementById('lightbox').classList.add('active'); 
             if(window.lenis) window.lenis.stop(); 
@@ -1357,7 +1417,10 @@
             if(window.lenis) window.lenis.start(); 
         }
 
-        function openBookingWithService(s) { document.getElementById('program-select').value = s; openModal('appointment-modal'); }
+        function openBookingWithService(s) { 
+            document.getElementById('program-select').value = s; 
+            openModal('appointment-modal'); 
+        }
         
         function openModal(id) { 
             document.getElementById(id).classList.add('active'); 
@@ -1372,46 +1435,63 @@
         }
         
         function renderSlide(index) {
+            if (!featuredResults || !featuredResults.length) return;
+            
             const trans = featuredResults[index];
+            if (!trans) return;
+            
             const container = document.getElementById('featured-transformation-container');
             if(!container) return;
             
             if(window.gsap) {
-                gsap.to(container, { opacity: 0, y: 20, duration: 0.4, onComplete: () => {
-                    container.innerHTML = `
-                        <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
-                            <img src="${trans.after_image_url}" class="w-full h-full object-cover">
-                            <div class="ba-after" id="baAfter">
-                                <img src="${trans.before_image_url}" class="w-full h-full object-cover">
+                gsap.to(container, { 
+                    opacity: 0, 
+                    y: 20, 
+                    duration: 0.4, 
+                    onComplete: () => {
+                        container.innerHTML = `
+                            <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
+                                <img src="${trans.after_image_url || ''}" class="w-full h-full object-cover">
+                                <div class="ba-after" id="baAfter">
+                                    <img src="${trans.before_image_url || ''}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
                             </div>
-                            <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
-                        </div>
-                        <div class="space-y-8">
-                            <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
-                            <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name} <br> <span class="text-[var(--pink)]">${trans.result_summary}</span></h2>
-                            <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote}"</p>
-                        </div>
-                    `;
-                    if(window.lucide) lucide.createIcons(); 
-                    initSliderLogic(); 
-                    gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
-                }});
+                            <div class="space-y-8">
+                                <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
+                                <h2 class="text-4xl lg:text-7xl font-sync font-bold uppercase italic text-white leading-none">${trans.member_name || ''} <br> <span class="text-[var(--pink)]">${trans.result_summary || ''}</span></h2>
+                                <p class="text-2xl italic text-white leading-relaxed font-light">"${trans.quote || ''}"</p>
+                            </div>
+                        `;
+                        if(window.lucide) lucide.createIcons(); 
+                        initSliderLogic(); 
+                        gsap.to(container, { opacity: 1, y: 0, duration: 0.6 });
+                    }
+                });
             }
         }
 
-        document.getElementById('next-result').onclick = () => { 
-            if(featuredResults.length > 0) {
-                currentSlide = (currentSlide + 1) % featuredResults.length; 
-                renderSlide(currentSlide); 
-            }
-        };
+        // Navigation for results slider
+        const nextBtn = document.getElementById('next-result');
+        const prevBtn = document.getElementById('prev-result');
         
-        document.getElementById('prev-result').onclick = () => { 
-            if(featuredResults.length > 0) {
-                currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length; 
-                renderSlide(currentSlide); 
-            }
-        };
+        if (nextBtn) {
+            nextBtn.onclick = () => { 
+                if(featuredResults.length > 0) {
+                    currentSlide = (currentSlide + 1) % featuredResults.length; 
+                    renderSlide(currentSlide); 
+                }
+            };
+        }
+        
+        if (prevBtn) {
+            prevBtn.onclick = () => { 
+                if(featuredResults.length > 0) {
+                    currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length; 
+                    renderSlide(currentSlide); 
+                }
+            };
+        }
 
         function initSliderLogic() {
             const container = document.querySelector('.ba-container');
@@ -1472,15 +1552,32 @@
             container.addEventListener('touchend', () => { isTouching = false; });
             container.addEventListener('click', (e) => update(e.clientX));
             
-            const rect = container.getBoundingClientRect();
-            update(rect.left + rect.width / 2);
+            // Set initial position to middle
+            setTimeout(() => {
+                const rect = container.getBoundingClientRect();
+                if (rect.width > 0) {
+                    update(rect.left + rect.width / 2);
+                }
+            }, 100);
         }
 
         function initGSAPAnimations() {
-            if(window.gsap) {
+            if(window.gsap && window.ScrollTrigger) {
+                // Hero animations
                 gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
-                gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
                 
+                // Parallax effect on hero
+                gsap.to("#hero-section", { 
+                    scrollTrigger: { 
+                        trigger: "#hero-section", 
+                        start: "top top", 
+                        scrub: true 
+                    }, 
+                    opacity: 0.5, 
+                    y: -100 
+                });
+                
+                // Lion Diamond section animation
                 gsap.from("#lion-diamond h2", {
                     scrollTrigger: {
                         trigger: "#lion-diamond",
@@ -1493,10 +1590,11 @@
                     duration: 1.5
                 });
                 
+                // Gallery horizontal scroll (desktop only)
                 ScrollTrigger.matchMedia({
                     "(min-width: 1024px)": function() {
                         const gallery = document.querySelector('.gallery-container');
-                        if (gallery) { 
+                        if (gallery && gallery.children.length > 0) { 
                             gsap.to(gallery, { 
                                 x: () => -(gallery.scrollWidth - window.innerWidth), 
                                 ease: "none", 
@@ -1513,39 +1611,15 @@
                     }
                 });
 
-                gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
+                // Marquee animation
+                gsap.to(".marquee-track", { 
+                    xPercent: -50, 
+                    ease: "none", 
+                    duration: 30, 
+                    repeat: -1 
+                });
             }
         }
-
-        // WhatsApp Appointment Form Submission
-        document.getElementById('lead-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData.entries());
-            
-            const whatsappMessage = `DIAMOND & LION FITNESS APPOINTMENT REQUEST
-
-Name: ${data.full_name}
-Phone: ${data.phone}
-Age: ${data.age || 'Not provided'}
-Branch: ${data.branch}
-Program: ${data.program}
-Preferred Time: ${data.preferred_time}
-Message: ${data.message || 'No additional message'}`;
-
-            const encodedMessage = encodeURIComponent(whatsappMessage);
-            const phoneNumber = '919585121321';
-            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-            
-            closeModal('appointment-modal');
-            
-            setTimeout(() => {
-                window.open(whatsappURL, '_blank');
-            }, 300);
-            
-            this.reset();
-        });
     </script>
 </body>
 </html>
