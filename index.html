@@ -743,17 +743,19 @@
             }
 
             /* Target the "Powerful" text specifically - 10% smaller on mobile */
-            h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] span.text-\[\#FF1493\]:last-of-type {
-                font-size: 9.9vw !important;
+            h1.hero-reveal.font-sync.font-bold span:last-of-type {
+                font-size: 0.9em !important;
                 display: inline-block !important;
                 vertical-align: middle !important;
             }
 
             /* Hero heading base size */
-            h1.hero-reveal.font-sync.font-bold.text-\[11vw\].lg\:text-\[7vw\] {
-                font-size: 3.5rem !important;
+            h1.hero-reveal.font-sync.font-bold {
+                font-size: clamp(2rem, 10.5vw, 3.5rem) !important;
                 line-height: 1.1 !important;
                 margin-bottom: 1.5rem !important;
+                word-break: keep-all !important;
+                overflow-wrap: break-word !important;
             }
 
             /* ============================================= */
@@ -1507,9 +1509,9 @@
                         class="hero-reveal inline-block px-6 lg:px-8 py-3 bg-white text-black text-[13.5px] lg:text-lg font-bold uppercase tracking-[0.5em] mb-14 rounded-sm shadow-xl">
                         Diamond Fitness (Surya Nagar) & Lion Fitness (Iyer Bungalow)
                     </div>
-                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[0.85] uppercase italic text-white"
-                        style="word-break: break-word; white-space: normal; padding-left: 5px; padding-right: 5px;">
-                        Move <span class="text-[var(--pink)]">Strong.</span><br>
+                    <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[7vw] leading-[1.1] uppercase italic text-white"
+                        style="padding-left: 5px; padding-right: 5px;">
+                        Move <span class="text-[var(--pink)] whitespace-nowrap">Strong.</span><br>
                         Live <span class="text-[var(--pink)] whitespace-nowrap">Powerful.</span>
                     </h1>
                     <p class="hero-reveal mt-16 lg:mt-20 max-w-2xl mx-auto text-neutral-400 text-lg md:text-xl leading-relaxed"
@@ -1810,7 +1812,7 @@
                         </div>
                         <div onclick="openBookingWithService('Personal Training')"
                             class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-personal-training" src=""
+                            <img id="img-personal_training" src=""
                                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
                                 <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Personal Training
@@ -1821,7 +1823,7 @@
                         </div>
                         <div onclick="openBookingWithService('Cardio Exercise')"
                             class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-cardio-exercise" src=""
+                            <img id="img-cardio" src=""
                                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
                                 <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Cardio Exercise
@@ -1832,7 +1834,7 @@
                         </div>
                         <div onclick="openBookingWithService('Circuit Training')"
                             class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-circuit-training" src=""
+                            <img id="img-circuit" src=""
                                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
                                 <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Circuit Training
@@ -1843,7 +1845,7 @@
                         </div>
                         <div onclick="openBookingWithService('Nutrition Guidance')"
                             class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-nutrition-guidance" src=""
+                            <img id="img-nutrition" src=""
                                 class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
                             <div class="relative z-10">
                                 <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Nutrition Guidance
