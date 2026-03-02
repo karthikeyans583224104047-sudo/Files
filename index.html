@@ -2134,97 +2134,102 @@
         let currentSlide = 0;
 
         async function loadSupabaseData() {
-            try {
-                const [heroRes, servRes, galleryRes, transRes] = await Promise.all([
-                    supabaseClient.storage.from('hero_video').list(),
-                    supabaseClient.from('service_assets').select('*'),
-                    supabaseClient.storage.from('gallery').list(),
-                    supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
-                ]);
+            // Load Hero Video
+            supabaseClient.storage.from('hero_video').list()
+                .then(heroRes => {
+                    const videoEl = document.getElementById('hero-video-bg');
+                    if (heroRes.data && heroRes.data.length > 0) {
+                        const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
+                        if (validFiles.length > 0) {
+                            const videoFile = validFiles[0];
+                            const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
+                            videoEl.src = vidUrl.publicUrl;
+                            videoEl.muted = true;
+                            videoEl.playsInline = true;
+                            videoEl.load();
 
-                const videoEl = document.getElementById('hero-video-bg');
-
-                if (heroRes.data && heroRes.data.length > 0) {
-                    const validFiles = heroRes.data.filter(f => f.name !== '.emptyFolderPlaceholder');
-
-                    if (validFiles.length > 0) {
-                        const videoFile = validFiles[0];
-                        const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
-
-                        videoEl.src = vidUrl.publicUrl;
-                        videoEl.muted = true;
-                        videoEl.playsInline = true;
-                        videoEl.load();
-
-                        const attemptPlay = () => {
-                            const playPromise = videoEl.play();
-                            if (playPromise !== undefined) {
-                                playPromise
-                                    .then(() => {
-                                        videoEl.style.opacity = 1;
-                                    })
-                                    .catch(err => {
-                                        console.warn("Autoplay fallback engaged");
-                                        const unlockVideo = () => {
-                                            videoEl.play();
+                            const attemptPlay = () => {
+                                const playPromise = videoEl.play();
+                                if (playPromise !== undefined) {
+                                    playPromise
+                                        .then(() => {
                                             videoEl.style.opacity = 1;
-                                            document.removeEventListener('touchstart', unlockVideo);
-                                            document.removeEventListener('click', unlockVideo);
-                                        };
-                                        document.addEventListener('touchstart', unlockVideo, { once: true });
-                                        document.addEventListener('click', unlockVideo, { once: true });
-                                    });
-                            }
-                        };
+                                        })
+                                        .catch(err => {
+                                            console.warn("Autoplay fallback engaged - browser blocked autoplay:", err);
+                                            const unlockVideo = () => {
+                                                videoEl.play();
+                                                videoEl.style.opacity = 1;
+                                                document.removeEventListener('touchstart', unlockVideo);
+                                                document.removeEventListener('click', unlockVideo);
+                                            };
+                                            document.addEventListener('touchstart', unlockVideo, { once: true });
+                                            document.addEventListener('click', unlockVideo, { once: true });
+                                        });
+                                }
+                            };
 
-                        if (videoEl.readyState >= 3) {
-                            attemptPlay();
-                        } else {
-                            videoEl.addEventListener('loadeddata', attemptPlay);
+                            if (videoEl.readyState >= 3) {
+                                attemptPlay();
+                            } else {
+                                videoEl.addEventListener('loadeddata', attemptPlay);
+                            }
                         }
                     }
-                }
+                })
+                .catch(err => console.error("Hero video load error:", err));
 
-                servRes.data?.forEach(asset => {
-                    const id = asset.id.replace('service_', '');
-                    const img = document.getElementById(`img-${id}`);
-                    if (img) img.src = asset.image_url;
-                });
-
-                const galleryContainer = document.getElementById('supabase-gallery');
-                if (galleryRes.data) {
-                    galleryContainer.innerHTML = '';
-                    galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
-                        const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
-                        const item = document.createElement('div');
-                        item.className = 'gallery-item group';
-                        const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
-
-                        if (isVideo) {
-                            item.innerHTML = `
-                                <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
-                                <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-none"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
-                            `;
-                        } else {
-                            item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
-                        }
-                        galleryContainer.appendChild(item);
+            // Load Services
+            supabaseClient.from('service_assets').select('*')
+                .then(servRes => {
+                    servRes.data?.forEach(asset => {
+                        const id = asset.id.replace('service_', '');
+                        const img = document.getElementById(`img-${id}`);
+                        if (img) img.src = asset.image_url;
                     });
-                    if (window.lucide) lucide.createIcons();
-                }
+                })
+                .catch(err => console.error("Services load error:", err));
 
-                if (transRes.data?.length) {
-                    featuredResults = transRes.data;
-                    renderSlide(0);
-                }
+            // Load Gallery
+            supabaseClient.storage.from('gallery').list()
+                .then(galleryRes => {
+                    const galleryContainer = document.getElementById('supabase-gallery');
+                    if (galleryRes.data && galleryContainer) {
+                        galleryContainer.innerHTML = '';
+                        galleryRes.data.filter(f => f.name !== '.emptyFolderPlaceholder').forEach(file => {
+                            const { data: url } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                            const item = document.createElement('div');
+                            item.className = 'gallery-item group';
+                            const isVideo = file.name.match(/\.(mp4|webm|mov|mkv)$/i);
 
-            } catch (err) {
-                console.error("Supabase Load error details:", err);
-                alert("Backend loaded with errors: " + (err.message || err.toString()) + ". Please check console.");
-            }
-            finally {
-                initGSAPAnimations();
-            }
+                            if (isVideo) {
+                                item.innerHTML = `
+                                    <video src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" muted loop playsinline onmouseover="this.play()" onmouseout="this.pause()" onclick="openLightbox('${url.publicUrl}', 'video')"></video>
+                                    <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full pointer-events-none"><i data-lucide="play" class="w-4 h-4 text-white"></i></div>
+                                `;
+                            } else {
+                                item.innerHTML = `<img src="${url.publicUrl}" class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110" onclick="openLightbox('${url.publicUrl}', 'image')">`;
+                            }
+                            galleryContainer.appendChild(item);
+                        });
+                        if (window.lucide) lucide.createIcons();
+                    }
+                })
+                .catch(err => console.error("Gallery load error:", err));
+
+            // Load Transformation Results
+            supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
+                .then(transRes => {
+                    if (transRes.data?.length) {
+                        featuredResults = transRes.data;
+                        renderSlide(0);
+                    }
+                })
+                .catch(err => console.error("Transformations load error:", err))
+                .finally(() => {
+                    // Start animations slightly after data fetching triggers
+                    setTimeout(() => initGSAPAnimations(), 300);
+                });
         }
 
         function openLightbox(src, type) {
