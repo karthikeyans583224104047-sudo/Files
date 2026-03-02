@@ -2218,7 +2218,10 @@
                     renderSlide(0);
                 }
 
-            } catch (err) { console.error("Load error:", err); }
+            } catch (err) {
+                console.error("Supabase Load error details:", err);
+                alert("Backend loaded with errors: " + (err.message || err.toString()) + ". Please check console.");
+            }
             finally {
                 initGSAPAnimations();
             }
