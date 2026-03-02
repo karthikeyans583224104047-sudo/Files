@@ -2186,11 +2186,13 @@
             // Load Services
             supabaseClient.from('service_assets').select('*')
                 .then(servRes => {
-                    servRes.data?.forEach(asset => {
-                        const id = asset.id.replace('service_', '');
-                        const img = document.getElementById(`img-${id}`);
-                        if (img) img.src = asset.image_url;
-                    });
+                    if (servRes.data) {
+                        servRes.data.forEach(asset => {
+                            const id = asset.id.replace('service_', '');
+                            const img = document.getElementById(`img-${id}`);
+                            if (img) img.src = asset.image_url;
+                        });
+                    }
                 })
                 .catch(err => console.error("Services load error:", err));
 
@@ -2224,7 +2226,7 @@
             // Load Transformation Results
             supabaseClient.from('transformations').select('*').eq('is_featured_homepage', true)
                 .then(transRes => {
-                    if (transRes.data?.length) {
+                    if (transRes.data && transRes.data.length) {
                         featuredResults = transRes.data;
                         renderSlide(0);
                     }
