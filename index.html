@@ -2145,6 +2145,10 @@
                             const { data: vidUrl } = supabaseClient.storage.from('hero_video').getPublicUrl(videoFile.name);
                             videoEl.src = vidUrl.publicUrl;
                             videoEl.muted = true;
+                            videoEl.defaultMuted = true;
+                            videoEl.setAttribute('muted', '');
+                            videoEl.setAttribute('autoplay', '');
+                            videoEl.setAttribute('playsinline', '');
                             videoEl.playsInline = true;
                             videoEl.load();
 
