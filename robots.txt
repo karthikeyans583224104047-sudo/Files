@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /bkap.html
+Disallow: /bckup.html
+Disallow: /game.html
+Disallow: /testgame.html
+Disallow: /v2.html
+
+Sitemap: https://www.diamondlionfitness.com/sitemap.xml
