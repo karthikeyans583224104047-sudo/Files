@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>Console | DIAMOND & LION FITNESS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Syncopate:wght@400;700&display=swap');
+        
+        :root { 
+            --pink: #FF1493; 
+            --bg: #000000; 
+            --surface: #1E1E1E; /* Material Surface Color */
+        }
+        
+        /* Base Body - Centers the app on PC */
+        body { 
+            background-color: #050505; 
+            color: white; 
+            font-family: 'Space Grotesk', Roboto, sans-serif; 
+            height: 100vh; 
+            overflow: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .font-sync { font-family: 'Syncopate', sans-serif; }
+        
+        /* App Container Constraint */
+        #app-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* PC Layout Mockup */
+        @media (min-width: 768px) {
+            #app-container {
+                max-width: 412px; /* Standard Android Phone width */
+                height: 90vh;
+                max-height: 850px;
+                border-radius: 32px;
+                border: 8px solid #222;
+                box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 0 1px #000;
+            }
+        }
+
+        /* Hide all scrollbars */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Content area scrolling */
+        #content-area {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-top: 80px; 
+            padding-bottom: 120px; 
+            display: none; /* Handled by JS */
+        }
+        
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: var(--surface);
+            display: flex;
+            justify-content: space-around;
+            padding-bottom: env(safe-area-inset-bottom, 16px);
+            z-index: 40;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0 8px 0;
+            width: 25%;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.2s;
+        }
+        .nav-item.active { color: var(--pink); }
+        .nav-item i { width: 24px; height: 24px; margin-bottom: 4px; }
+        .nav-item span { font-size: 11px; font-weight: 500; }
+        
+        /* Floating Action Button (FAB) */
+        .fab {
+            position: absolute;
+            bottom: calc(env(safe-area-inset-bottom, 16px) + 80px);
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px; /* Android squircle style */
+            background: var(--pink);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(255, 20, 147, 0.4);
+            z-index: 30;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fab:active { transform: scale(0.92); background: #e0007b; }
+        .fab i { width: 24px; height: 24px; }
+        
+        /* Android-style Bottom Sheet Modal */
+        .bottom-sheet-overlay {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .bottom-sheet-overlay.show { opacity: 1; visibility: visible; }
+        
+        .bottom-sheet {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: var(--surface);
+            border-radius: 28px 28px 0 0;
+            z-index: 101;
+            transform: translateY(100%);
+            transition: transform 0.35s cubic-bezier(0.0, 0.0, 0.2, 1); /* Material Animation */
+            max-height: 90%; 
+            display: flex; flex-direction: column;
+            box-shadow: 0 -4px 30px rgba(0,0,0,0.5);
+        }
+        .bottom-sheet.show { transform: translateY(0); }
+        .sheet-drag-handle {
+            width: 32px; height: 4px; background: rgba(255,255,255,0.2); 
+            border-radius: 2px; margin: 16px auto;
+        }
+        .sheet-header {
+            padding: 0 24px 16px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .sheet-content {
+            padding: 0 24px 24px 24px; 
+            overflow-y: auto; 
+            padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 40px);
+        }
+
+        /* Material List/Card Styling */
+        .android-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Ripple effect simulation */
+        .ripple {
+            transition: background-color 0.2s;
+        }
+        .ripple:active { background-color: rgba(255,255,255,0.05); }
+
+        /* Form Inputs */
+        .native-input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .native-input:focus {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--pink);
+        }
+        textarea.native-input { min-height: 100px; resize: none; }
+
+        /* Buttons */
+        .native-btn {
+            width: 100%;
+            background: var(--pink);
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 16px;
+            border-radius: 100px; /* Fully rounded buttons are common in Material 3 */
+            font-size: 14px;
+            transition: transform 0.2s, opacity 0.2s;
+            text-align: center;
+        }
+        .native-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+        /* Banner Notifications */
+        .status-banner {
+            position: absolute;
+            top: env(safe-area-inset-top, 16px);
+            left: 16px; right: 16px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex; align-items: center; gap: 12px;
+            z-index: 1000;
+            transform: translateY(-150%);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .status-banner.show { transform: translateY(16px); }
+
+        .thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; }
+        .hidden-section { display: none !important; }
+        
+        .image-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+        .grid-item { aspect-ratio: 1; position: relative; background: var(--surface); }
+        .grid-item img, .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* Loader */
+        #loader {
+            position: absolute; inset: 0; background: var(--bg); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+
+        <div id="loader">
+            <div class="w-10 h-10 border-4 border-gray-800 border-t-[var(--pink)] rounded-full animate-spin"></div>
+            <p class="mt-6 text-[10px] uppercase tracking-widest opacity-50">App Initializing</p>
+        </div>
+
+        <div id="status-banner" class="status-banner">
+            <div class="w-2 h-2 rounded-full bg-[var(--pink)] animate-pulse"></div>
+            <span id="status-text" class="text-sm font-medium flex-1"></span>
+            <span id="status-percent" class="text-xs opacity-60 font-mono"></span>
+        </div>
+
+        <div id="login-screen" class="absolute inset-0 bg-black z-[9900] flex flex-col justify-center px-6">
+            <div class="mb-12 text-center">
+                <h1 class="font-sync font-bold text-3xl uppercase italic tracking-widest mb-2">ADMIN</h1>
+                <p class="text-[10px] text-[var(--pink)] uppercase tracking-widest opacity-80">Console Authorization</p>
+            </div>
+            <form id="login-form" class="space-y-4">
+                <input type="email" id="email" class="native-input" placeholder="Admin Email" required>
+                <input type="password" id="password" class="native-input" placeholder="Password" required>
+                <button type="submit" class="native-btn shadow-lg mt-4 w-full">Sign In</button>
+            </form>
+            <p id="login-error" class="text-red-500 text-sm mt-6 text-center hidden"></p>
+        </div>
+
+        <!-- Header -->
+        <header id="app-bar" class="absolute top-0 left-0 right-0 z-40 bg-[var(--surface)] pt-[calc(env(safe-area-inset-top,16px)+14px)] pb-4 px-6 shadow-md hidden">
+            <div class="flex justify-between items-center w-full">
+                <h1 id="app-bar-title" class="font-sync font-bold text-xl uppercase italic tracking-wide">Stories</h1>
+                <div class="flex gap-5">
+                    <a href="index.html" target="_blank" class="active:scale-90 transition-transform"><i data-lucide="external-link" class="w-5 h-5 text-gray-400"></i></a>
+                    <button onclick="signOut()" class="active:scale-90 transition-transform"><i data-lucide="power" class="w-5 h-5 text-[var(--pink)]"></i></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main id="content-area">
+            
+            <section id="section-trans" class="tab-section px-4">
+                <div class="mb-5 flex justify-between items-end px-2">
+                    <span class="text-[11px] uppercase font-bold text-gray-500 tracking-wider">Success Stories</span>
+                    <span class="text-[10px] font-mono text-gray-500" id="trans-count">0</span>
+                </div>
+                <div id="trans-list" class="space-y-3"></div>
+            </section>
+
+            <section id="section-gallery" class="tab-section hidden-section pt-2">
+                <div class="image-grid" id="gallery-list"></div>
+            </section>
+
+            <section id="section-events" class="tab-section px-4 hidden-section">
+                <div class="mb-5 flex justify-between items-end px-2">
+                    <span class="text-[11px] uppercase font-bold text-gray-500 tracking-wider">Upcoming Schedule</span>
+                </div>
+                <div id="events-list" class="space-y-3"></div>
+            </section>
+
+            <section id="section-assets" class="tab-section px-4 hidden-section">
+                <div class="mb-5 flex justify-between items-end px-2">
+                    <span class="text-[11px] uppercase font-bold text-[var(--pink)] tracking-wider">Media Engine</span>
+                </div>
+                
+                <div class="android-card flex-col items-start mb-6 ripple" onclick="document.getElementById('a_file').click()">
+                    <h3 class="font-bold mb-1">Hero Background Video</h3>
+                    <p class="text-xs text-gray-400 mb-4">Tap here to replace the main MP4 landing page video.</p>
+                    <div class="bg-[var(--bg)] w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-gray-300">
+                        <i data-lucide="file-video" class="w-5 h-5"></i> Select File
+                    </div>
+                    <input type="file" id="a_file" accept="video/mp4" class="hidden" onchange="submitHeroVideo(this)">
+                </div>
+
+                <div class="mb-4 px-2">
+                    <span class="text-[11px] uppercase font-bold text-gray-500 tracking-wider">Service Layouts</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3" id="assets-list"></div>
+            </section>
+
+        </main>
+
+        <button id="global-fab" class="fab hidden" onclick="openActiveForm()">
+            <i data-lucide="plus"></i>
+        </button>
+
+        <nav class="bottom-nav hidden" id="bottom-nav">
+            <button class="nav-item active" onclick="switchTab('trans')" id="nav-btn-trans">
+                <i data-lucide="users"></i><span>Stories</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('gallery')" id="nav-btn-gallery">
+                <i data-lucide="image"></i><span>Gallery</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('events')" id="nav-btn-events">
+                <i data-lucide="calendar"></i><span>Events</span>
+            </button>
+            <button class="nav-item" onclick="switchTab('assets')" id="nav-btn-assets">
+                <i data-lucide="settings-2"></i><span>Assets</span>
+            </button>
+        </nav>
+
+        <!-- Modals -->
+        <div id="sheet-trans" class="bottom-sheet-overlay">
+            <div class="bottom-sheet">
+                <div class="sheet-drag-handle"></div>
+                <div class="sheet-header">
+                    <h3 id="form-trans-title" class="font-bold text-xl">New Story</h3>
+                    <button type="button" onclick="closeSheet('sheet-trans')" class="bg-[#2A2A2A] rounded-full p-2 active:scale-90 transition-transform"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+                </div>
+                <div class="sheet-content">
+                    <form id="trans-form">
+                        <input type="hidden" id="editing-id">
+                        <input type="text" id="t_name" class="native-input" placeholder="Member Name" required>
+                        <input type="text" id="t_summary" class="native-input" placeholder="Summary (e.g. 15kg Loss)" required>
+                        <textarea id="t_quote" class="native-input" placeholder="Review / Testimonial Quote" required></textarea>
+                        
+                        <div class="flex gap-3">
+                            <input type="text" id="t_duration" class="native-input flex-1 m-0" placeholder="Duration (e.g. 6 Mo)">
+                            <select id="t_featured" class="native-input flex-1 m-0 appearance-none text-white bg-transparent">
+                                <option value="false" class="text-black">Standard Grid</option>
+                                <option value="true" class="text-black">Feature Box</option>
+                            </select>
+                        </div>
+
+                        <div class="flex gap-4 mt-4 bg-[var(--bg)] p-4 rounded-2xl border border-[var(--surface)]">
+                            <div class="flex-1 text-center border-r border-gray-800 pr-2">
+                                <label class="text-xs text-gray-400 mb-2 block font-bold uppercase tracking-wider">Before</label>
+                                <input type="file" id="t_before" accept="image/*" class="text-[10px] w-full text-gray-500">
+                            </div>
+                            <div class="flex-1 text-center pl-2">
+                                <label class="text-xs text-gray-400 mb-2 block font-bold uppercase tracking-wider">After</label>
+                                <input type="file" id="t_after" accept="image/*" class="text-[10px] w-full text-gray-500">
+                            </div>
+                        </div>
+                        <button type="submit" id="t_btn" class="native-btn mt-6">Publish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="sheet-gallery" class="bottom-sheet-overlay">
+            <div class="bottom-sheet">
+                <div class="sheet-drag-handle"></div>
+                <div class="sheet-header">
+                    <h3 class="font-bold text-xl">Upload Media</h3>
+                    <button type="button" onclick="closeSheet('sheet-gallery')" class="bg-[#2A2A2A] rounded-full p-2 active:scale-90"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+                </div>
+                <div class="sheet-content">
+                    <form id="gallery-form">
+                        <div class="bg-[var(--bg)] border-2 border-dashed border-gray-700/50 rounded-2xl py-12 px-6 flex flex-col items-center justify-center mb-6 relative">
+                            <i data-lucide="upload-cloud" class="w-10 h-10 text-gray-400 mb-4"></i>
+                            <span class="text-base font-medium text-gray-300 text-center" id="g-file-label">Tap to Select File</span>
+                            <span class="text-xs text-gray-500 mt-2">Images or MP4 Videos</span>
+                            <input type="file" id="g_file" accept="image/*,video/mp4,video/quicktime" required class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" onchange="document.getElementById('g-file-label').innerText = this.files[0]?.name || 'Tap to Select File'">
+                        </div>
+                        <button type="submit" id="g_btn" class="native-btn">Upload File</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="sheet-events" class="bottom-sheet-overlay">
+            <div class="bottom-sheet">
+                <div class="sheet-drag-handle"></div>
+                <div class="sheet-header">
+                    <h3 id="form-event-title" class="font-bold text-xl">New Event</h3>
+                    <button type="button" onclick="closeSheet('sheet-events')" class="bg-[#2A2A2A] rounded-full p-2 active:scale-90"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+                </div>
+                <div class="sheet-content">
+                    <form id="events-form">
+                        <input type="hidden" id="editing-event-id">
+                        <input type="text" id="event_title" class="native-input" placeholder="Event Title" required>
+                        <textarea id="event_description" class="native-input" placeholder="Event Description" required></textarea>
+                        
+                        <input type="date" id="event_date" class="native-input" required>
+                        
+                        <div class="bg-[var(--bg)] rounded-2xl p-4 mb-4 border border-[var(--surface)]">
+                            <label class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2 block">Cover Image</label>
+                            <input type="file" id="event_image" accept="image/*" class="text-[11px] w-full text-gray-400">
+                        </div>
+
+                        <div class="flex items-center justify-between bg-[var(--bg)] rounded-2xl p-4 mb-6 border border-[var(--surface)]">
+                            <span class="font-medium text-sm">Event is Active</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="event_is_active" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--pink)]"></div>
+                            </label>
+                        </div>
+
+                        <button type="submit" id="event_btn" class="native-btn">Save Event</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End App Container -->
+
+    <script>
+        const SUPABASE_URL = 'https://rvoupfsoghdkpyawelgq.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2b3VwZnNvZ2hka3B5YXdlbGdxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk0MTA0MDEsImV4cCI6MjA4NDk4NjQwMX0.-1YMn0cKdHmOXEFaad0W6CewNpGYMYq-OPIsfJvLt5U';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const SERVICES_LIST = [
+            { id: 'zumba', label: 'Zumba' },
+            { id: 'yoga', label: 'Yoga' },
+            { id: 'aerobics', label: 'Aerobics' },
+            { id: 'personal_training', label: 'Personal Training' },
+            { id: 'cardio', label: 'Cardio' },
+            { id: 'circuit', label: 'Circuit' },
+            { id: 'nutrition', label: 'Nutrition' }
+        ];
+
+        let currentTabId = 'trans';
+
+        function switchTab(tabId) {
+            currentTabId = tabId;
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-btn-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.add('hidden-section'));
+            document.getElementById('section-' + tabId).classList.remove('hidden-section');
+            
+            const titles = { 'trans': 'Stories', 'gallery': 'Gallery', 'events': 'Events', 'assets': 'Media' };
+            document.getElementById('app-bar-title').innerText = titles[tabId];
+            
+            const fab = document.getElementById('global-fab');
+            if(tabId === 'assets') fab.style.display = 'none';
+            else fab.style.display = 'flex';
+
+            document.getElementById('content-area').scrollTo({top: 0, behavior: 'instant'});
+            fetchDataForTab(tabId);
+        }
+
+        function openSheet(sheetId) {
+            const overlay = document.getElementById(sheetId);
+            const sheet = overlay.querySelector('.bottom-sheet');
+            overlay.classList.add('show');
+            setTimeout(() => sheet.classList.add('show'), 10);
+        }
+
+        function closeSheet(sheetId) {
+            const overlay = document.getElementById(sheetId);
+            const sheet = overlay.querySelector('.bottom-sheet');
+            sheet.classList.remove('show');
+            setTimeout(() => overlay.classList.remove('show'), 300);
+        }
+
+        function openActiveForm() {
+            switch(currentTabId) {
+                case 'trans': resetTransForm(); openSheet('sheet-trans'); break;
+                case 'gallery': 
+                    document.getElementById('gallery-form').reset();
+                    document.getElementById('g-file-label').innerText = "Tap to Select File";
+                    openSheet('sheet-gallery'); break;
+                case 'events': resetEventForm(); openSheet('sheet-events'); break;
+            }
+        }
+
+        document.querySelectorAll('.bottom-sheet-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) closeSheet(this.id);
+            });
+        });
+
+        const Status = {
+            show(message, percent = null) {
+                const banner = document.getElementById('status-banner');
+                document.getElementById('status-text').textContent = message;
+                document.getElementById('status-percent').textContent = percent !== null ? `${percent}%` : '';
+                banner.classList.add('show');
+            },
+            hide() { document.getElementById('status-banner').classList.remove('show'); },
+        };
+
+        supabaseClient.auth.onAuthStateChange((e, session) => {
+            const login = document.getElementById('login-screen');
+            const content = document.getElementById('content-area');
+            const header = document.getElementById('app-bar');
+            const nav = document.getElementById('bottom-nav');
+            const fab = document.getElementById('global-fab');
+            
+            if (session) { 
+                login.classList.add('hidden'); 
+                content.style.display = 'block';
+                header.classList.remove('hidden');
+                nav.classList.remove('hidden');
+                fab.classList.remove('hidden');
+                document.getElementById('loader').style.display = 'none';
+                switchTab('trans');
+            } else { 
+                login.classList.remove('hidden'); 
+                content.style.display = 'none';
+                header.classList.add('hidden');
+                nav.classList.add('hidden');
+                fab.classList.add('hidden');
+                document.getElementById('loader').style.display = 'none';
+            }
+        });
+
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Verifying...';
+            
+            const { error } = await supabaseClient.auth.signInWithPassword({ 
+                email: document.getElementById('email').value, 
+                password: document.getElementById('password').value 
+            });
+            
+            btn.textContent = originalText;
+            if (error) { 
+                const errEl = document.getElementById('login-error');
+                errEl.innerText = error.message; 
+                errEl.classList.remove('hidden');
+            }
+        };
+
+        async function signOut() { 
+            Status.show('Signing out...');
+            await supabaseClient.auth.signOut();
+            Status.hide();
+        }
+
+        async function fetchDataForTab(tabId) {
+            if(tabId === 'trans') fetchTransformations();
+            if(tabId === 'gallery') fetchGallery();
+            if(tabId === 'events') fetchEvents();
+            if(tabId === 'assets') fetchServiceAssets();
+        }
+
+        // --- STORIES ---
+        async function fetchTransformations() {
+            try {
+                const { data, error } = await supabaseClient.from('transformations').select('*').order('created_at', { ascending: false });
+                if (error) throw error;
+                const list = document.getElementById('trans-list');
+                document.getElementById('trans-count').innerText = data.length;
+                
+                if (data.length > 0) {
+                    list.innerHTML = data.map(t => `
+                        <div class="android-card ripple hover:bg-[#252525] cursor-pointer" onclick='startEditTrans(${JSON.stringify(t)})'>
+                            <div class="flex-1 flex items-center gap-4 min-w-0">
+                                <img src="${t.after_image_url}" class="thumb bg-[#121212]" loading="lazy">
+                                <div class="min-w-0 flex-1 pr-2">
+                                    <h4 class="font-bold text-sm truncate uppercase tracking-tight">${t.member_name}</h4>
+                                    <p class="text-[11px] text-[var(--pink)] font-medium truncate mt-0.5">${t.result_summary}</p>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 flex items-center justify-center p-2 isolate">
+                                <button onclick="event.stopPropagation(); deleteTrans('${t.id}')" class="p-3 shadow-md rounded-full bg-[var(--bg)] border border-gray-800 text-gray-400 hover:text-red-500 hover:border-red-900 active:scale-90 transition-all">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = `<p class="p-10 text-center text-xs text-gray-500 font-medium">No stories recorded</p>`;
+                }
+                lucide.createIcons();
+            } catch(e) {}
+        }
+
+        function startEditTrans(t) {
+            document.getElementById('editing-id').value = t.id;
+            document.getElementById('t_name').value = t.member_name;
+            document.getElementById('t_summary').value = t.result_summary;
+            document.getElementById('t_quote').value = t.quote;
+            document.getElementById('t_duration').value = t.duration || '';
+            document.getElementById('t_featured').value = t.is_featured_homepage.toString();
+            document.getElementById('form-trans-title').innerText = "Edit Story";
+            openSheet('sheet-trans');
+        }
+
+        function resetTransForm() {
+            document.getElementById('trans-form').reset();
+            document.getElementById('editing-id').value = '';
+            document.getElementById('form-trans-title').innerText = "New Story";
+        }
+
+        document.getElementById('trans-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const editingId = document.getElementById('editing-id').value;
+            const btn = document.getElementById('t_btn');
+            btn.textContent = editingId ? 'Updating...' : 'Publishing...';
+            
+            Status.show('Processing...');
+            try {
+                let uB = null, uA = null;
+                const fileB = document.getElementById('t_before').files[0];
+                const fileA = document.getElementById('t_after').files[0];
+                const ts = Date.now();
+
+                if (fileB) {
+                    const pathB = `b_${ts}.${fileB.name.split('.').pop()}`;
+                    await supabaseClient.storage.from('before_images').upload(pathB, fileB);
+                    uB = (await supabaseClient.storage.from('before_images').getPublicUrl(pathB)).data.publicUrl;
+                }
+                if (fileA) {
+                    const pathA = `a_${ts}.${fileA.name.split('.').pop()}`;
+                    await supabaseClient.storage.from('after_images').upload(pathA, fileA);
+                    uA = (await supabaseClient.storage.from('after_images').getPublicUrl(pathA)).data.publicUrl;
+                }
+
+                const storyData = {
+                    member_name: document.getElementById('t_name').value,
+                    result_summary: document.getElementById('t_summary').value,
+                    quote: document.getElementById('t_quote').value,
+                    duration: document.getElementById('t_duration').value,
+                    is_featured_homepage: document.getElementById('t_featured').value === 'true'
+                };
+
+                if (uB) storyData.before_image_url = uB;
+                if (uA) storyData.after_image_url = uA;
+
+                if (editingId) await supabaseClient.from('transformations').update(storyData).eq('id', editingId);
+                else {
+                    if (!fileB || !fileA) throw new Error("Before/After Images req");
+                    await supabaseClient.from('transformations').insert([storyData]);
+                }
+
+                Status.show('Success!');
+                closeSheet('sheet-trans');
+                fetchTransformations();
+            } catch(e) { Status.show('Error: ' + e.message); } 
+            finally {
+                btn.textContent = 'Publish';
+                setTimeout(() => Status.hide(), 2000);
+            }
+        };
+
+        async function deleteTrans(id) {
+            if(!confirm("Erase this story forever?")) return;
+            Status.show("Deleting...");
+            await supabaseClient.from('transformations').delete().eq('id', id);
+            fetchTransformations();
+            Status.show("Deleted");
+            setTimeout(Status.hide, 1500);
+        }
+
+        // --- GALLERY ---
+        async function fetchGallery() {
+            try {
+                const { data: files } = await supabaseClient.storage.from('gallery').list();
+                const filtered = files.filter(f => f.name !== '.emptyFolderPlaceholder');
+                const list = document.getElementById('gallery-list');
+                
+                list.innerHTML = filtered.map(f => {
+                    const url = supabaseClient.storage.from('gallery').getPublicUrl(f.name).data.publicUrl;
+                    const isVideo = f.name.match(/\.(mp4|webm|mov)$/i);
+                    return `
+                        <div class="grid-item group">
+                            ${isVideo ? `<video src="${url}" muted loop playsinline class="w-full h-full object-cover"></video><div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i data-lucide="play-circle" class="w-6 h-6 text-white drop-shadow-md opacity-80"></i></div>` : `<img src="${url}" loading="lazy">`}
+                            <button onclick="deleteGallery('${f.name}')" class="absolute top-2 right-2 bg-[var(--bg)] p-2 rounded-full text-red-500 shadow-lg active:scale-90 border border-gray-800"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                        </div>
+                    `;
+                }).join('');
+                lucide.createIcons();
+            } catch(e){}
+        }
+
+        document.getElementById('gallery-form').onsubmit = async (e) => {
+            e.preventDefault();
+            Status.show('Uploading file...');
+            try {
+                const file = document.getElementById('g_file').files[0];
+                const name = `g_${Date.now()}.${file.name.split('.').pop()}`;
+                await supabaseClient.storage.from('gallery').upload(name, file);
+                closeSheet('sheet-gallery');
+                Status.show('Uploaded!');
+                setTimeout(fetchGallery, 300);
+            } catch(e) { Status.show('Upload Error'); }
+            setTimeout(Status.hide, 2000);
+        };
+
+        async function deleteGallery(name) {
+            if(!confirm("Remove from gallery?")) return;
+            await supabaseClient.storage.from('gallery').remove([name]);
+            fetchGallery();
+        }
+
+        // --- EVENTS ---
+        async function fetchEvents() {
+            try {
+                const { data } = await supabaseClient.from('events').select('*').order('event_date', { ascending: true });
+                const list = document.getElementById('events-list');
+                
+                if (data.length > 0) {
+                    list.innerHTML = data.map(ev => `
+                        <div class="android-card ripple hover:bg-[#252525] cursor-pointer" onclick='startEditEvent(${JSON.stringify(ev).replace(/'/g, "\\'")})'>
+                            <div class="flex-1 flex items-center gap-4 min-w-0">
+                                ${ev.image_url ? `<img src="${ev.image_url}" class="thumb bg-[#121212]">` : `<div class="thumb bg-[var(--bg)] border border-gray-800 flex justify-center items-center"><i data-lucide="calendar" class="w-6 h-6 text-gray-600"></i></div>`}
+                                <div class="min-w-0 flex-1 pr-2">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-[10px] bg-[var(--bg)] text-gray-300 px-2 py-0.5 rounded font-bold">${new Date(ev.event_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
+                                        ${ev.is_active ? '' : `<span class="w-2 h-2 bg-red-500 rounded-full"></span>`}
+                                    </div>
+                                    <h4 class="font-bold text-sm truncate uppercase">${ev.title}</h4>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 flex items-center justify-center p-2 isolate">
+                                <button onclick="event.stopPropagation(); deleteEvent('${ev.id}')" class="p-3 shadow-md rounded-full bg-[var(--bg)] border border-gray-800 text-gray-400 hover:text-red-500 active:scale-90 transition-all">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = `<p class="p-10 text-center text-xs text-gray-500 font-medium">No events scheduled</p>`;
+                }
+                lucide.createIcons();
+            } catch(e) {}
+        }
+
+        function startEditEvent(ev) {
+            document.getElementById('editing-event-id').value = ev.id;
+            document.getElementById('event_title').value = ev.title;
+            document.getElementById('event_description').value = ev.description;
+            if (ev.event_date) document.getElementById('event_date').value = ev.event_date.split('T')[0];
+            document.getElementById('event_is_active').checked = ev.is_active;
+            document.getElementById('form-event-title').innerText = "Edit Event";
+            openSheet('sheet-events');
+        }
+
+        function resetEventForm() {
+            document.getElementById('events-form').reset();
+            document.getElementById('editing-event-id').value = '';
+            document.getElementById('form-event-title').innerText = 'New Event';
+        }
+
+        document.getElementById('events-form').onsubmit = async (e) => {
+            e.preventDefault();
+            Status.show("Saving event...");
+            try {
+                const eid = document.getElementById('editing-event-id').value;
+                const evData = {
+                    title: document.getElementById('event_title').value,
+                    description: document.getElementById('event_description').value,
+                    event_date: document.getElementById('event_date').value,
+                    is_active: document.getElementById('event_is_active').checked
+                };
+
+                const file = document.getElementById('event_image').files[0];
+                if(file) {
+                    const path = `e_${Date.now()}.${file.name.split('.').pop()}`;
+                    await supabaseClient.storage.from('event_images').upload(path, file);
+                    evData.image_url = supabaseClient.storage.from('event_images').getPublicUrl(path).data.publicUrl;
+                }
+
+                if (eid) await supabaseClient.from('events').update(evData).eq('id', eid);
+                else await supabaseClient.from('events').insert([evData]);
+
+                closeSheet('sheet-events');
+                Status.show("Saved!");
+                fetchEvents();
+            } catch(e) {}
+            setTimeout(Status.hide, 2000);
+        };
+
+        async function deleteEvent(id) {
+            if(!confirm("Erase event?")) return;
+            await supabaseClient.from('events').delete().eq('id', id);
+            fetchEvents();
+        }
+
+        // --- ASSETS ---
+        async function fetchServiceAssets() {
+            try {
+                const { data } = await supabaseClient.from('service_assets').select('*');
+                const list = document.getElementById('assets-list');
+                
+                list.innerHTML = SERVICES_LIST.map(s => {
+                    const imgUrl = data?.find(a => a.id === s.id)?.image_url || 'https://via.placeholder.com/200?text=Upload';
+                    return `
+                        <div class="relative aspect-square rounded-2xl overflow-hidden bg-black shadow-md border border-gray-800 active:scale-95 transition-transform group" onclick="document.getElementById('serv-input-${s.id}').click()">
+                            <img src="${imgUrl}" class="w-full h-full object-cover group-active:opacity-50">
+                            <div class="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black to-transparent flex flex-col justify-end h-1/2 pointer-events-none">
+                                <span class="font-bold text-[11px] tracking-wide uppercase text-white drop-shadow-md">${s.label}</span>
+                            </div>
+                            <input type="file" id="serv-input-${s.id}" class="hidden" accept="image/*" onchange="uploadServiceAsset(this, '${s.id}')">
+                        </div>
+                    `;
+                }).join('');
+            } catch(e) {}
+        }
+
+        async function uploadServiceAsset(input, id) {
+            if(!input.files[0]) return;
+            Status.show("Processing layout image...");
+            try {
+                const file = input.files[0];
+                const name = `serv_${id}_${Date.now()}.${file.name.split('.').pop()}`;
+                await supabaseClient.storage.from('service_images').upload(name, file);
+                const url = supabaseClient.storage.from('service_images').getPublicUrl(name).data.publicUrl;
+                await supabaseClient.from('service_assets').upsert({ id: id, image_url: url });
+                Status.show("Layout Live!");
+                setTimeout(fetchServiceAssets, 300);
+            } catch(e) { Status.show("Error"); }
+            setTimeout(Status.hide, 2000);
+        }
+
+        async function submitHeroVideo(input) {
+            if(!input.files[0]) return;
+            Status.show("Uploading Video...");
+            try {
+                const file = input.files[0];
+                const newFileName = `h_${Date.now()}.mp4`;
+                await supabaseClient.storage.from('hero_video').upload(newFileName, file);
+                const newPublicUrl = supabaseClient.storage.from('hero_video').getPublicUrl(newFileName).data.publicUrl;
+                await supabaseClient.from('site_assets').upsert({ id: 'homepage_hero_video', file_url: newPublicUrl });
+                Status.show("Video Updated!");
+            } catch(e) { Status.show("Error"); }
+            setTimeout(Status.hide, 2000);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            
+            // Allow smooth PC interactions and block iOS bounce if on mobile
+            document.getElementById('app-container').addEventListener('touchmove', function(e) { 
+                if(!e.target.closest('#content-area') && !e.target.closest('.sheet-content')) {
+                    e.preventDefault(); 
+                }
+            }, { passive: false });
+        });
+    </script>
+</body>
+</html>
