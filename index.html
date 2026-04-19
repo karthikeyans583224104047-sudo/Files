@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DIAMOND FITNESS — Body Transformation Studio | Surya Nagar, Madurai</title>
-    <meta name="description" content="Diamond Fitness — Women-only body transformation studio in Surya Nagar, Madurai. Weight loss, inch loss, belly fat reduction, post-pregnancy fitness. Book your free trial today!">
+    <title>DIAMOND & LION FITNESS — Body Transformation Studio | Surya Nagar, Madurai</title>
+    <meta name="description" content="Diamond & Lion Fitness — Women-only body transformation studio in Surya Nagar, Madurai. Weight loss, inch loss, belly fat reduction, post-pregnancy fitness. Book your free trial today!">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -181,6 +181,7 @@
             background-color: var(--bg);
             transition: opacity 1.5s ease-in;
             opacity: 0;
+            will-change: opacity;
         }
 
         .scroll-section {
@@ -232,6 +233,8 @@
             padding: 2rem 0;
             width: max-content;
             will-change: transform;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         .gallery-item {
@@ -1690,6 +1693,133 @@
             color: transparent;
             animation: shimmer 4s linear infinite;
         }
+
+        /* ============================================= */
+        /* SERVICES AUTO-SCROLL CAROUSEL                 */
+        /* ============================================= */
+        .services-carousel-section {
+            position: relative;
+            padding: 80px 0;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(255,20,147,0.03) 50%, rgba(5,5,5,0) 100%);
+        }
+
+        .services-carousel-wrapper {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+        }
+
+        .services-carousel-track {
+            display: flex;
+            gap: 24px;
+            width: max-content;
+            animation: scrollServices 45s linear infinite;
+            will-change: transform;
+            backface-visibility: hidden;
+            padding: 10px 0;
+        }
+
+        .services-carousel-track:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollServices {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .service-img-card {
+            flex-shrink: 0;
+            width: 380px;
+            height: 480px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .service-img-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255,20,147,0.4);
+            box-shadow: 0 30px 60px rgba(255,20,147,0.15), 0 0 0 1px rgba(255,20,147,0.1);
+        }
+
+        .service-img-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s ease, opacity 0.5s ease;
+        }
+
+        .service-img-card:hover img {
+            transform: scale(1.1);
+            opacity: 0.8;
+        }
+
+        .service-img-card .service-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 40%, transparent 70%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 28px;
+            z-index: 2;
+        }
+
+        .service-img-card .service-tag {
+            display: inline-block;
+            width: fit-content;
+            padding: 5px 14px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            background: var(--pink);
+            color: white;
+        }
+
+        .service-img-card h3 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-style: italic;
+            color: white;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .service-img-card p {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.5;
+            max-width: 300px;
+        }
+
+        @media (max-width: 767px) {
+            .services-carousel-section {
+                padding: 50px 0;
+            }
+            .service-img-card {
+                width: 300px;
+                height: 400px;
+            }
+            .service-img-card h3 {
+                font-size: 1.4rem;
+            }
+            .services-carousel-track {
+                gap: 16px;
+                animation-duration: 35s;
+            }
+        }
     </style>
 </head>
 
@@ -1918,7 +2048,7 @@
                     <!-- Main heading -->
                     <h1 class="hero-reveal font-sync font-bold text-[11vw] lg:text-[6vw] leading-[1.05] uppercase italic text-white"
                         style="opacity:0; transform:translateY(20px); padding: 0 5px;">
-                        DIAMOND <span class="text-[var(--pink)]">FITNESS</span>
+                        DIAMOND <span class="text-[var(--pink)]">&</span> <span class="text-[var(--yellow)]">LION</span> <span class="text-[var(--pink)]">FITNESS</span>
                     </h1>
 
                     <!-- Tagline -->
@@ -1955,6 +2085,138 @@
                             class="cta-btn-primary cta-btn-whatsapp">
                             <i class="fa-brands fa-whatsapp"></i> WHATSAPP NOW
                         </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ============================================= -->
+            <!-- 🎯 SERVICES AUTO-SCROLL CAROUSEL (WITH IMAGES) -->
+            <!-- ============================================= -->
+            <section class="services-carousel-section" id="services-carousel">
+                <div class="text-center mb-12 px-4">
+                    <span class="section-label" style="color: var(--pink);">Expertly Curated</span>
+                    <h2 class="section-heading section-heading-lg">
+                        Our <span class="text-[var(--pink)]">Services</span>
+                    </h2>
+                </div>
+
+                <div class="services-carousel-wrapper">
+                    <div class="services-carousel-track" id="services-track">
+                        <!-- Set 1 -->
+                        <div class="service-img-card" onclick="openBookingWithService('Zumba')">
+                            <img id="carousel-img-zumba" src="" alt="Zumba">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Core Cardio</span>
+                                <h3>Zumba</h3>
+                                <p>Dance your way to fat loss with high-energy music and fun choreography.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Yoga')">
+                            <img id="carousel-img-yoga" src="" alt="Yoga">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">Mind & Body</span>
+                                <h3>Yoga</h3>
+                                <p>Improve wellness, flexibility, and inner calm through guided sessions.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Aerobics')">
+                            <img id="carousel-img-aerobics" src="" alt="Aerobics">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Cardio Blast</span>
+                                <h3>Aerobics</h3>
+                                <p>Boost cardiovascular health with rhythmic aerobic exercise.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Personal Training')">
+                            <img id="carousel-img-personal_training" src="" alt="Personal Training">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">1-on-1</span>
+                                <h3>Personal Training</h3>
+                                <p>Dedicated one-on-one attention to crush your specific fitness goals.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Cardio Exercise')">
+                            <img id="carousel-img-cardio" src="" alt="Cardio">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Endurance</span>
+                                <h3>Cardio</h3>
+                                <p>High-stamina training for maximum calorie burn and heart health.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Circuit Training')">
+                            <img id="carousel-img-circuit" src="" alt="Circuit Training">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">Full Body</span>
+                                <h3>Circuit Training</h3>
+                                <p>Targeted full-body routines using natural bodyweight resistance.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Nutrition Guidance')">
+                            <img id="carousel-img-nutrition" src="" alt="Nutrition">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Diet Plan</span>
+                                <h3>Nutrition</h3>
+                                <p>Expert advice on diet and recovery to fuel your workouts.</p>
+                            </div>
+                        </div>
+
+                        <!-- Set 2 (duplicate for seamless infinite loop) -->
+                        <div class="service-img-card" onclick="openBookingWithService('Zumba')">
+                            <img id="carousel-img-zumba-2" src="" alt="Zumba">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Core Cardio</span>
+                                <h3>Zumba</h3>
+                                <p>Dance your way to fat loss with high-energy music and fun choreography.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Yoga')">
+                            <img id="carousel-img-yoga-2" src="" alt="Yoga">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">Mind & Body</span>
+                                <h3>Yoga</h3>
+                                <p>Improve wellness, flexibility, and inner calm through guided sessions.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Aerobics')">
+                            <img id="carousel-img-aerobics-2" src="" alt="Aerobics">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Cardio Blast</span>
+                                <h3>Aerobics</h3>
+                                <p>Boost cardiovascular health with rhythmic aerobic exercise.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Personal Training')">
+                            <img id="carousel-img-personal_training-2" src="" alt="Personal Training">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">1-on-1</span>
+                                <h3>Personal Training</h3>
+                                <p>Dedicated one-on-one attention to crush your specific fitness goals.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Cardio Exercise')">
+                            <img id="carousel-img-cardio-2" src="" alt="Cardio">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Endurance</span>
+                                <h3>Cardio</h3>
+                                <p>High-stamina training for maximum calorie burn and heart health.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Circuit Training')">
+                            <img id="carousel-img-circuit-2" src="" alt="Circuit Training">
+                            <div class="service-card-overlay">
+                                <span class="service-tag" style="background:var(--yellow);color:black;">Full Body</span>
+                                <h3>Circuit Training</h3>
+                                <p>Targeted full-body routines using natural bodyweight resistance.</p>
+                            </div>
+                        </div>
+                        <div class="service-img-card" onclick="openBookingWithService('Nutrition Guidance')">
+                            <img id="carousel-img-nutrition-2" src="" alt="Nutrition">
+                            <div class="service-card-overlay">
+                                <span class="service-tag">Diet Plan</span>
+                                <h3>Nutrition</h3>
+                                <p>Expert advice on diet and recovery to fuel your workouts.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2037,7 +2299,7 @@
                         <div class="text-center mb-16">
                             <span class="section-label">Your Advantage</span>
                             <h2 class="section-heading section-heading-xl">
-                                Why Choose <span class="text-[var(--pink)]">Diamond Fitness</span>
+                                Why Choose <span class="text-[var(--pink)]">Diamond</span> & <span class="text-[var(--yellow)]">Lion</span> <span class="text-[var(--pink)]">Fitness</span>
                             </h2>
                         </div>
 
@@ -2089,6 +2351,49 @@
                         <p class="text-center mt-12 body-text-lg" style="color: var(--soft-pink);">
                             Friendly • Supportive • Result-Oriented
                         </p>
+                    </div>
+                </section>
+
+                <!-- Gallery Section -->
+                <section id="gallery" class="py-32 overflow-hidden relative z-10">
+                    <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
+                        <div><span class="section-label">Visual
+                                Journey</span>
+                            <h2 class="section-heading section-heading-lg">
+                                The Portfolio.</h2>
+                        </div>
+                        <a href="gallery.html"
+                            class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View
+                            All Portfolio <i data-lucide="arrow-right"></i></a>
+                    </div>
+                    <div class="gallery-wrapper">
+                        <div class="gallery-container" id="supabase-gallery">
+                            <!-- Gallery items will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Featured Results / Before-After -->
+                <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible">
+                    <div class="mb-16">
+                        <span class="section-label">Evidence of
+                            Change</span>
+                        <h2 class="section-heading section-heading-lg">
+                            Elite Success.</h2>
+                    </div>
+
+                    <div class="carousel-nav-container">
+                        <div class="flex justify-between w-full">
+                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
+                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
+                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
+                            id="featured-transformation-container">
+                            <!-- Transformation content will be loaded here -->
+                        </div>
                     </div>
                 </section>
 
@@ -2262,9 +2567,9 @@
                 <section id="why-choose" class="py-32 px-8 bg-white/5">
                     <div class="max-w-7xl mx-auto">
                         <div class="mb-16">
-                            <span class="section-label">Your Advantage</span>
+                            <span class="section-label">Benefits & Schedule</span>
                             <h2 class="section-heading section-heading-lg">
-                                Why Choose Us.</h2>
+                                What You <span class="text-[var(--pink)]">Get.</span></h2>
                         </div>
                         <div class="grid md:grid-cols-2 gap-12">
                             <div class="glass p-12 rounded-3xl">
@@ -2370,99 +2675,6 @@
                     </div>
                 </section>
 
-                <!-- Original Programs Section (Services with Images) -->
-                <section id="programs" class="py-32 px-8 max-w-7xl mx-auto">
-                    <div class="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
-                        <div class="max-w-xl">
-                            <span class="section-label">Expertly Curated</span>
-                            <h2 class="section-heading section-heading-lg">
-                                Our Services.</h2>
-                        </div>
-                        <p class="body-text max-w-xs uppercase tracking-widest" style="font-size: 1rem;">
-                            Built for Madurai's elite community. Click a service to start your protocol today.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 h-auto">
-                        <div onclick="openBookingWithService('Zumba')"
-                            class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
-                            <img id="img-zumba" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <span
-                                    class="bg-[var(--pink)] text-white px-3 py-1 text-[10px] font-bold uppercase mb-6 inline-block tracking-widest">Core
-                                    Cardio</span>
-                                <h3 class="text-5xl font-sync font-bold uppercase italic text-white leading-none">Zumba
-                                </h3>
-                                <p class="text-neutral-300 mt-4 max-w-md body-text">Dance your way to fat loss
-                                    with high-energy music and fun choreography.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Yoga')"
-                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[500px]">
-                            <img id="img-yoga" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Yoga</h3>
-                                <p class="text-neutral-300 mt-4 leading-relaxed body-text">Improve wellness,
-                                    flexibility, and inner calm through guided sessions.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Aerobics')"
-                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-aerobics" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Aerobics</h3>
-                                <p class="text-neutral-300 mt-3 body-text">Boost cardiovascular health with
-                                    rhythmic aerobic exercise.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Personal Training')"
-                            class="md:col-span-8 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-personal_training" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-4xl font-sync font-bold uppercase italic text-white">Personal Training
-                                </h3>
-                                <p class="text-neutral-300 mt-4 max-w-md body-text">Dedicated one-on-one
-                                    attention to crush your specific fitness goals.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Cardio Exercise')"
-                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-cardio" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Cardio Exercise
-                                </h3>
-                                <p class="text-neutral-300 mt-3 body-text">High-stamina training for maximum
-                                    calorie burn and heart health.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Circuit Training')"
-                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-circuit" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Circuit Training
-                                </h3>
-                                <p class="text-neutral-300 mt-3 body-text">Targeted full-body routines using
-                                    natural bodyweight resistance.</p>
-                            </div>
-                        </div>
-                        <div onclick="openBookingWithService('Nutrition Guidance')"
-                            class="md:col-span-4 glass p-12 flex flex-col justify-end group cursor-pointer relative overflow-hidden h-[400px]">
-                            <img id="img-nutrition" src=""
-                                class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-all duration-1000">
-                            <div class="relative z-10">
-                                <h3 class="text-3xl font-sync font-bold uppercase italic text-white">Nutrition Guidance
-                                </h3>
-                                <p class="text-neutral-300 mt-3 body-text">Expert advice on fuel and recovery
-                                    to complement your physical training.</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <!-- ============================================= -->
@@ -2502,48 +2714,6 @@
                     </div>
                 </section>
 
-                <!-- Gallery Section -->
-                <section id="gallery" class="py-32 overflow-hidden relative z-10">
-                    <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
-                        <div><span class="section-label">Visual
-                                Journey</span>
-                            <h2 class="section-heading section-heading-lg">
-                                The Portfolio.</h2>
-                        </div>
-                        <a href="gallery.html"
-                            class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View
-                            All Portfolio <i data-lucide="arrow-right"></i></a>
-                    </div>
-                    <div class="gallery-wrapper">
-                        <div class="gallery-container" id="supabase-gallery">
-                            <!-- Gallery items will be loaded here -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Featured Results / Before-After -->
-                <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible">
-                    <div class="mb-16">
-                        <span class="section-label">Evidence of
-                            Change</span>
-                        <h2 class="section-heading section-heading-lg">
-                            Elite Success.</h2>
-                    </div>
-
-                    <div class="carousel-nav-container">
-                        <div class="flex justify-between w-full">
-                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
-                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
-                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
-                            id="featured-transformation-container">
-                            <!-- Transformation content will be loaded here -->
-                        </div>
-                    </div>
-                </section>
 
                 <!-- ============================================= -->
                 <!-- 💬 WHAT OUR MEMBERS SAY                        -->
@@ -2594,7 +2764,7 @@
                         <div class="text-center mb-16">
                             <span class="section-label">Visit Us Today</span>
                             <h2 class="section-heading section-heading-xl">
-                                Diamond <span class="text-[var(--pink)]">Fitness</span>
+                                Diamond <span class="text-[var(--pink)]">&</span> <span class="text-[var(--yellow)]">Lion</span> <span class="text-[var(--pink)]">Fitness</span>
                             </h2>
                             <p class="body-text mt-4">Surya Nagar, Madurai</p>
                         </div>
@@ -2637,9 +2807,9 @@
 
                         <div class="grid md:grid-cols-2 gap-10">
                             <div class="glass overflow-hidden rounded-3xl">
-                                <div class="h-[400px] w-full relative">
+                                <div class="h-[400px] w-full relative map-container">
                                     <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.294019200129!2d78.15657687503067!3d9.964230690139386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c783d619eaab%3A0x445d0f640794743b!2sDiamond%20fitness%20centre!5e1!3m2!1sen!2sin!4v1770390040431!5m2!1sen!2sin"
+                                        data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.294019200129!2d78.15657687503067!3d9.964230690139386!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c783d619eaab%3A0x445d0f640794743b!2sDiamond%20fitness%20centre!5e1!3m2!1sen!2sin!4v1770390040431!5m2!1sen!2sin"
                                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                                         referrerpolicy="no-referrer-when-downgrade"></iframe>
                                 </div>
@@ -2665,9 +2835,9 @@
                                 </div>
                             </div>
                             <div class="glass overflow-hidden rounded-3xl">
-                                <div class="h-[400px] w-full relative">
+                                <div class="h-[400px] w-full relative map-container">
                                     <iframe
-                                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.257182086398!2d78.13340807583273!3d9.966714973604937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c79c203815d9%3A0xe92feb75291fb904!2sLion%20Fitness%20Madurai!5e1!3m2!1sen!2sin!4v1770390146350!5m2!1sen!2sin"
+                                        data-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4835.257182086398!2d78.13340807583273!3d9.966714973604937!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c79c203815d9%3A0xe92feb75291fb904!2sLion%20Fitness%20Madurai!5e1!3m2!1sen!2sin!4v1770390146350!5m2!1sen!2sin"
                                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                                         referrerpolicy="no-referrer-when-downgrade"></iframe>
                                 </div>
@@ -2960,8 +3130,11 @@
                     if (servRes.data) {
                         servRes.data.forEach(asset => {
                             const id = asset.id.replace('service_', '');
-                            const img = document.getElementById(`img-${id}`);
-                            if (img) img.src = asset.image_url;
+                            // Load into carousel cards (set 1 and set 2)
+                            const carouselImg = document.getElementById(`carousel-img-${id}`);
+                            const carouselImg2 = document.getElementById(`carousel-img-${id}-2`);
+                            if (carouselImg) carouselImg.src = asset.image_url;
+                            if (carouselImg2) carouselImg2.src = asset.image_url;
                         });
                     }
                 })
@@ -2990,6 +3163,10 @@
                             galleryContainer.appendChild(item);
                         });
                         if (window.lucide) lucide.createIcons();
+                        // Refresh ScrollTrigger after gallery images load so pin positions recalculate
+                        setTimeout(() => {
+                            if (window.ScrollTrigger) ScrollTrigger.refresh();
+                        }, 500);
                     }
                 })
                 .catch(err => console.error("Gallery load error:", err));
@@ -3116,12 +3293,19 @@
             };
 
             let isMouseOver = false;
+            let rafPending = false;
 
             container.addEventListener('mouseenter', () => { isMouseOver = true; });
             container.addEventListener('mouseleave', () => { isMouseOver = false; });
 
             container.addEventListener('mousemove', (e) => {
-                if (isMouseOver) update(e.clientX);
+                if (isMouseOver && !rafPending) {
+                    rafPending = true;
+                    requestAnimationFrame(() => {
+                        update(e.clientX);
+                        rafPending = false;
+                    });
+                }
             });
 
             let isTouching = false;
@@ -3136,7 +3320,13 @@
 
             container.addEventListener('touchmove', (e) => {
                 if (isTouching && e.touches.length > 0) {
-                    update(e.touches[0].clientX);
+                    if (!rafPending) {
+                        rafPending = true;
+                        requestAnimationFrame(() => {
+                            update(e.touches[0].clientX);
+                            rafPending = false;
+                        });
+                    }
                     e.preventDefault();
                 }
             }, { passive: false });
@@ -3151,7 +3341,6 @@
         function initGSAPAnimations() {
             if (window.gsap) {
                 gsap.to(".hero-reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.2 });
-                gsap.to("#hero-section", { scrollTrigger: { trigger: "#hero-section", start: "top top", scrub: true }, opacity: 0, y: -100 });
 
                 gsap.from("#lion-diamond h2", {
                     scrollTrigger: {
@@ -3178,7 +3367,9 @@
                                     end: () => "+=" + (gallery.scrollWidth - window.innerWidth),
                                     scrub: 1,
                                     pin: true,
-                                    anticipatePin: 1
+                                    anticipatePin: 1,
+                                    invalidateOnRefresh: true,
+                                    pinSpacing: true
                                 }
                             });
                         }
@@ -3187,6 +3378,31 @@
 
                 gsap.to(".marquee-track", { xPercent: -50, ease: "none", duration: 30, repeat: -1 });
             }
+        }
+
+        // Lazy-load Google Maps iframes when they scroll into view
+        if ('IntersectionObserver' in window) {
+            const mapObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const iframe = entry.target.querySelector('iframe[data-src]');
+                        if (iframe) {
+                            iframe.src = iframe.dataset.src;
+                            iframe.removeAttribute('data-src');
+                        }
+                        mapObserver.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '300px' });
+
+            document.querySelectorAll('.map-container').forEach(container => {
+                mapObserver.observe(container);
+            });
+        } else {
+            // Fallback: load all maps immediately
+            document.querySelectorAll('iframe[data-src]').forEach(iframe => {
+                iframe.src = iframe.dataset.src;
+            });
         }
 
         // WhatsApp Appointment Form Submission
