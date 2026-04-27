@@ -25,11 +25,13 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="business.business">
-    <meta property="og:title" content="Diamond & Lion Fitness — Best Gym & Fitness Centre in Madurai">
+    <meta property="og:title" content="Diamond & Lion Fitness — Best Gym in Madurai">
     <meta property="og:description"
         content="Women-only body transformation studio in Surya Nagar & Iyer Bungalow, Madurai. Zumba, yoga, aerobics, weight loss, personal training. Book your free trial!">
     <meta property="og:url" content="https://www.diamondlionfitness.com/">
-    <meta property="og:image" content="diamond-logo.png">
+    <meta property="og:image" content="https://www.diamondlionfitness.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:locale" content="en_IN">
     <meta property="og:site_name" content="Diamond & Lion Fitness">
     <meta property="business:contact_data:street_address" content="Surya Nagar, Madurai">
@@ -43,7 +45,7 @@
     <meta name="twitter:title" content="Diamond & Lion Fitness — Best Gym in Madurai">
     <meta name="twitter:description"
         content="Women-only fitness centre in Madurai. Zumba, yoga, aerobics, weight loss. Two branches: Surya Nagar & Iyer Bungalow.">
-    <meta name="twitter:image" content="diamond-logo.png">
+    <meta name="twitter:image" content="https://www.diamondlionfitness.com/og-image.png">
 
     <!-- Structured Data: LocalBusiness (JSON-LD) -->
     <script type="application/ld+json">
@@ -56,7 +58,7 @@
             "description": "Women-only fitness centre in Surya Nagar, Madurai offering Zumba, yoga, aerobics, weight loss, inch loss, belly fat reduction, post-pregnancy fitness, personal training, and nutrition guidance.",
             "url": "https://www.diamondlionfitness.com/",
             "telephone": "+919585121321",
-            "image": "diamond-logo.png",
+            "image": "https://www.diamondlionfitness.com/diamond-logo.png",
             "priceRange": "$$",
             "address": {
                 "@type": "PostalAddress",
@@ -114,7 +116,7 @@
             "description": "Fitness centre in Iyer Bungalow, Madurai offering body transformation programs, Zumba, yoga, aerobics, weight loss and personal training for women and youth.",
             "url": "https://www.diamondlionfitness.com/",
             "telephone": "+919585121321",
-            "image": "lion-logo.png",
+            "image": "https://www.diamondlionfitness.com/lion-logo.png",
             "priceRange": "$$",
             "address": {
                 "@type": "PostalAddress",
@@ -2401,6 +2403,54 @@
             </section>
 
             <!-- ============================================= -->
+            <!-- 📸 PORTFOLIO & RESULTS (SOCIAL PROOF)           -->
+            <!-- ============================================= -->
+            <div class="bg-[#050505] relative z-10">
+                <!-- Gallery Section -->
+                <section id="gallery" class="py-32 overflow-hidden relative z-10">
+                    <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
+                        <div><span class="section-label">Visual
+                                Journey</span>
+                            <h2 class="section-heading section-heading-lg">
+                                The Portfolio.</h2>
+                        </div>
+                        <a href="gallery.html"
+                            class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View
+                            All Portfolio <i data-lucide="arrow-right"></i></a>
+                    </div>
+                    <div class="gallery-wrapper">
+                        <div class="gallery-container" id="supabase-gallery">
+                            <!-- Gallery items will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Featured Results / Before-After -->
+                <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible z-10">
+                    <div class="mb-16">
+                        <span class="section-label">Evidence of
+                            Change</span>
+                        <h2 class="section-heading section-heading-lg">
+                            Elite Success.</h2>
+                    </div>
+
+                    <div class="carousel-nav-container">
+                        <div class="flex justify-between w-full">
+                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
+                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
+                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
+                            id="featured-transformation-container">
+                            <!-- Transformation content will be loaded here -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- ============================================= -->
             <!-- 🔥 WHY CHOOSE DIAMOND FITNESS                  -->
             <!-- ============================================= -->
             <section class="scroll-section" id="events-section">
@@ -2541,48 +2591,6 @@
                     </div>
                 </section>
 
-                <!-- Gallery Section -->
-                <section id="gallery" class="py-32 overflow-hidden relative z-10">
-                    <div class="px-8 mb-16 max-w-7xl mx-auto flex justify-between items-end">
-                        <div><span class="section-label">Visual
-                                Journey</span>
-                            <h2 class="section-heading section-heading-lg">
-                                The Portfolio.</h2>
-                        </div>
-                        <a href="gallery.html"
-                            class="hidden md:flex items-center gap-4 text-xs font-bold uppercase tracking-widest hover:text-[var(--pink)] transition-colors">View
-                            All Portfolio <i data-lucide="arrow-right"></i></a>
-                    </div>
-                    <div class="gallery-wrapper">
-                        <div class="gallery-container" id="supabase-gallery">
-                            <!-- Gallery items will be loaded here -->
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Featured Results / Before-After -->
-                <section id="featured-results" class="py-32 px-8 max-w-7xl mx-auto relative overflow-visible">
-                    <div class="mb-16">
-                        <span class="section-label">Evidence of
-                            Change</span>
-                        <h2 class="section-heading section-heading-lg">
-                            Elite Success.</h2>
-                    </div>
-
-                    <div class="carousel-nav-container">
-                        <div class="flex justify-between w-full">
-                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
-                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
-                        <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
-                            id="featured-transformation-container">
-                            <!-- Transformation content will be loaded here -->
-                        </div>
-                    </div>
-                </section>
 
                 <!-- ============================================= -->
                 <!-- 💪 OUR PROGRAMS (NEW)                          -->
