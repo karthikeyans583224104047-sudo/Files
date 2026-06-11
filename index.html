@@ -2434,14 +2434,7 @@
                             Elite Success.</h2>
                     </div>
 
-                    <div class="carousel-nav-container">
-                        <div class="flex justify-between w-full">
-                            <button id="prev-result" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
-                            <button id="next-result" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </div>
-
-                    <div class="relative overflow-hidden min-h-[650px] z-10" id="result-carousel-stage">
+                    <div class="relative overflow-visible min-h-[auto] md:min-h-[650px] w-full z-10" id="result-carousel-stage">
                         <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center opacity-0 transform translate-y-10"
                             id="featured-transformation-container">
                             <!-- Transformation content will be loaded here -->
@@ -2694,22 +2687,22 @@
                             </ul>
                         </div>
 
-                        <div class="grid md:grid-cols-3 gap-6 text-center">
-                            <div class="glass p-8 rounded-2xl">
-                                <div class="no-worry-item justify-center">
-                                    <i data-lucide="check-circle" class="w-6 h-6" style="color: var(--pink);"></i>
+                        <div class="grid md:grid-cols-3 gap-6 text-left">
+                            <div class="glass p-8 rounded-2xl flex items-center">
+                                <div class="no-worry-item justify-start w-full">
+                                    <i data-lucide="check-circle" class="w-6 h-6 flex-shrink-0" style="color: var(--pink);"></i>
                                     <span class="text-white">No experience needed</span>
                                 </div>
                             </div>
-                            <div class="glass p-8 rounded-2xl">
-                                <div class="no-worry-item justify-center">
-                                    <i data-lucide="check-circle" class="w-6 h-6" style="color: var(--pink);"></i>
+                            <div class="glass p-8 rounded-2xl flex items-center">
+                                <div class="no-worry-item justify-start w-full">
+                                    <i data-lucide="check-circle" class="w-6 h-6 flex-shrink-0" style="color: var(--pink);"></i>
                                     <span class="text-white">No heavy weights</span>
                                 </div>
                             </div>
-                            <div class="glass p-8 rounded-2xl">
-                                <div class="no-worry-item justify-center">
-                                    <i data-lucide="check-circle" class="w-6 h-6" style="color: var(--pink);"></i>
+                            <div class="glass p-8 rounded-2xl flex items-center">
+                                <div class="no-worry-item justify-start w-full">
+                                    <i data-lucide="check-circle" class="w-6 h-6 flex-shrink-0" style="color: var(--pink);"></i>
                                     <span class="text-white">No judgement zone</span>
                                 </div>
                             </div>
@@ -3497,12 +3490,23 @@
                 gsap.to(container, {
                     opacity: 0, y: 20, duration: 0.4, onComplete: () => {
                         container.innerHTML = `
-                        <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl">
-                            <img src="${trans.after_image_url}" class="w-full h-full object-cover">
-                            <div class="ba-after" id="baAfter">
-                                <img src="${trans.before_image_url}" class="w-full h-full object-cover">
+                        <div class="relative w-full flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6">
+                            <button onclick="window.prevSlide()" class="slider-nav-btn flex-shrink-0 z-20 hidden md:flex"><i data-lucide="chevron-left"></i></button>
+                            
+                            <div class="ba-container aspect-[4/5] shadow-2xl overflow-hidden rounded-xl w-full max-w-sm mx-auto">
+                                <img src="${trans.after_image_url}" class="w-full h-full object-cover">
+                                <div class="ba-after" id="baAfter">
+                                    <img src="${trans.before_image_url}" class="w-full h-full object-cover">
+                                </div>
+                                <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
                             </div>
-                            <div class="ba-handle" id="baHandle"><i data-lucide="move-horizontal" class="text-black"></i></div>
+                            
+                            <button onclick="window.nextSlide()" class="slider-nav-btn flex-shrink-0 z-20 hidden md:flex"><i data-lucide="chevron-right"></i></button>
+
+                            <div class="flex items-center justify-center gap-6 md:hidden mt-2 w-full">
+                                <button onclick="window.prevSlide()" class="slider-nav-btn"><i data-lucide="chevron-left"></i></button>
+                                <button onclick="window.nextSlide()" class="slider-nav-btn"><i data-lucide="chevron-right"></i></button>
+                            </div>
                         </div>
                         <div class="space-y-8">
                             <span class="text-[var(--pink)] text-xs font-bold uppercase tracking-[0.4em]">Story ${index + 1}/${featuredResults.length}</span>
@@ -3518,14 +3522,14 @@
             }
         }
 
-        document.getElementById('next-result').onclick = () => {
+        window.nextSlide = () => {
             if (featuredResults.length > 0) {
                 currentSlide = (currentSlide + 1) % featuredResults.length;
                 renderSlide(currentSlide);
             }
         };
 
-        document.getElementById('prev-result').onclick = () => {
+        window.prevSlide = () => {
             if (featuredResults.length > 0) {
                 currentSlide = (currentSlide - 1 + featuredResults.length) % featuredResults.length;
                 renderSlide(currentSlide);
